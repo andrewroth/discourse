@@ -1,4 +1,8 @@
+require "discourse/engine"
+
 require 'cache'
+require 'active_support/core_ext'
+
 require_dependency 'plugin/instance'
 require_dependency 'auth/default_current_user_provider'
 

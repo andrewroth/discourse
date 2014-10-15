@@ -1,3 +1,6 @@
+# TODO this needs to be moved to the root rails app
+
+=begin
 require File.expand_path('../boot', __FILE__)
 require 'rails/all'
 
@@ -162,3 +165,4 @@ module Discourse
 
   end
 end
+=end

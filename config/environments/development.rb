@@ -1,3 +1,6 @@
+# use the app's environment
+
+=begin
 Discourse::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -53,3 +56,4 @@ Discourse::Application.configure do
   end
 end
 
+=end
