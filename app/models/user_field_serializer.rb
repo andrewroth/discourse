@@ -1,3 +1,5 @@
-class UserFieldSerializer < ApplicationSerializer
-  attributes :id, :name, :description, :field_type, :editable
+module Discourse
+  class UserFieldSerializer < ApplicationSerializer
+    attributes :id, :name, :description, :field_type, :editable
+  end
 end

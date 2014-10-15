@@ -1,14 +1,14 @@
 require "discourse/engine"
 
-require 'cache'
+require 'discourse/cache'
 require 'active_support/core_ext'
 
-require_dependency 'plugin/instance'
-require_dependency 'auth/default_current_user_provider'
+require_dependency 'discourse/plugin/instance'
+require_dependency 'discourse/auth/default_current_user_provider'
 
 module Discourse
 
-  require 'sidekiq/exception_handler'
+  require 'discourse/sidekiq/exception_handler'
   class SidekiqExceptionHandler
     extend Sidekiq::ExceptionHandler
   end
@@ -233,7 +233,7 @@ module Discourse
 
   def self.store
     if SiteSetting.enable_s3_uploads?
-      @s3_store_loaded ||= require 'file_store/s3_store'
+      @s3_store_loaded ||= require 'discourse/file_store/s3_store'
       FileStore::S3Store.new
     else
       @local_store_loaded ||= require 'file_store/local_store'
