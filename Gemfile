@@ -199,6 +199,7 @@ group :test, :development do
   gem 'rspec-given'
   gem 'pry-nav'
   gem 'spork-rails'
+  gem 'xray-rails', '0.1.8'
 end
 
 group :development do

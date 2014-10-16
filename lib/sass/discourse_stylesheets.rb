@@ -2,7 +2,7 @@ require_dependency 'sass/discourse_sass_compiler'
 
 class DiscourseStylesheets
 
-  CACHE_PATH = 'uploads/stylesheet-cache'
+  CACHE_PATH = "#{ActionController::Base.config.relative_url_root.to_s =~ /\/?(.*)\/?/; "#{$1}/"}uploads/stylesheet-cache"
   MANIFEST_DIR = "#{Rails.root}/tmp/cache/assets/#{Rails.env}"
   MANIFEST_FULL_PATH = "#{MANIFEST_DIR}/stylesheet-manifest"
 

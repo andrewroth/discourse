@@ -24,6 +24,9 @@ Discourse::Application.configure do
 
   config.assets.debug = true
 
+  #config.action_controller.asset_host = "http://community.highend3d.local/forum-assets"
+  config.action_controller.relative_url_root = "/forum"
+
   # Raise an error on page load if there are pending migrations
   config.active_record.migration_error = :page_load
   config.watchable_dirs['lib'] = [:rb]

@@ -31,10 +31,10 @@ required:
     type: username
   logo_url:
     client: true
-    default: '/images/d-logo-sketch.png'
+    default: '/forum/images/d-logo-sketch.png'
   logo_small_url:
     client: true
-    default: '/images/d-logo-sketch-small.png'
+    default: '/forum/images/d-logo-sketch-small.png'
   digest_logo_url:
     client: false
     default: ''
@@ -43,8 +43,8 @@ required:
     default: ''
   favicon_url:
     client: true
-    default: '/images/default-favicon.ico'
-  apple_touch_icon_url: '/images/default-apple-touch-icon.png'
+    default: '/forum/images/default-favicon.ico'
+  apple_touch_icon_url: '/forum/images/default-apple-touch-icon.png'
 
 basic:
   default_locale:

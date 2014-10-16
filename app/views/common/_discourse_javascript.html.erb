@@ -38,6 +38,7 @@
   Discourse.LetterAvatarVersion = <%= LetterAvatar::VERSION %>;
   Discourse.Router = Ember.Router.extend({ location: 'discourse-location' });
   Discourse.Route.mapRoutes();
+  window.MessageBus.baseUrl = Discourse.BaseUri + '/';
   Discourse.start();
   Discourse.set('assetVersion','<%= Discourse.assets_digest %>');
 </script>
