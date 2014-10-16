@@ -15,6 +15,14 @@
 # http://yamllint.com/
 
 en:
+  # some default transliteration rules may be missing, add them to your locale
+  i18n:
+    transliterate:
+      rule:
+        ț: "t"
+        Ț: "t"
+        ș: "s"
+        Ș: "s"
   dates:
     short_date_no_year: "D MMM"
     short_date: "D MMM, YYYY"
@@ -42,6 +50,7 @@ en:
     messages:
       too_long_validation: "is limited to %{max} characters; you entered %{length}."
       invalid_boolean: "Invalid boolean."
+      taken: "has already been taken"
     embed:
       load_from_remote: "There was an error loading that post."
 
@@ -717,6 +726,7 @@ en:
     enable_escaped_fragments: "Fall back to Google's Ajax-Crawling API if no webcrawler is detected. See https://support.google.com/webmasters/answer/174992?hl=en"
     enable_noscript_support: "Enable standard webcrawler search engine support via the noscript tag"
     allow_moderators_to_create_categories: "Allow moderators to create new categories"
+    cors_origins: "Allowed origins for cross-origin requests (CORS). Each origin must include http:// or https://. The DISCOURSE_ENABLE_CORS env variable must be set to true to enable CORS."
     top_menu: "Determine which items appear in the homepage navigation, and in what order. Example latest|new|unread|starred|categories|top|read|posted"
     post_menu: "Determine which items appear on the post menu, and in what order. Example like|edit|flag|delete|share|bookmark|reply"
     post_menu_hidden_items: "The menu items to hide by default in the post menu unless an expansion ellipsis is clicked on."
@@ -1098,6 +1108,7 @@ en:
     new_registrations_disabled: "New account registrations are not allowed at this time."
     password_too_long: "Passwords are limited to 200 characters."
     missing_user_field: "You have not completed all the user fields"
+    close_window: "Authentication is complete. Close this window to continue."
 
   user:
     no_accounts_associated: "No accounts associated"
@@ -1147,6 +1158,14 @@ en:
       %{invite_link}
 
       This invitation is from a trusted user, so you won't need to log in.
+
+  invite_password_instructions:
+    subject_template: "Set password for your %{site_name} account"
+    text_body_template: |
+      Thanks for accepting your invitation to %{site_name} -- welcome!
+
+      To log in again, click the following link to choose a password:
+      %{base_url}/users/password-reset/%{email_token}
 
   test_mailer:
     subject_template: "[%{site_name}] Email Deliverability Test"
@@ -1375,14 +1394,16 @@ en:
 
         [prefs]: %{user_preferences_url}
 
-    export_succeeded:
-      subject_template: "Export completed successfully"
-      text_body_template: "The export was successful."
+    backup_succeeded:
+      subject_template: "Backup completed successfully"
+      text_body_template: "The backup was successful.
 
-    export_failed:
-      subject_template: "Export failed"
+      Visit the [admin > backup section](/admin/backups) to download your new backup."
+
+    backup_failed:
+      subject_template: "Backup failed"
       text_body_template: |
-        The export has failed.
+        The backup has failed.
 
         Here's the log:
 
@@ -1390,14 +1411,14 @@ en:
         %{logs}
         ```
 
-    import_succeeded:
-      subject_template: "Import completed successfully"
-      text_body_template: "The import was successful."
+    restore_succeeded:
+      subject_template: "Restore completed successfully"
+      text_body_template: "The restore was successful."
 
-    import_failed:
-      subject_template: "Import failed"
+    restore_failed:
+      subject_template: "Restore failed"
       text_body_template: |
-        The import has failed.
+        The restore has failed.
 
         Here's the log:
 

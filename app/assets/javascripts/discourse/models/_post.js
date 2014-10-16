@@ -163,7 +163,6 @@ Discourse.Post = Discourse.Model.extend({
         title: this.get('title'),
         image_sizes: this.get('imageSizes'),
         target_usernames: this.get('target_usernames'),
-        auto_close_time: Discourse.Utilities.timestampFromAutocloseString(this.get('auto_close_time'))
       };
 
       var metaData = this.get('metaData');
@@ -470,6 +469,14 @@ Discourse.Post.reopenClass({
     return Discourse.ajax("/posts/" + postId + "/revisions/" + version + ".json").then(function (result) {
       return Em.Object.create(result);
     });
+  },
+
+  hideRevision: function(postId, version) {
+    return Discourse.ajax("/posts/" + postId + "/revisions/" + version + "/hide", { type: 'PUT' });
+  },
+
+  showRevision: function(postId, version) {
+    return Discourse.ajax("/posts/" + postId + "/revisions/" + version + "/show", { type: 'PUT' });
   },
 
   loadQuote: function(postId) {

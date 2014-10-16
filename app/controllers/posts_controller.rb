@@ -79,7 +79,6 @@ class PostsController < ApplicationController
 
     else
       post_serializer = PostSerializer.new(post, scope: guardian, root: false)
-      post_serializer.topic_slug = post.topic.slug if post.topic.present?
       post_serializer.draft_sequence = DraftSequence.current(current_user, post.topic.draft_key)
       [true, MultiJson.dump(post_serializer)]
     end
@@ -132,7 +131,6 @@ class PostsController < ApplicationController
     post_serializer.draft_sequence = DraftSequence.current(current_user, post.topic.draft_key)
     link_counts = TopicLink.counts_for(guardian,post.topic, [post])
     post_serializer.single_post_link_counts = link_counts[post.id] if link_counts.present?
-    post_serializer.topic_slug = post.topic.slug if post.topic.present?
 
     result = {post: post_serializer.as_json}
     if revisor.category_changed.present?
@@ -218,6 +216,20 @@ class PostsController < ApplicationController
     render_json_dump(post_revision_serializer)
   end
 
+  def hide_revision
+    post_revision = find_post_revision_from_params
+    guardian.ensure_can_hide_post_revision! post_revision
+    post_revision.hide!
+    render nothing: true
+  end
+
+  def show_revision
+    post_revision = find_post_revision_from_params
+    guardian.ensure_can_show_post_revision! post_revision
+    post_revision.show!
+    render nothing: true
+  end
+
   def bookmark
     post = find_post_from_params
     if current_user
@@ -280,8 +292,8 @@ class PostsController < ApplicationController
     limit = [(params[:limit] || 60).to_i, 100].min
 
     posts = user_posts(user.id, offset, limit)
-              .where(id: PostAction.with_deleted
-                                   .where(post_action_type_id: PostActionType.notify_flag_type_ids)
+              .where(id: PostAction.where(post_action_type_id: PostActionType.notify_flag_type_ids)
+                                   .where(disagreed_at: nil)
                                    .select(:post_id))
 
     render_serialized(posts, AdminPostSerializer)
@@ -298,6 +310,7 @@ class PostsController < ApplicationController
     posts = user_posts(user.id, offset, limit)
               .where(user_deleted: false)
               .where.not(deleted_by_id: user.id)
+              .where.not(deleted_at: nil)
 
     render_serialized(posts, AdminPostSerializer)
   end
@@ -345,7 +358,6 @@ class PostsController < ApplicationController
       :category,
       :target_usernames,
       :reply_to_post_number,
-      :auto_close_time,
       :auto_track
     ]
 

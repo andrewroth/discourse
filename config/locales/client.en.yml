@@ -141,19 +141,6 @@ en:
       one: "{{count}} character"
       other: "{{count}} characters"
 
-    in_n_seconds:
-      one: "in 1 second"
-      other: "in {{count}} seconds"
-    in_n_minutes:
-      one: "in 1 minute"
-      other: "in {{count}} minutes"
-    in_n_hours:
-      one: "in 1 hour"
-      other: "in {{count}} hours"
-    in_n_days:
-      one: "in 1 day"
-      other: "in {{count}} days"
-
     suggested_topics:
       title: "Suggested Topics"
 
@@ -381,6 +368,9 @@ en:
 
       change_profile_background:
         title: "Profile Background"
+
+      change_expansion_background:
+        title: "User Expansion Background"
 
       email:
         title: "Email"
@@ -646,7 +636,7 @@ en:
 
       min_length:
         need_more_for_title: "{{n}} to go for the title"
-        need_more_for_reply: "{{n}} to go for the post"
+        need_more_for_reply: "{{n}} to go"
 
       error:
         title_missing: "Title is required"
@@ -705,10 +695,16 @@ en:
       toggler: "hide or show the composer panel"
 
       admin_options_title: "Optional staff settings for this topic"
-      auto_close_label: "Auto-close topic time:"
-      auto_close_units: "(# of hours, a time, or a timestamp)"
-      auto_close_examples: 'enter absolute time or number of hours — 24, 17:00, 2013-11-22 14:00'
-      auto_close_error: "Please enter a valid value."
+      auto_close:
+        label: "Auto-close topic time:"
+        error: "Please enter a valid value."
+        based_on_last_post: "Don't close until the last post in the topic is at least this old."
+        all:
+          units: ""
+          examples: 'Enter number of hours (24), absolute time (17:30) or timestamp (2013-11-22 14:00).'
+        limited:
+          units: "(# of hours)"
+          examples: 'Enter number of hours (24).'
 
     notifications:
       title: "notifications of @name mentions, replies to your posts and topics, private messages, etc"
@@ -879,6 +875,7 @@ en:
       deleted: "The topic has been deleted"
 
       auto_close_notice: "This topic will automatically close %{timeLeft}."
+      auto_close_notice_based_on_last_post: "This topic will close %{duration} after the last reply."
       auto_close_title: 'Auto-Close Settings'
       auto_close_save: "Save"
       auto_close_remove: "Don't Auto-Close This Topic"
@@ -904,8 +901,8 @@ en:
           "2_4": 'You will receive notifications because you posted a reply to this topic.'
           "2_2": 'You will receive notifications because you are tracking this topic.'
           "2": 'You will receive notifications because you <a href="/users/{{username}}/preferences">read this topic</a>.'
-          "1_2": 'You will be notified only if someone mentions your @name or replies to your post.'
-          "1": 'You will be notified only if someone mentions your @name or replies to your post.'
+          "1_2": 'You will be notified if someone mentions your @name or replies to your post.'
+          "1": 'You will be notified if someone mentions your @name or replies to your post.'
           "0_7": 'You are ignoring all notifications in this category.'
           "0_2": 'You are ignoring all notifications on this topic.'
           "0": 'You are ignoring all notifications on this topic.'
@@ -917,16 +914,16 @@ en:
           description: "You will be notified of every new post in this topic. A count of unread and new posts will also appear next to the topic."
         tracking_pm:
           title: "Tracking"
-          description: "A count of unread and new posts will appear next to the private message. You will be notified only if someone mentions your @name or replies to your post."
+          description: "A count of unread and new posts will appear next to the private message. You will be notified if someone mentions your @name or replies to your post."
         tracking:
           title: "Tracking"
-          description: "A count of unread and new posts will appear next to the topic. You will be notified only if someone mentions your @name or replies to your post. "
+          description: "A count of unread and new posts will appear next to the topic. You will be notified if someone mentions your @name or replies to your post. "
         regular:
           title: "Regular"
-          description: "You will be notified only if someone mentions your @name or replies to your post."
+          description: "You will be notified if someone mentions your @name or replies to your post."
         regular_pm:
           title: "Regular"
-          description: "You will be notified only if someone mentions your @name or replies to your post in the private message."
+          description: "You will be notified if someone mentions your @name or replies to your post in the private message."
         muted_pm:
           title: "Muted"
           description: "You will never be notified of anything about this private message."
@@ -1074,7 +1071,7 @@ en:
         edit: "Sorry, there was an error editing your post. Please try again."
         upload: "Sorry, there was an error uploading that file. Please try again."
         attachment_too_large: "Sorry, the file you are trying to upload is too big (maximum size is {{max_size_kb}}kb)."
-        image_too_large: "Sorry, the image you are trying to upload is too big (maximum size is {{max_size_kb}}kb), please resize it and try again."
+        file_too_large: "Sorry, the file you are trying to upload is too big (maximum size is {{max_size_kb}}kb)"
         too_many_uploads: "Sorry, you can only upload one file at a time."
         upload_not_authorized: "Sorry, the file you are trying to upload is not authorized (authorized extension: {{authorized_extensions}})."
         image_upload_not_allowed_for_new_user: "Sorry, new users can not upload images."
@@ -1227,6 +1224,8 @@ en:
           previous: "Previous revision"
           next: "Next revision"
           last: "Last revision"
+          hide: "Hide revision"
+          show: "Show revision"
           comparing_previous_to_current_out_of_total: "<strong>{{previous}}</strong> vs <strong>{{current}}</strong> / {{total}}"
         displays:
           inline:
@@ -1299,7 +1298,7 @@ en:
           description: "You will automatically track all new topics in these categories. A count of unread and new posts will appear next to the topic."
         regular:
           title: "Regular"
-          description: "You will be notified only if someone mentions your @name or replies to your post."
+          description: "You will be notified if someone mentions your @name or replies to your post."
         muted:
           title: "Muted"
           description: "You will not be notified of anything about new topics in these categories, and they will not appear on your unread tab."
@@ -1729,6 +1728,9 @@ en:
           love:
             name: 'love'
             description: "The like button's color."
+          wiki:
+            name: 'wiki'
+            description: "Base color used for the background of wiki posts."
 
 
       email:
@@ -1989,6 +1991,8 @@ en:
           flagged_by_users: "Users Who Flagged"
           likes_given: "Likes Given"
           likes_received: "Likes Received"
+          likes_received_days: "Likes Received: unique days"
+          likes_received_users: "Likes Received: unique users"
           qualifies: "Qualifies for trust level 3."
           does_not_qualify: "Doesn't qualify for trust level 3."
           will_be_promoted: "Will be promoted soon."
@@ -2006,7 +2010,7 @@ en:
 
       user_fields:
         title: "User Fields"
-        help: "Any fields added here will be required from users when they sign up."
+        help: "Add fields that your users can fill out."
         create: "Create User Field"
         untitled: "Untitled"
         name: "Field Name"
@@ -2017,6 +2021,10 @@ en:
         delete: "Delete"
         cancel: "Cancel"
         delete_confirm: "Are you sure you want to delete that user field?"
+        required:
+          title: "Required at signup?"
+          enabled: "required"
+          disabled: "not required"
         editable:
           title: "Editable after signup?"
           enabled: "editable"

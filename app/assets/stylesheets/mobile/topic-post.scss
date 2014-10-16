@@ -77,12 +77,13 @@ button {
   border: 1px solid scale-color-diff();
   position: absolute;
   text-align: left;
-  bottom: -26px;
-  left: 0;
+  bottom: 0;
+  left: 135px;
   z-index: 1000;
   display: none;
 
   h3 {
+    margin-top: 0;
     color: $primary;
     font-size: 1em;
   }
@@ -110,7 +111,6 @@ button {
   }
 }
 
-
 .reply-new {
   display: none;
 }
@@ -118,6 +118,7 @@ button {
 .post-actions {
   margin-left: 10px;
   margin-top: 2px;
+  display: inline-block;
 }
 
 a.reply-to-tab {
@@ -134,20 +135,17 @@ a.star {
   font-size: 1.3em;
 }
 
-#main a.star.starred {
-  text-shadow: none !important;
-}
-
 .topic-post .boxed .contents {
   float: none;
   padding-top: 5px;
   padding-bottom: 0px;
   clear: both;
+  position: relative;
 }
 
 .topic-map {
 
-  margin: 30px 10px 10px 10px;
+  margin: 10px;
   background: scale-color(scale-color-diff(), $lightness: 40%);
 
   h3 {
@@ -423,17 +421,10 @@ background-color: scale-color($danger, $lightness: 75%);
   border-right: 0;
   padding-right: 4px;
   padding-left: 5px;
-  border-radius: 4px 0 0 4px;
 }
 
 .deleted-user-avatar {
   font-size: 36px;
-}
-
-.staff a {
-  border-radius: 4px;
-  padding: 4px;
-  margin: -4px 0 0 -4px;
 }
 
 span.btn-text {display: none;}
@@ -456,8 +447,7 @@ blockquote > *:last-child {
 
 .gutter { display: none; }
 
-.posts-wrapper {  position: relative;
-}
+.posts-wrapper {  position: relative; }
 
 .topic-body.highlighted {
   background-color: scale-color($tertiary, $lightness: 75%);

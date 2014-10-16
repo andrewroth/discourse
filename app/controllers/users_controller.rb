@@ -49,11 +49,12 @@ class UsersController < ApplicationController
 
     if params[:user_fields].present?
       params[:custom_fields] ||= {}
-      UserField.where(editable: true).pluck(:id).each do |fid|
-        val = params[:user_fields][fid.to_s]
+      UserField.where(editable: true).each do |f|
+        val = params[:user_fields][f.id.to_s]
         val = nil if val === "false"
-        return render_json_error(I18n.t("login.missing_user_field")) if val.blank?
-        params[:custom_fields]["user_field_#{fid}"] = val
+
+        return render_json_error(I18n.t("login.missing_user_field")) if val.blank? && f.required?
+        params[:custom_fields]["user_field_#{f.id}"] = val
       end
     end
 
@@ -85,7 +86,7 @@ class UsersController < ApplicationController
       email: user.email,
       associated_accounts: user.associated_accounts
     }
-  rescue Discourse::InvalidAccess => e
+  rescue Discourse::InvalidAccess
     render json: failed_json, status: 403
   end
 
@@ -98,7 +99,9 @@ class UsersController < ApplicationController
     user_badge = UserBadge.find_by(id: params[:user_badge_id])
     if user_badge && user_badge.user == user && user_badge.badge.allow_title?
       user.title = user_badge.badge.name
+      user.user_profile.badge_granted_title = true
       user.save!
+      user.user_profile.save!
     else
       user.title = ''
       user.save!
@@ -186,16 +189,19 @@ class UsersController < ApplicationController
     user = User.new(user_params)
 
     # Handle custom fields
-    user_field_ids = UserField.pluck(:id)
-    if user_field_ids.present?
-      if params[:user_fields].blank?
+    user_fields = UserField.all
+    if user_fields.present?
+      if params[:user_fields].blank? && UserField.where(required: true).exists?
         return fail_with("login.missing_user_field")
       else
         fields = user.custom_fields
-        user_field_ids.each do |fid|
-          field_val = params[:user_fields][fid.to_s]
-          return fail_with("login.missing_user_field") if field_val.blank?
-          fields["user_field_#{fid}"] = field_val
+        user_fields.each do |f|
+          field_val = params[:user_fields][f.id.to_s]
+          if field_val.blank?
+            return fail_with("login.missing_user_field") if f.required?
+          else
+            fields["user_field_#{f.id}"] = field_val
+          end
         end
         user.custom_fields = fields
       end
@@ -455,6 +461,8 @@ class UsersController < ApplicationController
         upload_avatar_for(user, upload)
       when "profile_background"
         upload_profile_background_for(user.user_profile, upload)
+      when "expansion_background"
+        upload_expansion_background_for(user.user_profile, upload)
       end
     else
       render status: 422, text: upload.errors.full_messages
@@ -484,6 +492,8 @@ class UsersController < ApplicationController
     image_type = params.require(:image_type)
     if image_type == 'profile_background'
       user.user_profile.clear_profile_background
+    elsif image_type == 'expansion_background'
+      user.user_profile.clear_expansion_background
     else
       raise Discourse::InvalidParameters.new(:image_type)
     end
@@ -541,8 +551,11 @@ class UsersController < ApplicationController
 
     def upload_profile_background_for(user_profile, upload)
       user_profile.upload_profile_background(upload)
-      # TODO: add a resize job here
+      render json: { url: upload.url, width: upload.width, height: upload.height }
+    end
 
+    def upload_expansion_background_for(user_profile, upload)
+      user_profile.upload_expansion_background(upload)
       render json: { url: upload.url, width: upload.width, height: upload.height }
     end
 

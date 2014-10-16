@@ -52,12 +52,6 @@ Discourse.PostView = Discourse.GroupedView.extend(Ember.Evented, {
     if (this.get('controller.multiSelect') && (e.metaKey || e.ctrlKey)) {
       this.get('controller').toggledSelectedPost(this.get('post'));
     }
-
-    var $adminMenu = this.get('adminMenu');
-    if ($adminMenu && !$(e.target).is($adminMenu)) {
-      $adminMenu.hide();
-      this.set('adminMenu', null);
-    }
   },
 
   selected: function() {
@@ -104,7 +98,7 @@ Discourse.PostView = Discourse.GroupedView.extend(Ember.Evented, {
     var expandContract = "";
     if (!$aside.data('full')) {
       expandContract = "<i class='fa fa-" + desc + "' title='" + I18n.t("post.expand_collapse") + "'></i>";
-      $aside.css('cursor', 'pointer');
+      $('.title', $aside).css('cursor', 'pointer');
     }
     $('.quote-controls', $aside).html(expandContract + navLink);
   },

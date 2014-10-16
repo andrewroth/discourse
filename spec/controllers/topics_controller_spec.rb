@@ -770,6 +770,12 @@ describe TopicsController do
           expect(response).not_to be_success
         end
 
+        it "returns errors when the rate limit is exceeded" do
+          EditRateLimiter.any_instance.expects(:performed!).raises(RateLimiter::LimitExceeded.new(60))
+          xhr :put, :update, topic_id: @topic.id, slug: @topic.title, title: 'This is a new title for the topic'
+          response.should_not be_success
+        end
+
         it "returns errors with invalid categories" do
           Topic.any_instance.expects(:change_category_to_id).returns(false)
           xhr :put, :update, topic_id: @topic.id, slug: @topic.title
@@ -859,12 +865,14 @@ describe TopicsController do
   describe 'autoclose' do
 
     it 'needs you to be logged in' do
-      lambda { xhr :put, :autoclose, topic_id: 99, auto_close_time: '24'}.should raise_error(Discourse::NotLoggedIn)
+      -> {
+        xhr :put, :autoclose, topic_id: 99, auto_close_time: '24', auto_close_based_on_last_post: false
+      }.should raise_error(Discourse::NotLoggedIn)
     end
 
     it 'needs you to be an admin or mod' do
       user = log_in
-      xhr :put, :autoclose, topic_id: 99, auto_close_time: '24'
+      xhr :put, :autoclose, topic_id: 99, auto_close_time: '24', auto_close_based_on_last_post: false
       response.should be_forbidden
     end
 
@@ -874,16 +882,17 @@ describe TopicsController do
         @topic = Fabricate(:topic, user: @admin)
       end
 
-      it "can set a topic's auto close time" do
+      it "can set a topic's auto close time and 'based on last post' property" do
         Topic.any_instance.expects(:set_auto_close).with("24", @admin)
-        xhr :put, :autoclose, topic_id: @topic.id, auto_close_time: '24'
+        xhr :put, :autoclose, topic_id: @topic.id, auto_close_time: '24', auto_close_based_on_last_post: true
         json = ::JSON.parse(response.body)
         json.should have_key('auto_close_at')
+        json.should have_key('auto_close_hours')
       end
 
       it "can remove a topic's auto close time" do
         Topic.any_instance.expects(:set_auto_close).with(nil, anything)
-        xhr :put, :autoclose, topic_id: @topic.id, auto_close_time: nil
+        xhr :put, :autoclose, topic_id: @topic.id, auto_close_time: nil, auto_close_based_on_last_post: false
       end
     end
 

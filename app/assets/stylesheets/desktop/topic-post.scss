@@ -39,6 +39,10 @@ h1 .topic-statuses .topic-status i {
 
 }
 
+.via-email .reply-to-tab {
+  padding: 13px 15px 5px;
+}
+
 .gutter {
   .reply-new {
     .discourse-no-touch & {
@@ -126,7 +130,7 @@ nav.post-controls {
 
     &:active {
       background: dark-light-diff($tertiary, $secondary, 50%, -35%);
-    @include box-shadow(inset 0 1px 3px rgba(0,0,0, .3));
+    box-shadow: inset 0 1px 3px rgba(0,0,0, .3);
 
     }
 
@@ -150,7 +154,7 @@ nav.post-controls {
         }
 
         &:active {
-            @include box-shadow(inset 0 1px 3px rgba(0,0,0, .4));
+            box-shadow: inset 0 1px 3px rgba(0,0,0, .4);
         }
 
         &.hidden {
@@ -202,8 +206,8 @@ nav.post-controls {
     border: 1px solid scale-color-diff();
     position: absolute;
     text-align: left;
-    bottom: 0;
-    right: 0;
+    bottom: -2px;
+    right: 15px;
     z-index: 1000;
     display: none;
 
@@ -231,68 +235,57 @@ nav.post-controls {
 }
 
 .embedded-posts {
-  h1, h2, h3 {margin: 10px 0;}
-  a.mention {background: darken(scale-color-diff(), 10%);}
+  h1, h2, h3 { margin: 10px 0; }
+  a.mention { background: darken(scale-color-diff(), 10%); }
 
-  p img {
-    max-width: 579px;
-    }
   .topic-body {
+    background: dark-light-diff($primary, $secondary, 90%, -65%) !important;
      width: 86%;
      padding-left: 1%;
      padding-right: 1%;
-     border: none;
-     }
+     border-top: none;
+     // WARNING: overflow hide is required for quoted / embedded images
+     // which expect "normal" post width, but expansions are narrower
+     overflow: hidden;
+  }
 
   .topic-avatar {
      width: 45px;
      margin: 0 10px 0 15px;
      border: none;
-
   }
 
   // bottom means "reply expansion" below a post
   &.bottom {
     &.hidden {display: block; opacity: 0; }
   }
-  &.bottom .arrow {float: right; margin: 0 0 0 0;}
+  &.bottom .arrow {float: right;}
   &.bottom {
-  margin-top: -11px;
-    // WARNING *ONLY* DO THIS ON REPLY EXPANSIONS!
-    // auto-sizing of images causes massive havoc with regular post stream
-    // but we have to do this on reply expansions because the width is
-    // unavoidably narrower than a regular post
-  .lightbox-wrapper img {
-    width: 100%;
-    height: auto;
+     margin-top: -11px;
   }
-}
 
   // top means "in reply to expansion" above a post
   &.top {
     margin-left: 56px;
     width: 701px;
-    // WARNING *ONLY* DO THIS ON REPLY EXPANSIONS!
-    // auto-sizing of images causes massive havoc with regular post stream
-    // but we have to do this on reply expansions because the width is
-    // unavoidably narrower than a regular post
-    .lightbox-wrapper img {
-      width: 100%;
-      height: auto;
-    }
   }
-  &.top.topic-body {padding-left: 0; padding-right: 0;}
-    .post-date {color: scale-color($primary, $lightness: 50%);}
-    .fa-arrow-up {margin-left: 5px;}
-    .row {border-top: 1px solid darken(scale-color-diff(), 10%); padding-top: 7px;}
-    .reply:first-of-type .row {border-top: none;}
-    background: dark-light-diff($primary, $secondary, 90%, -65%);
+  &.top.topic-body {
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .post-date { color: scale-color($primary, $lightness: 50%); }
+  .fa-arrow-up { margin-left: 5px; }
+  .row {
+    border-top: 1px solid darken(scale-color-diff(), 10%);
+    padding-top: 7px;
+  }
+  .reply:first-of-type .row { border-top: none; }
 
   .quote .title, blockquote, .onebox, .onebox-result {
     background: darken(scale-color-diff(), 5%);
     border-left: 5px solid darken(scale-color-diff(), 12%);
   }
-
 
   .topic-meta-data {
     position: relative;
@@ -522,8 +515,23 @@ iframe {
   max-width: 100%;
 }
 
+@keyframes fadein {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+@-webkit-keyframes fadein {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
 .extra-info-wrapper {
   overflow: hidden;
+
+.star, .badge-wrapper, i,  .topic-link:not(.loading) {
+  -webkit-animation: fadein .7s;
+  animation-duration: .7s;
+  animation-name: fadein;
+}
 
   .topic-statuses {
     i  { color: $header_primary; }
@@ -549,8 +557,8 @@ iframe {
   }
 
   a.star {
-    margin: 6px 7px 20px 0;
-    font-size: 20px;
+    margin: 0 7px 20px 2px;
+    font-size: 17px;
     color: dark-light-diff($secondary, $primary, 80%, -20%) !important;
   }
   a.star.starred {color: $danger !important;}
@@ -564,7 +572,7 @@ iframe {
     padding: 0;
 
     .badge-category {
-      color: $primary;
+      color: $header_primary;
       padding: 0 0 0 3px;
       margin-right: 5px;
     }
@@ -582,9 +590,6 @@ iframe {
   h1 {
     line-height: 1.1em;
     margin: 0 0 2px 0;
-  }
-  .star {
-    margin-top: 3px;
   }
 }
 
@@ -913,7 +918,7 @@ $topic-avatar-width: 45px;
     }
     &:active {
       @include linear-gradient(darken($tertiary, 18%), darken($tertiary, 12%));
-      @include box-shadow(inset 0 1px 3px rgba(0,0,0, 0.2));
+      box-shadow: inset 0 1px 3px rgba(0,0,0, 0.2);
       color: $secondary;
     }
     &[disabled] {
@@ -1075,7 +1080,7 @@ and (max-width : 870px) {
     &.top {
       margin-left: 6%;
       width: 91%;
-
     }
   }
+
 }
