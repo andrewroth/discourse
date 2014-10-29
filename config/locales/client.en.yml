@@ -117,6 +117,7 @@ en:
     admin_title: "Admin"
     flags_title: "Flags"
     show_more: "show more"
+    show_help: "help"
     links: "Links"
     links_lowercase: "links"
     faq: "FAQ"
@@ -153,10 +154,10 @@ en:
       stat:
         all_time: "All Time"
         last_7_days: "Last 7 Days"
-      like_count: "Like Count"
-      topic_count: "Topic Count"
-      post_count: "Post Count"
-      user_count: "User Count"
+      like_count: "Likes"
+      topic_count: "Topics"
+      post_count: "Posts"
+      user_count: "Users"
 
     bookmarks:
       not_logged_in: "sorry, you must be logged in to bookmark posts"
@@ -295,6 +296,8 @@ en:
       invited_by: "Invited By"
       trust_level: "Trust Level"
       notifications: "Notifications"
+      dismiss_notifications: "Mark all as Read"
+      dismiss_notifications_tooltip: "Mark all unread notifications as read"
       disable_jump_reply: "Don't jump to your new post after replying"
       dynamic_favicon: "Show incoming message notifications on favicon (experimental)"
       edit_history_public: "Let other users view my post revisions"
@@ -368,9 +371,11 @@ en:
 
       change_profile_background:
         title: "Profile Background"
+        instructions: "Profile backgrounds will be centered and have a default width of 850px."
 
-      change_expansion_background:
-        title: "User Expansion Background"
+      change_card_background:
+        title: "User Card Background"
+        instructions: "Background images will be centered and have a default width of 590px."
 
       email:
         title: "Email"
@@ -382,7 +387,7 @@ en:
 
       name:
         title: "Name"
-        instructions: "Your full name."
+        instructions: "Your full name (optional)."
         too_short: "Your name is too short."
         ok: "Your name looks good."
       username:
@@ -413,6 +418,9 @@ en:
       created: "Joined"
       log_out: "Log Out"
       location: "Location"
+      card_badge:
+        title: "User Card Badge"
+
       website: "Web Site"
       email_settings: "Email"
       email_digests:
@@ -568,8 +576,8 @@ en:
     created: 'Created'
     created_lowercase: 'created'
     trust_level: 'Trust Level'
-    search_hint: 'username'
-    search_hint_admin: 'username or email'
+    search_hint: 'username or IP address'
+    search_hint_admin: 'username, email or IP address'
 
     create_account:
       title: "Create New Account"
@@ -663,7 +671,7 @@ en:
       view_new_post: "View your new post."
       saving: "Saving..."
       saved: "Saved!"
-      saved_draft: "You have a post draft in progress. Select this bar to resume editing."
+      saved_draft: "Post draft in progress. Select to resume."
       uploading: "Uploading..."
       show_preview: 'show preview &raquo;'
       hide_preview: '&laquo; hide preview'
@@ -1380,6 +1388,10 @@ en:
     history: "History"
     changed_by: "by {{author}}"
 
+    raw_email:
+      title: "Raw Email"
+      not_available: "Not available!"
+
     categories_list: "Categories List"
 
     filters:
@@ -2091,11 +2103,14 @@ en:
         grant: Grant
         no_user_badges: "%{name} has not been granted any badges."
         no_badges: There are no badges that can be granted.
+        none_selected: "Select a badge to get started"
         allow_title: Allow badge to be used as a title
         multiple_grant: Can be granted multiple times
         listable: Show badge on the public badges page
         enabled: Enable badge
         icon: Icon
+        image: Image
+        icon_help: "Use either a Font Awesome class or URL to an image"
         query: Badge Query (SQL)
         target_posts: Query targets posts
         auto_revoke: Run revocation query daily
@@ -2129,6 +2144,9 @@ en:
 
     lightbox:
       download: "download"
+
+    search_help:
+      title: 'Search Help'
 
     keyboard_shortcuts_help:
       title: 'Keyboard Shortcuts'
@@ -2192,7 +2210,7 @@ en:
         one:   "1 granted"
         other: "%{count} granted"
       select_badge_for_title: Select a badge to use as your title
-      no_title: "<no title>"
+      none: "<none>"
       badge_grouping:
         getting_started:
           name: Getting Started
@@ -2274,3 +2292,13 @@ en:
         reader:
           name: Reader
           description: Read every post in a topic with more than 100 posts
+
+    google_search: |
+      <h2>Search with Google</h2>
+      <p>
+        <form action='//google.com/search' id='google-search' onsubmit="document.getElementById('google-query').value = 'site:' + window.location.host + ' ' + document.getElementById('user-query').value; return true;">
+          <input type="text" id='user-query' value="">
+          <input type='hidden' id='google-query' name="q">
+          <button class="btn btn-primary">Google</button>
+        </form>
+      </p>

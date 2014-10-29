@@ -121,10 +121,6 @@ zh_CN:
       stat:
         all_time: "所有时间内"
         last_7_days: "7 天以内"
-      like_count: "赞数量"
-      topic_count: "主题数量"
-      post_count: "主题数量"
-      user_count: "用户数量"
     bookmarks:
       not_logged_in: "抱歉，您需要先登录才能给帖子加书签"
       created: "您给此帖的书签已加上"
@@ -239,6 +235,8 @@ zh_CN:
       invited_by: "邀请者为"
       trust_level: "用户级别"
       notifications: "通知"
+      dismiss_notifications: "标记所有为已读"
+      dismiss_notifications_tooltip: "标记所有未读通知为已读"
       disable_jump_reply: "不要在回复后跳转到您的新帖子"
       dynamic_favicon: "在标签页图标上动态显示未读消息提醒（测试）"
       edit_history_public: "让其他用户查看我的帖子的以前版本"
@@ -301,9 +299,10 @@ zh_CN:
         uploaded_avatar_empty: "添加自定义图片"
         upload_title: "上传图片"
         upload_picture: "上传图片"
-        image_is_not_a_square: "注意：我们已经裁剪了您的图片；它不知正方形的。"
+        image_is_not_a_square: "注意：我们已经裁剪了您的图片；它不是正方形的。"
       change_profile_background:
         title: "个人资料背景"
+        instructions: "个人资料背景将被居中，且默认宽度为 850px。"
       email:
         title: "电子邮箱"
         instructions: "绝不会被公开显示。"
@@ -538,6 +537,7 @@ zh_CN:
       drafts_offline: "离线草稿"
       min_length:
         need_more_for_title: "请给标题再输入至少 {{n}} 个字符"
+        need_more_for_reply: "还差 {{n}} 个……"
       error:
         title_missing: "缺少标题"
         title_too_short: "标题太短，至少 {{min}} 个字符"
@@ -561,7 +561,6 @@ zh_CN:
       view_new_post: "浏览您的新帖子。"
       saving: "保存中..."
       saved: "已保存！"
-      saved_draft: "您有一个帖子草稿尚未发表。点击该栏任意位置即可继续编辑。"
       uploading: "上传中..."
       show_preview: '显示预览 &raquo;'
       hide_preview: '&laquo; 隐藏预览'
@@ -759,6 +758,8 @@ zh_CN:
           '2_4': '因为您在此主题内发表了回复，所以您将收到相关通知。'
           '2_2': '因为您在追踪此主题，所以您将收到相关通知。'
           '2': '因为您<a href="/users/{{username}}/preferences">阅读了此主题</a>，所以您将收到相关通知。'
+          '1_2': '只有当有人@您或者回复您的帖子时，您才会收到通知。'
+          '1': '只有当有人@您或者回复您的帖子时，您才会收到通知。'
           '0_7': '你将忽略关于此分类的所有通知。'
           '0_2': '您将忽略关于此主题的所有通知。'
           '0': '您将忽略关于此主题的所有通知。'
@@ -770,12 +771,16 @@ zh_CN:
           description: "一旦有关于这个主题的新帖子发表，您都会收到通知。未读贴的数量将出现在主题列表中每个主题的标题后。"
         tracking_pm:
           title: "追踪"
+          description: "未读和新帖子的数量将出现在私信旁。您只会在别人@您或回复您的主题时才会被提醒。"
         tracking:
           title: "追踪"
+          description: "未读贴和新帖的数量将出现在主题列表中每个主题的标题后。您只会在别人@您或有人回复了您的帖子时才会收到通知。"
         regular:
           title: "常规"
+          description: "当有人@您或者回复您的帖子时，您才会收到通知。"
         regular_pm:
           title: "常规"
+          description: "当有人@您或者回复您的私信时，您才会收到通知。"
         muted_pm:
           title: "防打扰"
           description: "您不会收到关于此私信的任何通知。"
@@ -1093,6 +1098,7 @@ zh_CN:
           description: "您将会自动追踪这些分类中的所有新主题。未读和新帖子数量将出现在每个主题后。"
         regular:
           title: "常规"
+          description: "当有人@您或者回复您的帖子时，您才会收到通知。"
         muted:
           title: "免打扰"
           description: "你不会收到这些分类中的任何新主题通知，并且他们将不会出现在您的未读列表中。"
@@ -1165,6 +1171,9 @@ zh_CN:
     category_title: "分类"
     history: "历史"
     changed_by: "由 {{author}}"
+    raw_email:
+      title: "原始邮件"
+      not_available: "不可用！"
     categories_list: "分类列表"
     filters:
       with_topics: "%{filter} 主题"
@@ -1832,11 +1841,13 @@ zh_CN:
         grant: 授予
         no_user_badges: "%{name} 尚未被授予徽章。"
         no_badges: 没有可供授予的徽章。
+        none_selected: "选择一个徽章开始"
         allow_title: 允许将徽章用作头衔
         multiple_grant: 能被授予多次
         listable: 在公共徽章页面显示徽章
         enabled: 启用徽章系统
         icon: 图标
+        icon_help: "使用 Font Awesome class 或者图片的链接"
         query: 徽章查询（SQL）
         target_posts: 查询到的帖子
         auto_revoke: 每天运行撤销查询
@@ -1927,7 +1938,6 @@ zh_CN:
       granted:
         other: "%{count} 个已授予"
       select_badge_for_title: 选择一个徽章用作您的头衔
-      no_title: "<无标题>"
       badge_grouping:
         getting_started:
           name: 开始

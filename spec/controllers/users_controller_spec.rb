@@ -521,7 +521,7 @@ describe UsersController do
         xhr :post, :create, create_params
         json = JSON::parse(response.body)
         json["success"].should_not == true
-        
+
         # should not change the session
         session["user_created_email"].should be_blank
       end
@@ -971,6 +971,26 @@ describe UsersController do
     end
   end
 
+  describe "badge_card" do
+    let(:user) { Fabricate(:user) }
+    let(:badge) { Fabricate(:badge) }
+    let(:user_badge) { BadgeGranter.grant(badge, user) }
+
+    it "sets the user's card image to the badge" do
+      log_in_user user
+      xhr :put, :update_card_badge, user_badge_id: user_badge.id, username: user.username
+      user.user_profile.reload.card_image_badge_id.should be_blank
+      badge.update_attributes image: "wat.com/wat.jpg"
+
+      xhr :put, :update_card_badge, user_badge_id: user_badge.id, username: user.username
+      user.user_profile.reload.card_image_badge_id.should == badge.id
+
+      # Can set to nothing
+      xhr :put, :update_card_badge, username: user.username
+      user.user_profile.reload.card_image_badge_id.should be_blank
+    end
+  end
+
   describe "badge_title" do
     let(:user) { Fabricate(:user) }
     let(:badge) { Fabricate(:badge) }
@@ -1156,13 +1176,13 @@ describe UsersController do
           json['height'].should == 200
         end
 
-        it 'is successful for expansion backgrounds' do
+        it 'is successful for card backgrounds' do
           upload = Fabricate(:upload)
           Upload.expects(:create_for).returns(upload)
-          xhr :post, :upload_user_image, username: user.username, file: user_image, image_type: "expansion_background"
+          xhr :post, :upload_user_image, username: user.username, file: user_image, image_type: "card_background"
           user.reload
 
-          user.user_profile.expansion_background.should == "/uploads/default/1/1234567890123456.png"
+          user.user_profile.card_background.should == "/uploads/default/1/1234567890123456.png"
 
           # returns the url, width and height of the uploaded image
           json = JSON.parse(response.body)
@@ -1220,12 +1240,12 @@ describe UsersController do
             json['height'].should == 200
           end
 
-          it 'is successful for expansion backgrounds' do
+          it 'is successful for card backgrounds' do
             upload = Fabricate(:upload)
             Upload.expects(:create_for).returns(upload)
-            xhr :post, :upload_user_image, username: user.username, file: user_image_url, image_type: "expansion_background"
+            xhr :post, :upload_user_image, username: user.username, file: user_image_url, image_type: "card_background"
             user.reload
-            user.user_profile.expansion_background.should == "/uploads/default/1/1234567890123456.png"
+            user.user_profile.card_background.should == "/uploads/default/1/1234567890123456.png"
 
             # returns the url, width and height of the uploaded image
             json = JSON.parse(response.body)
@@ -1385,6 +1405,16 @@ describe UsersController do
       it "returns both email and associated_accounts when you're allowed to see them" do
         Guardian.any_instance.expects(:can_check_emails?).returns(true)
         xhr :put, :check_emails, username: Fabricate(:user).username
+        response.should be_success
+        json = JSON.parse(response.body)
+        json["email"].should be_present
+        json["associated_accounts"].should be_present
+      end
+
+      it "works on inactive users" do
+        inactive_user = Fabricate(:user, active: false)
+        Guardian.any_instance.expects(:can_check_emails?).returns(true)
+        xhr :put, :check_emails, username: inactive_user.username
         response.should be_success
         json = JSON.parse(response.body)
         json["email"].should be_present

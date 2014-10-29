@@ -81,6 +81,9 @@ Discourse::Application.routes.draw do
       get "tl3_requirements"
     end
 
+
+    post "users/sync_sso" => "users#sync_sso", constraints: AdminConstraint.new
+
     resources :impersonate, constraints: AdminConstraint.new
 
     resources :email do
@@ -236,6 +239,10 @@ Discourse::Application.routes.draw do
   post "users/:username/preferences/user_image" => "users#upload_user_image", constraints: {username: USERNAME_ROUTE_FORMAT}
   delete "users/:username/preferences/user_image" => "users#destroy_user_image", constraints: {username: USERNAME_ROUTE_FORMAT}
   put "users/:username/preferences/avatar/pick" => "users#pick_avatar", constraints: {username: USERNAME_ROUTE_FORMAT}
+  get "users/:username/preferences/card-badge" => "users#card_badge", constraints: {username: USERNAME_ROUTE_FORMAT}
+  put "users/:username/preferences/card-badge" => "users#update_card_badge", constraints: {username: USERNAME_ROUTE_FORMAT}
+
+
   get "users/:username/invited" => "users#invited", constraints: {username: USERNAME_ROUTE_FORMAT}
   post "users/action/send_activation_email" => "users#send_activation_email"
   get "users/:username/activity" => "users#show", constraints: {username: USERNAME_ROUTE_FORMAT}
@@ -249,10 +256,8 @@ Discourse::Application.routes.draw do
   get "users/:username/badges_json" => "user_badges#username"
 
   post "user_avatar/:username/refresh_gravatar" => "user_avatars#refresh_gravatar"
-  get "letter_avatar/:username/:size/:version.png" => "user_avatars#show_letter",
-      format: false, constraints: {hostname: /[\w\.-]+/}
-  get "user_avatar/:hostname/:username/:size/:version.png" => "user_avatars#show",
-      format: false, constraints: {hostname: /[\w\.-]+/}
+  get "letter_avatar/:username/:size/:version.png" => "user_avatars#show_letter", format: false, constraints: { hostname: /[\w\.-]+/ }
+  get "user_avatar/:hostname/:username/:size/:version.png" => "user_avatars#show", format: false, constraints: { hostname: /[\w\.-]+/ }
 
   get "uploads/:site/:id/:sha.:extension" => "uploads#show", constraints: {site: /\w+/, id: /\d+/, sha: /[a-z0-9]{15,16}/i, extension: /\w{2,}/}
   get "uploads/:site/:sha" => "uploads#show", constraints: { site: /\w+/, sha: /[a-z0-9]{40}/}
@@ -280,9 +285,10 @@ Discourse::Application.routes.draw do
     put "rebake"
     put "unhide"
     get "replies"
-    get "revisions/:revision" => "posts#revisions"
-    put "revisions/:revision/hide" => "posts#hide_revision"
-    put "revisions/:revision/show" => "posts#show_revision"
+    get "revisions/latest" => "posts#latest_revision"
+    get "revisions/:revision" => "posts#revisions", constraints: { revision: /\d+/ }
+    put "revisions/:revision/hide" => "posts#hide_revision", constraints: { revision: /\d+/ }
+    put "revisions/:revision/show" => "posts#show_revision", constraints: { revision: /\d+/ }
     put "recover"
     collection do
       delete "destroy_many"
@@ -291,6 +297,7 @@ Discourse::Application.routes.draw do
 
   get "notifications" => "notifications#recent"
   get "notifications/history" => "notifications#history"
+  put "notifications/reset-new" => 'notifications#reset_new'
 
   match "/auth/:provider/callback", to: "users/omniauth_callbacks#complete", via: [:get, :post]
   match "/auth/failure", to: "users/omniauth_callbacks#failure", via: [:get, :post]
@@ -341,6 +348,10 @@ Discourse::Application.routes.draw do
     get "c/:parent_category/:category/l/top/#{period}" => "list#parent_category_category_top_#{period}", as: "parent_category_category_top_#{period}"
   end
 
+  Discourse.anonymous_filters.each do |filter|
+    get "#{filter}.rss" => "list##{filter}_feed", format: :rss
+  end
+
   Discourse.filters.each do |filter|
     get "#{filter}" => "list##{filter}"
     get "c/:category/l/#{filter}" => "list#category_#{filter}", as: "category_#{filter}"
@@ -349,10 +360,6 @@ Discourse::Application.routes.draw do
   end
 
   get "category/*path" => "categories#redirect"
-
-  Discourse.anonymous_filters.each do |filter|
-    get "#{filter}.rss" => "list##{filter}_feed", format: :rss
-  end
 
   get "top" => "list#top"
   get "search" => "search#query"
@@ -415,6 +422,7 @@ Discourse::Application.routes.draw do
   get "/posts/:id/cooked" => "posts#cooked"
   get "/posts/:id/expand-embed" => "posts#expand_embed"
   get "/posts/:id/raw" => "posts#markdown_id"
+  get "/posts/:id/raw-email" => "posts#raw_email"
   get "raw/:topic_id(/:post_number)" => "posts#markdown_num"
 
   resources :invites do
