@@ -250,3 +250,11 @@ group :profile do
   # if you need to profile, uncomment out this line
   # gem 'rack-perftools_profiler', require: 'rack/perftools_profiler', platform: :mri_19
 end
+
+gem 'capistrano', '~> 3.2.0'
+gem 'capistrano-rvm'
+gem 'capistrano-bundler'
+gem 'capistrano-rails'
+
+gem 'dalli', '2.7.0'
+
