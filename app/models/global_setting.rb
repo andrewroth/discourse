@@ -28,7 +28,7 @@ class GlobalSetting
 
     h3d_hash = {"adapter" => "postgresql"}
     %w{pool timeout socket host port username password}.each do |s|
-      if val = self.lookup("h_db_#{s}")
+      if val = self.send("h_db_#{s}")
         h3d_hash[s] = val
       end
     end
