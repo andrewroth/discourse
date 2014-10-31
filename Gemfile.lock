@@ -173,6 +173,7 @@ GEM
     image_size (1.1.5)
     in_threads (1.2.2)
     inflecto (0.0.2)
+    interception (0.5)
     ipaddress (0.8.0)
     jquery-rails (3.1.2)
       railties (>= 3.0, < 5.0)
@@ -268,10 +269,17 @@ GEM
     pry-byebug (2.0.0)
       byebug (~> 3.4)
       pry (~> 0.10)
-    pry-nav (0.2.4)
-      pry (>= 0.9.10, < 0.11.0)
+    pry-doc (0.6.0)
+      pry (~> 0.9)
+      yard (~> 0.8)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
+    pry-rescue (1.4.1)
+      interception (>= 0.5)
+      pry
+    pry-stack_explorer (0.4.9.1)
+      binding_of_caller (>= 0.7)
+      pry (>= 0.9.11)
     puma (2.9.1)
       rack (>= 1.1, < 2.0)
     qunit-rails (0.0.7)
@@ -437,6 +445,7 @@ GEM
     xray-rails (0.1.8)
       coffee-rails
       rails (>= 3.1.0)
+    yard (0.8.7.6)
 
 PLATFORMS
   ruby
@@ -497,9 +506,12 @@ DEPENDENCIES
   onebox
   openid-redis-store
   pg (= 0.15.1)
+  pry
   pry-byebug
-  pry-nav
+  pry-doc
   pry-rails
+  pry-rescue
+  pry-stack_explorer
   puma
   qunit-rails
   rack-mini-profiler

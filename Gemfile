@@ -197,8 +197,15 @@ group :test, :development do
   gem 'simplecov', require: false
   gem 'timecop'
   gem 'rspec-given'
-  gem 'pry-nav'
+
+  gem 'pry'
+  gem 'pry-doc'#, '0.4.6'
+  #gem 'pry-nav'#, '0.2.3'
+  #gem 'pry-rails'#, '0.3.2'
+  gem 'pry-rescue'#, '1.2.0'
+  gem 'pry-stack_explorer'#, '0.4.9.1'
   gem 'pry-byebug'
+
   gem 'spork-rails'
   gem 'xray-rails', '0.1.8'
 end
