@@ -15,7 +15,7 @@ class CategoryList
     find_relevant_topics unless latest_post_only?
     find_categories
 
-    prune_empty
+    #prune_empty
     find_user_data
   end
 

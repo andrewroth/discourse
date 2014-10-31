@@ -64,7 +64,6 @@ class User < ActiveRecord::Base
 
   validates_presence_of :username
   validate :username_validator
-  validates :email, presence: true, uniqueness: true
   validates :email, email: true, if: :email_changed?
   validate :password_validator
   validates :ip_address, allowed_ip_address: {on: :create, message: :signup_not_allowed}

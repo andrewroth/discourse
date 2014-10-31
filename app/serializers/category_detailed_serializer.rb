@@ -12,7 +12,8 @@ class CategoryDetailedSerializer < BasicCategorySerializer
              :posts_year,
              :description_excerpt,
              :is_uncategorized,
-             :subcategory_ids
+             :subcategory_ids,
+             :header_only
 
   has_many :featured_users, serializer: BasicUserSerializer
   has_many :displayable_topics, serializer: ListableTopicSerializer, embed: :objects, key: :topics

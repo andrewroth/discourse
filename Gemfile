@@ -198,7 +198,9 @@ group :test, :development do
   gem 'timecop'
   gem 'rspec-given'
   gem 'pry-nav'
+  gem 'pry-byebug'
   gem 'spork-rails'
+  gem 'xray-rails', '0.1.8'
 end
 
 group :development do

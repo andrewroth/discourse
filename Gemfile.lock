@@ -52,6 +52,10 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
+    byebug (3.5.1)
+      columnize (~> 0.8)
+      debugger-linecache (~> 1.2)
+      slop (~> 3.6)
     capistrano (3.2.1)
       i18n
       rake (>= 10.0.0)
@@ -69,12 +73,21 @@ GEM
       timers (~> 1.1.0)
     certified (1.0.0)
     coderay (1.1.0)
+    coffee-rails (4.1.0)
+      coffee-script (>= 2.2.0)
+      railties (>= 4.0.0, < 5.0)
+    coffee-script (2.3.0)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.8.0)
     colorize (0.7.3)
+    columnize (0.8.9)
     connection_pool (2.0.0)
     crass (0.2.1)
     daemons (1.1.9)
     dalli (2.7.0)
     debug_inspector (0.0.2)
+    debugger-linecache (1.2.0)
     diff-lcs (1.2.5)
     docile (1.1.5)
     dotenv (0.11.1)
@@ -252,6 +265,9 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-byebug (2.0.0)
+      byebug (~> 3.4)
+      pry (~> 0.10)
     pry-nav (0.2.4)
       pry (>= 0.9.10, < 0.11.0)
     pry-rails (0.3.2)
@@ -418,6 +434,9 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    xray-rails (0.1.8)
+      coffee-rails
+      rails (>= 3.1.0)
 
 PLATFORMS
   ruby
@@ -478,6 +497,7 @@ DEPENDENCIES
   onebox
   openid-redis-store
   pg (= 0.15.1)
+  pry-byebug
   pry-nav
   pry-rails
   puma
@@ -518,3 +538,4 @@ DEPENDENCIES
   uglifier
   unf
   unicorn
+  xray-rails (= 0.1.8)

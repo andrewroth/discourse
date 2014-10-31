@@ -400,6 +400,7 @@ end
 #  background_url           :string(255)
 #  allow_badges             :boolean          default(TRUE), not null
 #  name_lower               :string(50)       not null
+#  header_only              :boolean
 #
 # Indexes
 #

@@ -72,7 +72,7 @@ class Topic < ActiveRecord::Base
 
 
   before_validation do
-    self.title = TextCleaner.clean_title(TextSentinel.title_sentinel(title).text) if errors[:title].empty?
+    #self.title = TextCleaner.clean_title(TextSentinel.title_sentinel(title).text) if errors[:title].empty?
   end
 
   belongs_to :category

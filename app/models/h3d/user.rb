@@ -10,6 +10,7 @@ module H3d
       discourse_user = ::User.new
       discourse_user.username = self.login
       discourse_user.email = self.email
+      logger.info "USERNAME: #{self.login}"
       discourse_user.save!
 
       self.discourse_user_ref = discourse_user
