@@ -32,8 +32,8 @@ class GlobalSetting
         h3d_hash[s] = val
       end
     end
-    hash["host_names"] = [ h_db_host ]
-    hash["database"] = h_db_name
+    h3d_hash["host_names"] = [ h_db_host ]
+    h3d_hash["database"] = h_db_name
     
     {"production" => hash, "h3d" => h3d_hash}
   end
