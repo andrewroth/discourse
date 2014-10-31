@@ -26,7 +26,16 @@ class GlobalSetting
     hash["host_names"] = [ hostname ]
     hash["database"] = db_name
 
-    {"production" => hash}
+    h3d_hash = {"adapter" => "postgresql"}
+    %w{pool timeout socket host port username password}.each do |s|
+      if val = self.lookup("h_db_#{s}")
+        h3d_hash[s] = val
+      end
+    end
+    hash["host_names"] = [ h_db_host ]
+    hash["database"] = h_db_name
+    
+    {"production" => hash, "h3d" => h3d_hash}
   end
 
 
