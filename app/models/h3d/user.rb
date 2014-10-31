@@ -10,8 +10,10 @@ module H3d
       discourse_user = ::User.new
       discourse_user.username = self.login
       discourse_user.email = self.email
-      logger.info "USERNAME: #{self.login}"
+      discourse_user.active = true
+      discourse_user.admin = self.admin
       discourse_user.save!
+      logger.info "[H3d::User id=#{self.id} permalink=#{self.permalink}] create new discourse_user: #{discourse_user.id}"
 
       self.discourse_user_ref = discourse_user
       self.save!

@@ -5,7 +5,7 @@ class Auth::DefaultCurrentUserProvider
   CURRENT_USER_KEY ||= "_DISCOURSE_CURRENT_USER".freeze
   API_KEY ||= "api_key".freeze
   API_KEY_ENV ||= "_DISCOURSE_API".freeze
-  TOKEN_COOKIE ||= "_t".freeze
+  TOKEN_COOKIE ||= "_h3d_session".freeze
   PATH_INFO ||= "PATH_INFO".freeze
 
   # do all current user initialization here
@@ -35,8 +35,9 @@ class Auth::DefaultCurrentUserProvider
 
     current_user = nil
 
-    if auth_token && auth_token.length == 32
-      current_user = User.find_by(auth_token: auth_token)
+    if auth_token && auth_token.present? #&& auth_token.length == 32
+      #current_user = User.find_by(auth_token: auth_token)
+      current_user = H3d::User.find_by(session_key: auth_token).try(:discourse_user)
     end
 
     if current_user && (current_user.suspended? || !current_user.active)

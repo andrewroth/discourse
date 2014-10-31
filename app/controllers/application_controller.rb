@@ -122,6 +122,12 @@ class ApplicationController < ActionController::Base
   end
 
   def set_current_user_for_logs
+    cookies_hash = {}
+    cookies.each do |c|
+      cookies_hash[c.first] = c.second
+    end
+    logger.info("in set_current_user_for_logs.  session: #{session.keys.inspect} cookies: #{cookies_hash.inspect}")
+
     if current_user
       Logster.add_to_env(request.env,"username",current_user.username)
     end
