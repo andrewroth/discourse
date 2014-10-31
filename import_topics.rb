@@ -32,17 +32,15 @@ roots.each do |r|
         t.closed = h3d_t.locked
         t.created_at = h3d_t.created_at
         t.updated_at = h3d_t.updated_at
-        t.title = h3d_t.title
+        t.title = HTMLEntities.new.decode(h3d_t.title)
         t.bumped_at = h3d_t.created_at
 
         # find a unique title name
         i = 1
         while Topic.where("LOWER(title) = LOWER(?)", t.title).present?
           i += 1
-          t.title = h3d_t.title + " (#{i})"
+          t.title = HTMLEntities.new.decode(h3d_t.title) + " (#{i})"
         end
-
-        t.title = HTMLEntities.new.decode(t.title)
 
         puts "=== Creating topic: #{t.inspect}"
 
@@ -53,7 +51,7 @@ roots.each do |r|
 
         # posts
         h3d_t.posts.each do |h3d_p|
-          unless h3d_p.discourse_post_id
+          unless h3d_p.discourse_post_id || h3d_p.body.blank?
             puts "=== Post h3d id #{h3d_p.id}"
             p = Post.new
             p.user = h3d_p.user.try(:discourse_user) || deleted_user 
