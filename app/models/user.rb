@@ -46,6 +46,7 @@ class User < ActiveRecord::Base
   has_one :user_stat, dependent: :destroy
   has_one :user_profile, dependent: :destroy, inverse_of: :user
   has_one :single_sign_on_record, dependent: :destroy
+  has_one :h3d_user, class_name: "H3d::User", foreign_key: "discourse_user_id"
   belongs_to :approved_by, class_name: 'User'
   belongs_to :primary_group, class_name: 'Group'
 
@@ -793,6 +794,7 @@ class User < ActiveRecord::Base
   # Delete inactive accounts that are over a week old
   def self.purge_inactive
 
+=begin
     # You might be wondering why this query matches on post_count = 0. The reason
     # is a long time ago we had a bug where users could post before being activated
     # and some sites still have those records which can't be purged.
@@ -811,6 +813,7 @@ class User < ActiveRecord::Base
         # if for some reason the user can't be deleted, continue on to the next one
       end
     end
+=end
   end
 
   private
