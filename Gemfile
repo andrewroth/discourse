@@ -267,3 +267,4 @@ gem 'capistrano-rails'
 
 gem 'dalli', '2.7.0'
 
+gem 'paperclip', '2.3.16'

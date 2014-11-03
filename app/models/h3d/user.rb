@@ -3,6 +3,7 @@ module H3d
     establish_connection :h3d
 
     belongs_to :discourse_user_ref, :foreign_key => "discourse_user_id", :class_name => "::User"
+    belongs_to :avatar, :foreign_key => :avatar_id, :class_name => 'H3d::FileAsset'
 
     def discourse_user
       return self.discourse_user_ref if self.discourse_user_ref

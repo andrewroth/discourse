@@ -10,6 +10,7 @@ require_dependency 'pretty_text'
 require_dependency 'url_helper'
 require_dependency 'letter_avatar'
 require_dependency 'promotion'
+require_dependency 'avatar_upload_service'
 
 class User < ActiveRecord::Base
   include Roleable
@@ -687,6 +688,17 @@ class User < ActiveRecord::Base
     if !new_record? && user_profile
       user_profile.update_column(:badge_granted_title, false)
     end
+  end
+
+  def import_h3d_avatar!
+    #service = AvatarUploadService.new("https://www.highend3d.com:7443/system/photos/000/227/216/227216/big/2012-06-02_13.53.08.jpg", :url)
+    service = AvatarUploadService.new(self.avatar.photo.url(:big), :url)
+    upload = Upload.create_for(self.id, service.file, service.filename, service.filesize)
+    avatar = self.user_avatar
+    avatar.custom_upload_id = upload.id
+    avatar.save!
+    self.uploaded_avatar = upload
+    self.save!
   end
 
   protected
