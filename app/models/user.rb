@@ -692,7 +692,9 @@ class User < ActiveRecord::Base
 
   def import_h3d_avatar!
     #service = AvatarUploadService.new("https://www.highend3d.com:7443/system/photos/000/227/216/227216/big/2012-06-02_13.53.08.jpg", :url)
-    service = AvatarUploadService.new(self.avatar.photo.url(:big), :url)
+    url = "https://www.highend3d.com:7443/#{self.h3d_user.avatar.photo.url(:big).sub('user_','')}"
+    puts "Grabbing avatar from #{url}"
+    service = AvatarUploadService.new(url, :url)
     upload = Upload.create_for(self.id, service.file, service.filename, service.filesize)
     avatar = self.user_avatar
     avatar.custom_upload_id = upload.id
