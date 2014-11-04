@@ -14,7 +14,7 @@ class AvatarUploadService
     case source
     when :url
       tmp = FileHelper.download(file, SiteSetting.max_image_size_kb.kilobytes, "discourse-avatar")
-      [tmp, File.basename(URI.parse(file).path), File.size(tmp)]
+      [tmp, File.basename(Addressable::URI.parse(file).path), File.size(tmp)]
     when :image
       [file.tempfile, file.original_filename, File.size(file.tempfile)]
     end
