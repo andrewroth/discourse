@@ -691,10 +691,27 @@ class User < ActiveRecord::Base
   end
 
   def import_h3d_avatar!
-    #service = AvatarUploadService.new("https://www.highend3d.com:7443/system/photos/000/227/216/227216/big/2012-06-02_13.53.08.jpg", :url)
+    unless self.h3d_user.try(:avatar).try(:photo)
+      puts "No h3d avatar for user #{self.id} h3d_user #{h3d_user.id} avatar #{self.h3d_user.try(:avatar).try(:id).inspect}"
+      return
+    end
+
     url = "https://www.highend3d.com:7443/#{self.h3d_user.avatar.photo.url(:big).sub('user_','')}"
-    puts "Grabbing avatar from #{url}"
-    service = AvatarUploadService.new(url, :url)
+    begin
+      puts "Grabbing avatar from #{url}"
+      service = AvatarUploadService.new(url, :url)
+    rescue Discourse::InvalidParameters, OpenURI::HTTPError
+      # try using the original path since the "big" size is meant to use jpg
+      # but some avatars uploaded before we added that are in the original format
+      url = "#{File.dirname(url)}/#{self.h3d_user.avatar.photo_file_name}"
+      puts "Failed.  Grabbing avatar from #{url}"
+      begin
+        service = AvatarUploadService.new(url, :url)
+      rescue Discourse::InvalidParameters, OpenURI::HTTPError
+        puts "Can't find avatar, failing..."
+        return
+      end
+    end
     upload = Upload.create_for(self.id, service.file, service.filename, service.filesize)
     avatar = self.user_avatar
     avatar.custom_upload_id = upload.id
