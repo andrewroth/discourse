@@ -6,7 +6,7 @@ roots = H3d::Forum.roots.order("title")
 admin = H3d::User.where(login: 'admin').first
 position = 0
 
-deleted_user = User.where(username: "user_delete", email: "user@deleted").first_or_create
+deleted_user = User.where(username: "user_deleted", email: "user@deleted").first_or_create
 
 RateLimiter.disable
 
