@@ -51,6 +51,7 @@
 // --------------------------------------------------
 
 .clearfix {
+  display: inherit !important;
   &:before,
   &:after {
     display: table;

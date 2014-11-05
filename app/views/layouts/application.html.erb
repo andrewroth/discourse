@@ -4,7 +4,11 @@
     <meta charset="utf-8">
     <title><%= content_for?(:title) ? yield(:title) + ' - ' + SiteSetting.title : SiteSetting.title %></title>
     <meta name="description" content="<%= @description_meta || SiteSetting.site_description %>">
+
     <%= render partial: "layouts/head" %>
+
+    <!-- load h3d styles first so that they can be overridden by discourse styles -->
+    <%= stylesheet_link_tag "/h3d/assets/global.css" %> 
 
     <%- if SiteSetting.enable_escaped_fragments? %>
     <meta name="fragment" content="!">
@@ -25,6 +29,8 @@
     <%= raw SiteText.text_for(:head) %>
 
     <%= render_google_universal_analytics_code %>
+
+    <%= javascript_include_tag "/h3d/assets/h3d.js" %>
 
     <%= yield :head %>
   </head>
