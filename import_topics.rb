@@ -24,8 +24,7 @@ roots.each do |r|
       puts "=== Topic: #{h3d_t.title}"
       next unless h3d_t.title.present?
 
-      t = h3d_t.discourse_topic
-      unless t
+      unless h3d_t.discourse_topic_id
         t = Topic.new
         t.category = c
         t.user = h3d_t.user.try(:discourse_user) || deleted_user
@@ -48,6 +47,8 @@ roots.each do |r|
 
         h3d_t.discourse_topic_id = t.id
         h3d_t.save!
+      else
+        t = h3d_t.discourse_topic
       end
 
       # posts
