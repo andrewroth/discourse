@@ -34,7 +34,6 @@ roots.each do |r|
         t.updated_at = h3d_t.updated_at
         t.title = HTMLEntities.new.decode(h3d_t.title)
         t.bumped_at = h3d_t.created_at
-
         # find a unique title name
         i = 1
         while Topic.where("LOWER(title) = LOWER(?)", t.title).present?
@@ -48,24 +47,26 @@ roots.each do |r|
 
         h3d_t.discourse_topic_id = t.id
         h3d_t.save!
+      else
+        t = h3d_t.discourse_topic
+      end
 
-        # posts
-        h3d_t.posts.each do |h3d_p|
-          unless h3d_p.discourse_post_id || h3d_p.body.blank?
-            puts "=== Post h3d id #{h3d_p.id}"
-            p = Post.new
-            p.user = h3d_p.user.try(:discourse_user) || deleted_user 
-            p.topic_id = t.id
-            p.raw = h3d_p.body
-            p.created_at = h3d_p.created_at
-            p.updated_at = h3d_p.updated_at
-            p.reply_to_post_number = h3d_p.parent.try(:discourse_post_id)
-            p.save!
+      # posts
+      h3d_t.posts.each do |h3d_p|
+        unless h3d_p.discourse_post_id || h3d_p.body.blank?
+          puts "=== Post h3d id #{h3d_p.id}"
+          p = Post.new
+          p.user = h3d_p.user.try(:discourse_user) || deleted_user 
+          p.topic_id = t.id
+          p.raw = h3d_p.body
+          p.created_at = h3d_p.created_at
+          p.updated_at = h3d_p.updated_at
+          p.reply_to_post_number = h3d_p.parent.try(:discourse_post_id)
+          p.save!
 
-            # store ref in h3d_p
-            h3d_p.discourse_post_id = p.id
-            h3d_p.save!
-          end
+          # store ref in h3d_p
+          h3d_p.discourse_post_id = p.id
+          h3d_p.save!
         end
       end
     end
