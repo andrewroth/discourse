@@ -24,6 +24,8 @@ roots.each do |r|
       puts "=== Topic: #{h3d_t.title}"
       next unless h3d_t.title.present?
 
+      update_post_stats = false
+
       unless h3d_t.discourse_topic_id
         t = Topic.new
         t.category = c
@@ -34,6 +36,8 @@ roots.each do |r|
         t.updated_at = h3d_t.updated_at
         t.title = HTMLEntities.new.decode(h3d_t.title)
         t.bumped_at = h3d_t.created_at
+        update_post_stats = true
+
         # find a unique title name
         i = 1
         while Topic.where("LOWER(title) = LOWER(?)", t.title).present?
@@ -67,12 +71,37 @@ roots.each do |r|
           # store ref in h3d_p
           h3d_p.discourse_post_id = p.id
           h3d_p.save!
+
+          update_post_stats = true
         end
       end
+
+      t.reload
+      if h3d_t.posts.empty?
+        puts "NO POSTS ON h3d TOPIC #{h3d_t.id}, DESTROYING"
+        t.destroy
+      elsif update_post_stats || true
+        # Update attributes on the topic - featured users and last posted.
+        @post = t.posts.last
+        attrs = {last_posted_at: @post.created_at, last_post_user_id: @post.user_id}
+        attrs[:bumped_at] = @post.created_at unless @post.no_bump
+        attrs[:word_count] = t.posts.inject(0) { |cnt,p| cnt + p.word_count }
+        attrs[:excerpt] = t.posts.first.excerpt(220, strip_links: true) unless t.excerpt.present?
+        t.update_attributes(attrs)
+      end
+
+      Topic.reset_highest(t.id) if update_post_stats
+
+      #puts "Press Enter to continue"
+      #STDIN.gets
     end
+    puts "Press Enter to continue"
+    STDIN.gets
   end
 end
 
 RateLimiter.enable
 
 puts "Took #{Time.now - t0} seconds to run"
+
+Category.all.collect(&:update_latest)

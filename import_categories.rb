@@ -5,22 +5,23 @@ position = 0
 t0 = Time.now
 
 # delete uncategorized
-Category.where(name: "Uncategorized").first.destroy
+Category.where(name: "Uncategorized").first.try(:destroy)
 
 roots.each do |r|
   puts "=== ROOT #{r.title} ==="
 
-  c = Category.new
-  c.name = r.title
-  c.description = r.subtitle
-  c.user = admin.discourse_user
-  c.header_only = true
-  c.position = position
+  unless Category.find_by(name: r.title)
+    c = Category.new
+    c.name = r.title
+    c.description = r.subtitle
+    c.user = admin.discourse_user
+    c.header_only = true
+    c.position = position
+    c.save!
+  end
   position += 1
 
   puts "=== Category header only data (before save): #{c.inspect} ==="
-
-  c.save!
 
   r.children.each do |f|
 
@@ -41,20 +42,25 @@ roots.each do |r|
       c.description = f.subtitle
       c.user = admin.discourse_user
       c.position = position
-      position += 1
 
       puts "=== Create Category #{c.inspect}"
       
       c.save!
+    end
+    position += 1
 
-      # store a reference in the h3d forum table to which new discourse category
-      f.discourse_category_id = c.id
-      puts "=== update #{f.title} discourse_category_id"
-      f.save!
+    # store a reference in the h3d forum table to which new discourse category
+    f.discourse_category_id = c.id
+    puts "=== update #{f.title} discourse_category_id"
+    f.save!
 
-      # add all the children
-      f.children.each do |child|
-        puts "=== Child of #{f.title}: #{child.title}"
+    # add all the children
+    f.children.each do |child|
+      puts "=== Child of #{f.title}: #{child.title}"
+
+      c2 = Category.find_by(name: child.title)
+
+      unless c2
         c2 = Category.new
         c2.name = child.title
         c2.description = child.subtitle
@@ -62,13 +68,13 @@ roots.each do |r|
         c2.parent_category_id = c.id
         c2.position = position
         c2.save!
-        position += 1
-
-        # store a reference in the h3d forum table to which new discourse category
-        puts "=== update child #{child.title} discourse_category_id"
-        child.discourse_category_id = c2.id
-        child.save!
       end
+      position += 1
+
+      # store a reference in the h3d forum table to which new discourse category
+      puts "=== update child #{child.title} discourse_category_id"
+      child.discourse_category_id = c2.id
+      child.save!
     end
   end
 end
