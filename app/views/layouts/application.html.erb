@@ -64,8 +64,60 @@
       <%= SiteCustomization.custom_header(session[:preview_style], mobile_view? ? :mobile : :desktop) %>
     <%- end %>
 
-    <section id='main'>
-    </section>
+    <!-- social bar -->
+    <div id="socialbar-wrap">
+      <%#= render 'layouts/menubar' unless @hide_dynamic %>
+    </div>
+
+    <!-- logo bar -->
+    <div id="logobar-wrap">
+      <div id="logobar-inner">
+        <a href="/" id="logo" name="Highend 3D Logo" class="highend3d-logo"></a>
+
+        <div class="horiz-ad-wrapper">
+          <%= link_to(image_tag('/h3d/assets/adverti-horiz-holder.png'), '') %>
+          <%= link_to(image_tag('/h3d/assets/adverti-horiz-upsell.png'), '', :class => 'adverisehere') %>
+        </div>
+        <div id="shopping_cart"></div>
+      </div>
+    </div>
+
+    <div id="globalnav-wrap">
+      <div id="globalnav-inner">
+        <div id="globalnav-nav">
+          Nav goes here
+        </div>
+
+        <div id="globalnav-sell">
+          <%= link_to('Sell Your Assets', 'TODO', :class => 'sell_assets_off') %>
+        </div>
+      </div>
+    </div>
+
+    <div id="search_bar_layout_container">
+      Search bar here
+    </div>
+
+    <!-- Flash Errors -->
+    <div id="flashes">
+    </div>
+    <!-- flash end -->
+
+    <div id="change" data-resource="forums">
+      <% if params[:controller] == "topics" %>
+        <div id="right" class="double">
+          Sidebar here
+        </div>
+      <% end %>
+      <section id='main'>
+      </section>
+      <div class="clear"></div>
+    </div>
+
+    <!-- Footer -->
+    <div id="footer">
+      FOOTER HERE
+    </div>
 
     <% unless current_user %>
       <form id='hidden-login-form' method="post" action="<%=login_path%>" style="display: none;">
