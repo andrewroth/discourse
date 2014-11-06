@@ -10,6 +10,14 @@ deleted_user = User.where(username: "user_deleted", email: "user@deleted").first
 
 RateLimiter.disable
 
+# clear out posts from topics that weren't fully processed so that they can be processed again
+puts "Clearing out any posts from failed imports.."
+topics = H3d::Topic.where("discourse_topic_id is not null").select("id, discourse_topic_id").to_a.find_all{ |h3d_t| h3d_t.posts.count != h3d_t.discourse_topic.posts.count }
+topics.each do |h3d_t| h3d_t.discourse_topic.posts.collect(&:destroy); h3d_t.posts.update_all(discourse_post_id: nil); end
+puts "Done"
+
+# go
+
 roots.each do |r|
   puts "=== ROOT #{r.title} ==="
 
@@ -21,7 +29,7 @@ roots.each do |r|
     c = f.discourse_category
 
     f.topics.each do |h3d_t|
-      puts "=== Topic: #{h3d_t.title}"
+      puts "=== #{f.title} === Topic: #{h3d_t.title}"
       next unless h3d_t.title.present?
 
       update_post_stats = false
@@ -65,7 +73,7 @@ roots.each do |r|
           p.raw = h3d_p.body
           p.created_at = h3d_p.created_at
           p.updated_at = h3d_p.updated_at
-          p.reply_to_post_number = h3d_p.parent.try(:discourse_post_id)
+          p.reply_to_post_number = h3d_p.parent.try(:discourse_post).try(:post_number)
           p.save!
 
           # store ref in h3d_p
@@ -76,10 +84,12 @@ roots.each do |r|
         end
       end
 
-      t.reload
-      if h3d_t.posts.empty?
+      t.reload if t
+      if h3d_t.posts.empty? || (t && t.posts.empty?)
         puts "NO POSTS ON h3d TOPIC #{h3d_t.id}, DESTROYING"
-        t.destroy
+        h3d_t.discourse_topic_id = nil
+        h3d_t.save!
+        t.destroy if t
       elsif update_post_stats || true
         # Update attributes on the topic - featured users and last posted.
         @post = t.posts.last
@@ -88,15 +98,14 @@ roots.each do |r|
         attrs[:word_count] = t.posts.inject(0) { |cnt,p| cnt + p.word_count }
         attrs[:excerpt] = t.posts.first.excerpt(220, strip_links: true) unless t.excerpt.present?
         t.update_attributes(attrs)
+        Topic.reset_highest(t.id)
       end
-
-      Topic.reset_highest(t.id) if update_post_stats
 
       #puts "Press Enter to continue"
       #STDIN.gets
     end
-    puts "Press Enter to continue"
-    STDIN.gets
+    #puts "Press Enter to continue"
+    #STDIN.gets
   end
 end
 
