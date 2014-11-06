@@ -9,6 +9,6 @@ module H3d
     belongs_to  :forum, :counter_cache => :topics_count, :touch => true
     belongs_to  :last_post, :class_name => "H3d::Post"
     belongs_to  :user, :class_name => "H3d::User", :foreign_key => "created_by"
-    belongs_to  :discourse_topic, :class_name => "Topic"
+    belongs_to  :discourse_topic, :class_name => "::Topic"
   end
 end

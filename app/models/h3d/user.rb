@@ -13,11 +13,14 @@ module H3d
       discourse_user.email = self.email
       discourse_user.active = true
       discourse_user.admin = self.admin
+      discourse_user.created_at = self.created_at || (@@min_created_at ||= H3d::User.minimum(:created_at))
       discourse_user.save!
       logger.info "[H3d::User id=#{self.id} permalink=#{self.permalink}] create new discourse_user: #{discourse_user.id}"
 
       self.discourse_user_ref = discourse_user
       self.save!
+
+      discourse_user.import_h3d_avatar!
 
       return self.discourse_user_ref
     end

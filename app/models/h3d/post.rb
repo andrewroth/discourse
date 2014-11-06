@@ -11,7 +11,7 @@ module H3d
     belongs_to :user, :foreign_key => :created_by
     belongs_to :quote, :class_name => "H3d::Post", :foreign_key => "quote_id"
     belongs_to :parent, :class_name => "H3d::Post"
-    belongs_to :discourse_post, class_name: "Post"
+    belongs_to :discourse_post, class_name: "::Post"
 
     has_many :children, foreign_key: "parent_id", class_name: "H3d::Post"
   end
