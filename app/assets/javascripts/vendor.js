@@ -28,8 +28,16 @@
 //= require jquery.iframe-transport.js
 //= require jquery.putcursoratend.js
 //= require jquery.tagsinput.js
-//= require jquery.ui.widget.js
 //= require jquery.sortable.js
+//= require jquery.browser.js
+//= require jquery.tools.js
+//= require jquery.timeago.js
+//= require jquery.hoverIntent.js
+//= require jquery.swapimage.js
+//= require jquery.ui.rlightbox.js
+//= require jquery.ui.effects.js
+//= require jquery.validate.js
+//= require jstz.min.js
 //= require lodash.js
 //= require md5.js
 //= require modernizr.custom.00874.js

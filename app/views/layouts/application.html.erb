@@ -9,6 +9,7 @@
 
     <!-- load h3d styles first so that they can be overridden by discourse styles -->
     <%= stylesheet_link_tag "/h3d/assets/global.css" %> 
+    <%= stylesheet_link_tag "/h3d/assets/global_css_sprite.css" %> 
 
     <%- if SiteSetting.enable_escaped_fragments? %>
     <meta name="fragment" content="!">
@@ -31,11 +32,18 @@
     <%= render_google_universal_analytics_code %>
 
     <%= javascript_include_tag "/h3d/assets/h3d.js" %>
+    <%= javascript_include_tag "/h3d/assets/h3d.ready.js" %>
+
+    <script type="text/javascript" charset="utf-8">
+      $(function() {
+        $.ajax({url: '/h3d/users/dynamic.js?t=' + Date.now(), cache: true, dataType: 'script'});
+      });
+    </script>
 
     <%= yield :head %>
   </head>
 
-  <body>
+  <body class='forums'>
     <noscript data-path="<%= request.env['PATH_INFO'] %>">
       <header class="d-header">
         <div class="container">
@@ -83,15 +91,7 @@
     </div>
 
     <div id="globalnav-wrap">
-      <div id="globalnav-inner">
-        <div id="globalnav-nav">
-          Nav goes here
-        </div>
-
-        <div id="globalnav-sell">
-          <%= link_to('Sell Your Assets', 'TODO', :class => 'sell_assets_off') %>
-        </div>
-      </div>
+      <%= render 'layouts/menu' unless @hide_dynamic %>
     </div>
 
     <div id="search_bar_layout_container">
