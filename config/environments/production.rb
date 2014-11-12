@@ -65,6 +65,6 @@ Discourse::Application.configure do
     config.developer_emails = emails.split(",").map(&:strip)
   end
 
-  config.action_mailer.default_url_options = { :host => 'www.highend3d.com:7443' }
+  config.action_mailer.default_url_options = { :host => 'forum.highend3d.com:7443' }
 
 end
