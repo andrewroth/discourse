@@ -51,5 +51,7 @@ Discourse::Application.configure do
   if emails = GlobalSetting.developer_emails
     config.developer_emails = emails.split(",").map(&:strip)
   end
+
+  config.action_mailer.default_url_options = { :host => 'forum.highend3d.local' }
 end
 

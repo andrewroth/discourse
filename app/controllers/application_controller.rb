@@ -43,6 +43,21 @@ class ApplicationController < ActionController::Base
 
   layout :set_layout
 
+  def forums_host
+    @@forums_host ||= ActionMailer::Base.default_url_options[:host]
+  end
+  helper_method :forums_host
+
+  def community_host
+    @@community_host ||= ActionMailer::Base.default_url_options[:host].sub('forum.', 'community.')
+  end
+  helper_method :community_host
+
+  def marketplace_host
+    @@marketplace_host ||= ActionMailer::Base.default_url_options[:host].sub('forum.', 'www.')
+  end
+  helper_method :marketplace_host
+
   def has_escaped_fragment?
     SiteSetting.enable_escaped_fragments? && params.key?("_escaped_fragment_")
   end
