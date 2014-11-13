@@ -129,6 +129,7 @@ export default function(options) {
 
   if (isInput) {
     var width = this.width();
+    debugger;
     wrap = this.wrap("<div class='ac-wrap clearfix" + (disabled ? " disabled": "") +  "'/>").parent();
     wrap.width(width);
     if(options.single) {

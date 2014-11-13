@@ -2005,7 +2005,7 @@ var menu = $.widget( "ui.menu", {
  */
 
 
-$.widget( "ui.autocomplete", {
+$.widget( "ui.autocomplete2", {
 	version: "1.11.2",
 	defaultElement: "<input>",
 	options: {
@@ -2347,7 +2347,7 @@ $.widget( "ui.autocomplete", {
 		if ( $.isArray( this.options.source ) ) {
 			array = this.options.source;
 			this.source = function( request, response ) {
-				response( $.ui.autocomplete.filter( array, request.term ) );
+				response( $.ui.autocomplete2.filter( array, request.term ) );
 			};
 		} else if ( typeof this.options.source === "string" ) {
 			url = this.options.source;
@@ -2521,7 +2521,7 @@ $.widget( "ui.autocomplete", {
 	},
 
 	_renderItem: function( ul, item ) {
-		return $( "<li>" ).text( item.label ).appendTo( ul );
+		return $( "<li>" ).html( item.label ).appendTo( ul );
 	},
 
 	_move: function( direction, event ) {
@@ -2560,12 +2560,12 @@ $.widget( "ui.autocomplete", {
 	}
 });
 
-$.extend( $.ui.autocomplete, {
+$.extend( $.ui.autocomplete2, {
 	escapeRegex: function( value ) {
 		return value.replace( /[\-\[\]{}()*+?.,\\\^$|#\s]/g, "\\$&" );
 	},
 	filter: function( array, term ) {
-		var matcher = new RegExp( $.ui.autocomplete.escapeRegex( term ), "i" );
+		var matcher = new RegExp( $.ui.autocomplete2.escapeRegex( term ), "i" );
 		return $.grep( array, function( value ) {
 			return matcher.test( value.label || value.value || value );
 		});
@@ -2575,7 +2575,7 @@ $.extend( $.ui.autocomplete, {
 // live region extension, adding a `messages` option
 // NOTE: This is an experimental API. We are still investigating
 // a full solution for string manipulation and internationalization.
-$.widget( "ui.autocomplete", $.ui.autocomplete, {
+$.widget( "ui.autocomplete2", $.ui.autocomplete2, {
 	options: {
 		messages: {
 			noResults: "No search results.",
@@ -2602,7 +2602,7 @@ $.widget( "ui.autocomplete", $.ui.autocomplete, {
 	}
 });
 
-var autocomplete = $.ui.autocomplete;
+var autocomplete2 = $.ui.autocomplete2;
 
 
 

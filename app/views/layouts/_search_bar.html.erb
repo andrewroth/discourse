@@ -26,7 +26,7 @@
           <button title="Search" type="submit"><span>&nbsp;</span></button>
         </div>
         <script>
-          $('#search_bar').autocomplete({
+          $('#search_bar').autocomplete2({
             source: function(request, response) {
               if ($("#section").val() == "marketplace" || $("#section").val() == "downloads") {
                 if (isAdvancedSearch()) {
@@ -243,7 +243,7 @@
 <option value="websites">Websites</option></select>
           </div>
 
-          <div class="author search_field downloads marketplace tutorials">
+          <div class="author search_field downloads marketplace tutorials forums">
             <label for="author">Author:</label>
             <input type="text" value="" title="Author" name="author_name" id="search_bar_user" class="ui-autocomplete-input" autocomplete="off">
             <img style="display:none;" src="/assets/spinner.gif" id="spinner_search_bar_user" class="spinner " alt="Spinner">
