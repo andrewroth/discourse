@@ -12,3 +12,5 @@
     <%= render partial: "common/discourse_stylesheet" %>
 
     <%= discourse_csrf_tags %>
+
+    <script>var params = <%= raw params.to_json %>;</script>

@@ -36,6 +36,7 @@
 //= require jquery.swapimage.js
 //= require jquery.ui.rlightbox.js
 //= require jquery.ui.effects.js
+//= require jquery.ui.autocomplete.js
 //= require jquery.validate.js
 //= require jstz.min.js
 //= require lodash.js

@@ -94,8 +94,12 @@
       <%= render 'layouts/menu' unless @hide_dynamic %>
     </div>
 
+    <div id="breadcrumb">
+      <%= render "layouts/breadcrumbs" %>
+    </div>
+
     <div id="search_bar_layout_container">
-      Search bar here
+      <%= render "layouts/search_bar" %>
     </div>
 
     <!-- Flash Errors -->

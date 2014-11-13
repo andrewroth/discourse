@@ -1,0 +1,704 @@
+<form method="get" action="/marketplace/search" accept-charset="UTF-8"><div style="display:none"></div>
+  <span class="search_field hidden_search_field sub-categories">
+    <input type="hidden" name="category2" id="category2">
+  </span>
+
+  <span class="search_field hidden_search_field sub-categories">
+    <input type="hidden" name="category3" id="category3">
+  </span>
+
+  <span class="search_field hidden_search_field sub-categories">
+    <input type="hidden" name="category4" id="category4">
+  </span>
+
+    <div class="" id="search_bar_form_container">
+
+      <div class="search_bar_container">
+        <div class="search_field_wrap">
+          <input type="text" value="" name="" id="search_bar" class="ui-autocomplete-input" autocomplete="off">
+          <select title="Search section" name="section" id="section" class="section">
+<option value="marketplace" data-action="search">Store</option>
+<option value="downloads" data-action="search">Free files</option>
+<option value="tutorials" data-action="search">Tutorials</option>
+<option value="gallery" data-action="search">Gallery</option>
+<option value="portfolio_images" data-action="search">Portfolio</option>
+<option value="forum" selected="selected" data-action="search">Forum</option></select>
+          <button title="Search" type="submit"><span>&nbsp;</span></button>
+        </div>
+        <script>
+          $('#search_bar').autocomplete({
+            source: function(request, response) {
+              if ($("#section").val() == "marketplace" || $("#section").val() == "downloads") {
+                if (isAdvancedSearch()) {
+                  $("#autocomplete_unavailable").show();
+                } else {
+                  setSearchBarFilterInfoText();
+                  $.getJSON("/items/autocomplete_item_title", { 
+                    term: $("#search_bar").val(), 
+                    section: $("#section").val(),
+                    software: $("#software").val(),
+                    category: category_select.val(),
+                    user: $("#search_bar_user").val()
+                  }, response);
+                  $("#autocomplete_unavailable").hide();
+                }
+              }
+            },
+            html: true,
+            delay: 0,
+            select: function(event, ui) { window.location.href = "/downloads/" + ui.item.id; event.preventDefault(); return false }
+          });
+        </script>
+      </div>
+
+      <div style="display: none;" class="advanced_search_bar_container">
+        <div title="Hide search form" class="close">&nbsp;</div>
+
+        <div class="selects_container">
+          <div style="" id="autocomplete_filtered">
+            <img src="/assets/information.png" alt="Information">
+            <span class="search_text">Searching within Gallery</span>
+          </div>
+          <div style="display:none" id="autocomplete_unavailable">
+            <img src="/assets/information.png" alt="Information">
+            Preview results not available when checkboxes ticked.
+          </div>
+          <div class="software search_field downloads marketplace tutorials">
+            <label for="software">Compatibility:</label> <select title="Compatibility" name="software" id="software"><option value="">All Software</option>
+<option value="3dsmax">3dsmax</option>
+<option value="after-effects">after effects</option>
+<option value="alias">alias</option>
+<option value="autodesk-viz">autodesk viz</option>
+<option value="blender">blender</option>
+<option value="body-paint">body paint</option>
+<option value="cinema4d">cinema4d</option>
+<option value="combustion">combustion</option>
+<option value="digital-fusion">digital fusion</option>
+<option value="final-cut">final cut</option>
+<option value="flame">flame</option>
+<option value="lightscape">lightscape</option>
+<option value="lightwave">lightwave</option>
+<option value="maya">maya</option>
+<option value="modo">modo</option>
+<option value="motion">motion</option>
+<option value="nuke">nuke</option>
+<option value="painter">painter</option>
+<option value="photoshop">photoshop</option>
+<option value="renderman">renderman</option>
+<option value="rhino3d">rhino3d</option>
+<option value="shake">shake</option>
+<option value="sketchup">sketchup</option>
+<option value="softimage">softimage</option>
+<option value="vray">vray</option>
+<option value="xsi">xsi</option>
+<option value="zbrush">zbrush</option></select>
+          </div>
+
+          <div class="category search_field downloads" style="display: none;">
+            <label for="category">Category:</label>
+            <select title="Category" style="" name="category_downloads" id="category_downloads" class="category downloads" disabled="disabled"><option value="" class=" photoshop zbrush motion 3dsmax maya xsi nuke shake sketchup cinema4d renderman">All Categories</option>
+<option value="3d-models" class="">3D Models</option>
+<option value="3d-motion-data-files" class="">3D Motion Data Files</option>
+<option value="3d-textures" class="">3D Textures</option>
+<option value="actions" class="photoshop">Actions</option>
+<option value="alphas-brush-shapes-" class="zbrush">Alphas (brush shapes)</option>
+<option value="applications" class="">Applications</option>
+<option value="behaviors" class="motion">Behaviors</option>
+<option value="character-rigs" class="3dsmax maya xsi">Character Rigs</option>
+<option value="filters" class="motion">Filters</option>
+<option value="flash-files" class="">Flash Files</option>
+<option value="generators" class="motion">Generators</option>
+<option value="gizmos" class="nuke">gizmos</option>
+<option value="light-set-ups" class="zbrush">Light set-ups</option>
+<option value="macros" class="shake">Macros</option>
+<option value="materials" class="zbrush">Materials</option>
+<option value="paint-fx-brushes" class="maya">Paint FX Brushes</option>
+<option value="particle-emitters" class="motion">Particle Emitters</option>
+<option value="plug-ins" class="photoshop">Plug-ins</option>
+<option value="replicators" class="motion">Replicators</option>
+<option value="scene-files" class="maya">Scene Files</option>
+<option value="scripts-plugins" class="motion zbrush maya nuke shake sketchup xsi cinema4d 3dsmax">Scripts / Plugins</option>
+<option value="shaders" class="xsi 3dsmax renderman maya">Shaders</option>
+<option value="templates" class="motion">Templates</option>
+<option value="training-videos" class="">Training Videos</option></select>
+          </div>
+
+          <div class="category search_field marketplace" style="display: none;">
+            <label for="category">Category:</label>
+            <select title="Category" style="" name="category_marketplace" id="category_marketplace" class="category marketplace" disabled="disabled"><option value="" class=" photoshop zbrush motion maya 3dsmax xsi nuke shake sketchup cinema4d renderman">All Categories</option>
+<option value="3d-models" class="">3D Models</option>
+<option value="3d-motion-data-files" class="">3D Motion Data Files</option>
+<option value="3d-textures" class="">3D Textures</option>
+<option value="actions" class="photoshop">Actions</option>
+<option value="alphas-brush-shapes-" class="zbrush">Alphas (brush shapes)</option>
+<option value="applications" class="">Applications</option>
+<option value="behaviors" class="motion">Behaviors</option>
+<option value="character-rigs" class="maya 3dsmax xsi">Character Rigs</option>
+<option value="filters" class="motion">Filters</option>
+<option value="flash-files" class="">Flash Files</option>
+<option value="generators" class="motion">Generators</option>
+<option value="gizmos" class="nuke">gizmos</option>
+<option value="light-set-ups" class="zbrush">Light set-ups</option>
+<option value="macros" class="shake">Macros</option>
+<option value="materials" class="zbrush">Materials</option>
+<option value="paint-fx-brushes" class="maya">Paint FX Brushes</option>
+<option value="particle-emitters" class="motion">Particle Emitters</option>
+<option value="plug-ins" class="photoshop">Plug-ins</option>
+<option value="replicators" class="motion">Replicators</option>
+<option value="scene-files" class="maya">Scene Files</option>
+<option value="scripts-plugins" class="maya xsi shake 3dsmax zbrush motion nuke sketchup cinema4d">Scripts / Plugins</option>
+<option value="shaders" class="maya renderman xsi 3dsmax">Shaders</option>
+<option value="templates" class="motion">Templates</option>
+<option value="training-videos" class="">Training Videos</option></select>
+          </div>
+
+          <div class="category search_field tutorials" style="display: none;">
+            <label for="category">Category:</label>
+            <select title="Category" style="display: none;" name="category_tutorials" id="category_tutorials" class="category tutorials" disabled="disabled"><option value="" class="nuke zbrush maya xsi softimage 3dsmax motion renderman shake">All Categories</option>
+<option value="3d" class="nuke">3D</option>
+<option value="3rd-party-apps" class="zbrush">3rd party apps</option>
+<option value="animating" class="maya xsi softimage">Animating</option>
+<option value="animation" class="3dsmax motion">Animation</option>
+<option value="basics" class="renderman shake motion">Basics</option>
+<option value="behaviors" class="motion">Behaviors</option>
+<option value="camera-lighting" class="renderman">Camera / Lighting</option>
+<option value="character" class="maya xsi softimage">Character</option>
+<option value="characters" class="3dsmax">Characters</option>
+<option value="color" class="shake">Color</option>
+<option value="compositing" class="nuke">compositing</option>
+<option value="development-api" class="maya">Development / API</option>
+<option value="displacement-maps" class="zbrush">Displacement /  Maps</option>
+<option value="dynamics" class="softimage">Dynamics</option>
+<option value="dynamics-fx" class="xsi maya">Dynamics / FX</option>
+<option value="filters" class="motion">Filters</option>
+<option value="fxplug" class="motion motion">FXPlug</option>
+<option value="games-related" class="maya">Games Related</option>
+<option value="general" class="softimage 3dsmax maya shake xsi renderman motion">General</option>
+<option value="general-workflow" class="nuke">general workflow</option>
+<option value="getting-started" class="zbrush">Getting started</option>
+<option value="gizmo-writing" class="nuke">gizmo writing</option>
+<option value="hardware-install" class="3dsmax">Hardware / Install</option>
+<option value="hardware-os" class="motion">Hardware / OS</option>
+<option value="import-export" class="motion maya">Import / Export</option>
+<option value="interface-display" class="zbrush">Interface / Display</option>
+<option value="keying" class="nuke shake">keying</option>
+<option value="lighting" class="3dsmax">Lighting</option>
+<option value="materials" class="softimage zbrush">Materials</option>
+<option value="materials-and-texturing" class="3dsmax">Materials and Texturing</option>
+<option value="modeling" class="3dsmax maya softimage xsi">Modeling</option>
+<option value="modeling-zspheres" class="zbrush">Modeling / Zspheres</option>
+<option value="paint-fx" class="maya">Paint FX</option>
+<option value="painting-roto" class="shake">Painting / Roto</option>
+<option value="particles" class="motion">Particles</option>
+<option value="particles-fx" class="3dsmax">Particles / FX</option>
+<option value="project-walkthroughs" class="zbrush">Project Walkthroughs</option>
+<option value="rat" class="renderman">RAT</option>
+<option value="rendering" class="3dsmax xsi zbrush">Rendering</option>
+<option value="rendering-lighting" class="maya">Rendering / Lighting</option>
+<option value="replicators" class="motion">Replicators</option>
+<option value="scripting" class="maya zbrush">Scripting</option>
+<option value="scripting-api" class="shake xsi 3dsmax motion">Scripting / API</option>
+<option value="shaders" class="renderman">Shaders</option>
+<option value="tcl-scripting" class="nuke">tcl scripting</option>
+<option value="text" class="motion">Text</option>
+<option value="textures-painting" class="zbrush">Textures / Painting</option>
+<option value="texturing" class="xsi maya">Texturing</option>
+<option value="tracking" class="shake">Tracking</option>
+<option value="using-downloads" class="motion">Using Downloads</option>
+<option value="using-tools-macros" class="shake">Using Tools / Macros</option>
+<option value="using-tools-scripts" class="maya">Using Tools / Scripts</option>
+<option value="warping-morphing" class="shake">Warping / Morphing</option></select>
+          </div>
+
+          <div class="category search_field gallery portfolio_images" style="display: block;">
+            <label for="category">Category:</label>
+            <select title="Category" style="" name="category_gallery" id="category_gallery" class="category gallery"><option value="">All Categories</option>
+<option value="abstract">Abstract</option>
+<option value="anime">Anime</option>
+<option value="architecture">Architecture</option>
+<option value="architecture/exteriors">Architecture &gt; Exteriors</option>
+<option value="architecture/interiors">Architecture &gt; Interiors</option>
+<option value="characters">Characters</option>
+<option value="characters/3d-photoreal">Characters &gt; 3d Photoreal</option>
+<option value="characters/3d-stylistic">Characters &gt; 3d Stylistic</option>
+<option value="characters/painted">Characters &gt; Painted</option>
+<option value="characters/wire-shaded">Characters &gt; Wire / Shaded</option>
+<option value="composits">Composits</option>
+<option value="concept-art">Concept Art</option>
+<option value="demo-reels">Demo Reels</option>
+<option value="design">Design</option>
+<option value="fantasy">Fantasy</option>
+<option value="general">General</option>
+<option value="nature">Nature</option>
+<option value="objects">Objects</option>
+<option value="photography">Photography</option>
+<option value="product-design">Product Design</option>
+<option value="scenes">Scenes</option>
+<option value="scenes/3d-scenes">Scenes &gt; 3D Scenes</option>
+<option value="scenes/matte-paintings">Scenes &gt; Matte Paintings</option>
+<option value="scenes/painted">Scenes &gt; Painted</option>
+<option value="sci-fi-space">Sci-Fi / Space</option>
+<option value="shorts-animations-">Shorts (Animations)</option>
+<option value="vehicles">Vehicles</option>
+<option value="websites">Websites</option></select>
+          </div>
+
+          <div class="author search_field downloads marketplace tutorials">
+            <label for="author">Author:</label>
+            <input type="text" value="" title="Author" name="author_name" id="search_bar_user" class="ui-autocomplete-input" autocomplete="off">
+            <img style="display:none;" src="/assets/spinner.gif" id="spinner_search_bar_user" class="spinner " alt="Spinner">
+            <span style="display: none;" id="search_bar_no_user_autocomplete_results">(No results)</span>
+          </div>
+          <span class="search_field hidden_search_field downloads marketplace tutorials">
+            <input type="hidden" value="" name="author_login" id="search_bar_author_login">
+          </span>
+        </div>
+
+        <hr>
+
+        <img style="display: none;" src="/assets/spinner.gif" id="spinner_search_bar_setup_fields" class="spinner " alt="Spinner">
+
+        <div class="variable" style="opacity: 1;">
+
+          <div style="" class="no_more_search_options_message">No additional search filter options</div>
+
+          <div class="search_field software-versions" style="display: none;">
+                <div class="software_version_container 3dsmax" style="display: none;">
+                  <label>3dsmax Version:</label>
+                  <ul>
+                      <li class="hidden"><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="7.x" name="software_version[]" id="software_version_" disabled="disabled"> 7.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="8.x" name="software_version[]" id="software_version_" disabled="disabled"> 8.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="9.x" name="software_version[]" id="software_version_" disabled="disabled"> 9.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2008" name="software_version[]" id="software_version_" disabled="disabled"> 2008</label></li>
+                      <li class=""><label><input type="checkbox" value="2009" name="software_version[]" id="software_version_" disabled="disabled"> 2009</label></li>
+                      <li class=""><label><input type="checkbox" value="2010" name="software_version[]" id="software_version_" disabled="disabled"> 2010</label></li>
+                      <li class=""><label><input type="checkbox" value="2011" name="software_version[]" id="software_version_" disabled="disabled"> 2011</label></li>
+                      <li class=""><label><input type="checkbox" value="2012" name="software_version[]" id="software_version_" disabled="disabled"> 2012</label></li>
+                      <li class=""><label><input type="checkbox" value="2013" name="software_version[]" id="software_version_" disabled="disabled"> 2013</label></li>
+                      <li class=""><label><input type="checkbox" value="2014" name="software_version[]" id="software_version_" disabled="disabled"> 2014</label></li>
+                  </ul>
+                    <a onclick="$(&quot;.software_version_container li.hidden&quot;).show(); $(this).hide();; return false;" href="#">Show all</a>
+                </div>
+                <div class="software_version_container after-effects" style="display: none;">
+                  <label>After Effects Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container alias" style="display: none;">
+                  <label>Alias Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class=""><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                      <li class=""><label><input type="checkbox" value="7.x" name="software_version[]" id="software_version_" disabled="disabled"> 7.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container autodesk-viz" style="display: none;">
+                  <label>Autodesk Viz Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class=""><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                      <li class=""><label><input type="checkbox" value="7.x" name="software_version[]" id="software_version_" disabled="disabled"> 7.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container blender" style="display: none;">
+                  <label>Blender Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class=""><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                      <li class=""><label><input type="checkbox" value="7.x" name="software_version[]" id="software_version_" disabled="disabled"> 7.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container body-paint" style="display: none;">
+                  <label>Body Paint Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class=""><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                      <li class=""><label><input type="checkbox" value="7.x" name="software_version[]" id="software_version_" disabled="disabled"> 7.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container cinema4d" style="display: none;">
+                  <label>Cinema4d Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="11" name="software_version[]" id="software_version_" disabled="disabled"> 11</label></li>
+                      <li class=""><label><input type="checkbox" value="12" name="software_version[]" id="software_version_" disabled="disabled"> 12</label></li>
+                      <li class=""><label><input type="checkbox" value="13" name="software_version[]" id="software_version_" disabled="disabled"> 13</label></li>
+                      <li class=""><label><input type="checkbox" value="14" name="software_version[]" id="software_version_" disabled="disabled"> 14</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container combustion" style="display: none;">
+                  <label>Combustion Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container digital-fusion" style="display: none;">
+                  <label>Digital Fusion Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container final-cut" style="display: none;">
+                  <label>Final Cut Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container flame" style="display: none;">
+                  <label>Flame Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container lightscape" style="display: none;">
+                  <label>Lightscape Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container lightwave" style="display: none;">
+                  <label>Lightwave Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container maya" style="display: none;">
+                  <label>Maya Version:</label>
+                  <ul>
+                      <li class="hidden"><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="7.x" name="software_version[]" id="software_version_" disabled="disabled"> 7.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="8.x" name="software_version[]" id="software_version_" disabled="disabled"> 8.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="9.x" name="software_version[]" id="software_version_" disabled="disabled"> 9.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2008" name="software_version[]" id="software_version_" disabled="disabled"> 2008</label></li>
+                      <li class=""><label><input type="checkbox" value="2009" name="software_version[]" id="software_version_" disabled="disabled"> 2009</label></li>
+                      <li class=""><label><input type="checkbox" value="2010" name="software_version[]" id="software_version_" disabled="disabled"> 2010</label></li>
+                      <li class=""><label><input type="checkbox" value="2011" name="software_version[]" id="software_version_" disabled="disabled"> 2011</label></li>
+                      <li class=""><label><input type="checkbox" value="2012" name="software_version[]" id="software_version_" disabled="disabled"> 2012</label></li>
+                      <li class=""><label><input type="checkbox" value="2013" name="software_version[]" id="software_version_" disabled="disabled"> 2013</label></li>
+                      <li class=""><label><input type="checkbox" value="2014" name="software_version[]" id="software_version_" disabled="disabled"> 2014</label></li>
+                  </ul>
+                    <a onclick="$(&quot;.software_version_container li.hidden&quot;).show(); $(this).hide();; return false;" href="#">Show all</a>
+                </div>
+                <div class="software_version_container modo" style="display: none;">
+                  <label>Modo Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class=""><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                      <li class=""><label><input type="checkbox" value="7.x" name="software_version[]" id="software_version_" disabled="disabled"> 7.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container motion" style="display: none;">
+                  <label>Motion Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container nuke" style="display: none;">
+                  <label>Nuke Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class=""><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container painter" style="display: none;">
+                  <label>Painter Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container photoshop" style="display: none;">
+                  <label>Photoshop Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="cs3" name="software_version[]" id="software_version_" disabled="disabled"> cs3</label></li>
+                      <li class=""><label><input type="checkbox" value="cs4" name="software_version[]" id="software_version_" disabled="disabled"> cs4</label></li>
+                      <li class=""><label><input type="checkbox" value="cs5" name="software_version[]" id="software_version_" disabled="disabled"> cs5</label></li>
+                      <li class=""><label><input type="checkbox" value="cs6" name="software_version[]" id="software_version_" disabled="disabled"> cs6</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container renderman" style="display: none;">
+                  <label>Renderman Version:</label>
+                  <ul>
+                      <li class="hidden"><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class=""><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                      <li class=""><label><input type="checkbox" value="7.x" name="software_version[]" id="software_version_" disabled="disabled"> 7.x</label></li>
+                      <li class=""><label><input type="checkbox" value="8.x" name="software_version[]" id="software_version_" disabled="disabled"> 8.x</label></li>
+                      <li class=""><label><input type="checkbox" value="9.x" name="software_version[]" id="software_version_" disabled="disabled"> 9.x</label></li>
+                      <li class=""><label><input type="checkbox" value="10.x" name="software_version[]" id="software_version_" disabled="disabled"> 10.x</label></li>
+                      <li class=""><label><input type="checkbox" value="11.x" name="software_version[]" id="software_version_" disabled="disabled"> 11.x</label></li>
+                      <li class=""><label><input type="checkbox" value="12.x" name="software_version[]" id="software_version_" disabled="disabled"> 12.x</label></li>
+                  </ul>
+                    <a onclick="$(&quot;.software_version_container li.hidden&quot;).show(); $(this).hide();; return false;" href="#">Show all</a>
+                </div>
+                <div class="software_version_container rhino3d" style="display: none;">
+                  <label>Rhino3d Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container shake" style="display: none;">
+                  <label>Shake Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="" name="software_version[]" id="software_version_" disabled="disabled"> </label></li>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container sketchup" style="display: none;">
+                  <label>Sketchup Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class=""><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                      <li class=""><label><input type="checkbox" value="7.x" name="software_version[]" id="software_version_" disabled="disabled"> 7.x</label></li>
+                  </ul>
+                </div>
+                <div class="software_version_container softimage" style="display: none;">
+                  <label>Softimage Version:</label>
+                  <ul>
+                      <li class="hidden"><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class=""><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                      <li class=""><label><input type="checkbox" value="7.x" name="software_version[]" id="software_version_" disabled="disabled"> 7.x</label></li>
+                      <li class=""><label><input type="checkbox" value="8.x" name="software_version[]" id="software_version_" disabled="disabled"> 8.x</label></li>
+                  </ul>
+                    <a onclick="$(&quot;.software_version_container li.hidden&quot;).show(); $(this).hide();; return false;" href="#">Show all</a>
+                </div>
+                <div class="software_version_container vray" style="display: none;">
+                  <label>Vray Version:</label>
+                  <ul>
+                      <li class="hidden"><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class=""><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                      <li class=""><label><input type="checkbox" value="7.x" name="software_version[]" id="software_version_" disabled="disabled"> 7.x</label></li>
+                      <li class=""><label><input type="checkbox" value="8.x" name="software_version[]" id="software_version_" disabled="disabled"> 8.x</label></li>
+                  </ul>
+                    <a onclick="$(&quot;.software_version_container li.hidden&quot;).show(); $(this).hide();; return false;" href="#">Show all</a>
+                </div>
+                <div class="software_version_container xsi" style="display: none;">
+                  <label>Xsi Version:</label>
+                  <ul>
+                      <li class="hidden"><label><input type="checkbox" value="1.0" name="software_version[]" id="software_version_" disabled="disabled"> 1.0</label></li>
+                      <li class="hidden"><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                      <li class=""><label><input type="checkbox" value="5.x" name="software_version[]" id="software_version_" disabled="disabled"> 5.x</label></li>
+                      <li class=""><label><input type="checkbox" value="6.x" name="software_version[]" id="software_version_" disabled="disabled"> 6.x</label></li>
+                      <li class=""><label><input type="checkbox" value="7.x" name="software_version[]" id="software_version_" disabled="disabled"> 7.x</label></li>
+                      <li class=""><label><input type="checkbox" value="8.x" name="software_version[]" id="software_version_" disabled="disabled"> 8.x</label></li>
+                  </ul>
+                    <a onclick="$(&quot;.software_version_container li.hidden&quot;).show(); $(this).hide();; return false;" href="#">Show all</a>
+                </div>
+                <div class="software_version_container zbrush" style="display: none;">
+                  <label>Zbrush Version:</label>
+                  <ul>
+                      <li class=""><label><input type="checkbox" value="1.x" name="software_version[]" id="software_version_" disabled="disabled"> 1.x</label></li>
+                      <li class=""><label><input type="checkbox" value="2.x" name="software_version[]" id="software_version_" disabled="disabled"> 2.x</label></li>
+                      <li class=""><label><input type="checkbox" value="3.x" name="software_version[]" id="software_version_" disabled="disabled"> 3.x</label></li>
+                      <li class=""><label><input type="checkbox" value="4.x" name="software_version[]" id="software_version_" disabled="disabled"> 4.x</label></li>
+                  </ul>
+                </div>
+          </div>
+
+          <div class="search_field model" style="display: none;">
+            <label>Detail Level:</label>
+            <ul>
+              <li><label><input type="checkbox" value="low" name="detail_level[]" id="detail_level_" disabled="disabled"> Low Poly (Games)</label></li>
+              <li><label><input type="checkbox" value="medium" name="detail_level[]" id="detail_level_" disabled="disabled"> Medium (Average use)</label></li>
+              <li><label><input type="checkbox" value="high" name="detail_level[]" id="detail_level_" disabled="disabled"> High (Film or Super High Apps)</label></li>
+            </ul>
+          </div>
+
+          <div class="search_field model" style="display: none;">
+            <label>Resolution:</label>
+            <ul>
+                <li><label><input type="checkbox" value="512" name="resolution[]" id="resolution_" disabled="disabled"> 512</label></li>
+                <li><label><input type="checkbox" value="1024" name="resolution[]" id="resolution_" disabled="disabled"> 1k</label></li>
+                <li><label><input type="checkbox" value="2048" name="resolution[]" id="resolution_" disabled="disabled"> 2k</label></li>
+                <li><label><input type="checkbox" value="4096" name="resolution[]" id="resolution_" disabled="disabled"> 4k</label></li>
+                <li><label><input type="checkbox" value="8192" name="resolution[]" id="resolution_" disabled="disabled"> 8k</label></li>
+                <li><label><input type="checkbox" value="16384" name="resolution[]" id="resolution_" disabled="disabled"> 16k</label></li>
+            </ul>
+          </div>
+
+          <div class="search_field model" style="display: none;">
+            <label>Features:</label>
+            <ul>
+              <li><label><input type="checkbox" value="1" name="animated" id="animated" disabled="disabled"> Animated</label></li>
+              <li><label><input type="checkbox" value="1" name="textures" id="textures" disabled="disabled"> Textures</label></li>
+              <li><label><input type="checkbox" value="1" name="materials" id="materials" disabled="disabled"> Materials</label></li>
+              <li><label><input type="checkbox" value="1" name="rigged" id="rigged" disabled="disabled"> Rigged</label></li>
+              <li><label><input type="checkbox" value="1" name="mature" id="mature" disabled="disabled"> Mature</label></li>
+              <li><label><input type="checkbox" value="1" name="includes_normal_map" id="includes_normal_map" disabled="disabled"> Includes Normal Map</label></li>
+            </ul>
+          </div>
+
+          <div class="search_field model" style="display: none;">
+            <label>Geometry:</label>
+            <ul>
+                <li><label><input type="checkbox" value="polygonal" name="geometry[]" id="geometry_" disabled="disabled"> Polygonal</label></li>
+                <li><label><input type="checkbox" value="subdivision" name="geometry[]" id="geometry_" disabled="disabled"> Subdivision</label></li>
+                <li><label><input type="checkbox" value="nurbs" name="geometry[]" id="geometry_" disabled="disabled"> Nurbs</label></li>
+                <li><label><input type="checkbox" value="other" name="geometry[]" id="geometry_" disabled="disabled"> Other</label></li>
+            </ul>
+          </div>
+
+          <div class="search_field operating-systems" style="display: none;">
+            <label>OS:</label>
+            <ul>
+                <li><label><input type="checkbox" value="irix" name="os[]" id="os_" disabled="disabled"> Irix</label></li>
+                <li><label><input type="checkbox" value="linux" name="os[]" id="os_" disabled="disabled"> Linux</label></li>
+                <li><label><input type="checkbox" value="mac" name="os[]" id="os_" disabled="disabled"> Mac</label></li>
+                <li><label><input type="checkbox" value="solaris" name="os[]" id="os_" disabled="disabled"> Solaris</label></li>
+                <li><label><input type="checkbox" value="windows" name="os[]" id="os_" disabled="disabled"> Windows</label></li>
+            </ul>
+          </div>
+
+          <div class="search_field language" style="display: none;">
+            <label>Language:</label>
+            <ul>
+                <li><label><input type="checkbox" value="6" name="language[]" id="language_" disabled="disabled"> Chinese</label></li>
+                <li><label><input type="checkbox" value="5" name="language[]" id="language_" disabled="disabled"> Dutch</label></li>
+                <li><label><input type="checkbox" value="1" name="language[]" id="language_" disabled="disabled"> English</label></li>
+                <li><label><input type="checkbox" value="2" name="language[]" id="language_" disabled="disabled"> French</label></li>
+                <li><label><input type="checkbox" value="3" name="language[]" id="language_" disabled="disabled"> German</label></li>
+                <li><label><input type="checkbox" value="9" name="language[]" id="language_" disabled="disabled"> Hindi</label></li>
+                <li><label><input type="checkbox" value="8" name="language[]" id="language_" disabled="disabled"> Japanese</label></li>
+                <li><label><input type="checkbox" value="7" name="language[]" id="language_" disabled="disabled"> Korean</label></li>
+                <li><label><input type="checkbox" value="4" name="language[]" id="language_" disabled="disabled"> Spanish</label></li>
+            </ul>
+          </div>
+
+          <div class="search_field readership" style="display: none;">
+            <label>Readership:</label>
+            <ul>
+                <li><label><input type="checkbox" value="0" name="readership[]" id="readership_" disabled="disabled"> Basic</label></li>
+                <li><label><input type="checkbox" value="1" name="readership[]" id="readership_" disabled="disabled"> Intermediate</label></li>
+                <li><label><input type="checkbox" value="2" name="readership[]" id="readership_" disabled="disabled"> Advanced</label></li>
+            </ul>
+          </div>
+
+          <div class="search_field tutorials" style="display: none;">
+            <label>Text or Video:</label>
+            <ul>
+                <li><label><input type="checkbox" value="Text" name="tutorial_type[]" id="tutorial_type_" disabled="disabled"> Text</label></li>
+                <li><label><input type="checkbox" value="Video" name="tutorial_type[]" id="tutorial_type_" disabled="disabled"> Video</label></li>
+            </ul>
+          </div>
+
+          <div class="search_field tutorials" style="display: none;">
+            <label>License:</label>
+            <ul>
+              <li><label><input type="checkbox" value="freeware" name="license[]" id="license_" disabled="disabled"> Freeware</label></li>
+              <li><label><input type="checkbox" value="commercial" name="license[]" id="license_" disabled="disabled"> Commercial</label></li>
+            </ul>
+          </div>
+
+          <span class="search_field hidden_search_field tags model-tags" style="display: none;">
+            <input type="hidden" name="tag" id="tag" disabled="disabled">
+          </span>
+
+          <span class="search_field hidden_search_field marketable" style="display: none;">
+            <input type="hidden" name="min_price" id="min_price" disabled="disabled">
+          </span>
+
+          <span class="search_field hidden_search_field marketable" style="display: none;">
+            <input type="hidden" name="max_price" id="max_price" disabled="disabled">
+          </span>
+
+        </div>
+
+        <a title="Reset search form" href="#" class="clear_form">Reset form</a>
+      </div>
+
+    </div>
+</form>
