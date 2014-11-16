@@ -13,4 +13,9 @@
 
     <%= discourse_csrf_tags %>
 
-    <script>var params = <%= raw params.to_json %>;</script>
+    <script>
+      var params = <%= raw params.to_json %>;
+      var marketplace_host = "<%= marketplace_host %>";
+      var community_host = "<%= community_host %>";
+      var forums_host = "<%= forums_host %>";
+    </script>

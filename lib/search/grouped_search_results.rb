@@ -28,8 +28,8 @@ class Search
     def blurb(post)
       cooked = SearchObserver::HtmlScrubber.scrub(post.cooked).squish
       terms = @term.split(/\s+/)
-      blurb = TextHelper.excerpt(cooked, terms.first, radius: 100)
-      blurb = TextHelper.truncate(cooked, length: 200) if blurb.blank?
+      blurb = TextHelper.excerpt(cooked, terms.first, radius: 50)
+      blurb = TextHelper.truncate(cooked, length: 100) if blurb.blank?
       Sanitize.clean(blurb)
     end
 

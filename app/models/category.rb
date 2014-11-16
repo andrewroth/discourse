@@ -353,6 +353,10 @@ SQL
     url << "/#{slug}"
   end
 
+  def relative_url
+    url
+  end
+
   # If the name changes, try and update the category definition topic too if it's
   # an exact match
   def rename_category_definition

@@ -9,7 +9,7 @@ module H3d
       return self.discourse_user_ref if self.discourse_user_ref
 
       discourse_user = ::User.new
-      discourse_user.username = self.login
+      discourse_user.username = self.permalink
       discourse_user.email = self.email
       discourse_user.active = true
       discourse_user.admin = self.admin
@@ -24,5 +24,21 @@ module H3d
 
       return self.discourse_user_ref
     end
+
+    def to_s
+      return @to_s if @to_s
+      s = case self.display_name
+          when 'name'
+            name.present? ? name : login
+          else
+            login
+          end
+      @to_s = s.present? ? s.strip : ''
+    end
+
+    def name
+      fullname
+    end
+    alias :nickname :name
   end
 end

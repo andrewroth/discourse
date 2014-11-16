@@ -127,6 +127,10 @@ class User < ActiveRecord::Base
     SiteSetting.min_username_length.to_i..SiteSetting.max_username_length.to_i
   end
 
+  def to_s
+    h3d_user.to_s
+  end
+
   def custom_groups
     groups.where(automatic: false, visible: true)
   end
@@ -373,6 +377,10 @@ class User < ActiveRecord::Base
 
   def avatar_template_url
     schemaless absolute avatar_template
+  end
+
+  def relative_url
+    "/users/#{h3d_user.permalink}"
   end
 
   def self.avatar_template(username,uploaded_avatar_id)

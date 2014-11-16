@@ -305,6 +305,10 @@ class Post < ActiveRecord::Base
     Post.url(topic.slug, topic.id, post_number)
   end
 
+  def relative_url
+    url
+  end
+
   def self.url(slug, topic_id, post_number)
     "/t/#{slug}/#{topic_id}/#{post_number}"
   end

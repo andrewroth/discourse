@@ -17,38 +17,14 @@
         <div class="search_field_wrap">
           <input type="text" value="" name="" id="search_bar" class="ui-autocomplete-input" autocomplete="off">
           <select title="Search section" name="section" id="section" class="section">
-<option value="marketplace" data-action="search">Store</option>
-<option value="downloads" data-action="search">Free files</option>
-<option value="tutorials" data-action="search">Tutorials</option>
-<option value="gallery" data-action="search">Gallery</option>
-<option value="portfolio_images" data-action="search">Portfolio</option>
-<option value="forum" selected="selected" data-action="search">Forum</option></select>
+            <option value="marketplace" data-action="search">Store</option>
+            <option value="downloads" data-action="search">Free files</option>
+            <option value="tutorials" data-action="search">Tutorials</option>
+            <option value="gallery" data-action="search">Gallery</option>
+            <option value="portfolio_images" data-action="search">Portfolio</option>
+            <option value="forums" selected="selected" data-action="search">Forum</option></select>
           <button title="Search" type="submit"><span>&nbsp;</span></button>
         </div>
-        <script>
-          $('#search_bar').autocomplete2({
-            source: function(request, response) {
-              if ($("#section").val() == "marketplace" || $("#section").val() == "downloads") {
-                if (isAdvancedSearch()) {
-                  $("#autocomplete_unavailable").show();
-                } else {
-                  setSearchBarFilterInfoText();
-                  $.getJSON("/items/autocomplete_item_title", { 
-                    term: $("#search_bar").val(), 
-                    section: $("#section").val(),
-                    software: $("#software").val(),
-                    category: category_select.val(),
-                    user: $("#search_bar_user").val()
-                  }, response);
-                  $("#autocomplete_unavailable").hide();
-                }
-              }
-            },
-            html: true,
-            delay: 0,
-            select: function(event, ui) { window.location.href = "/downloads/" + ui.item.id; event.preventDefault(); return false }
-          });
-        </script>
       </div>
 
       <div style="display: none;" class="advanced_search_bar_container">
