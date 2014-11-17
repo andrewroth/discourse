@@ -15,7 +15,7 @@ class Search
                 :more_posts, :more_categories, :more_users,
                 :term, :search_context, :include_blurbs
 
-    def initialize(type_filter, term, search_context, include_blurbs)
+    def initialize(type_filter, term, search_context, include_blurbs, limit = Search.per_facet)
       @type_filter = type_filter
       @term = term
       @search_context = search_context
@@ -23,6 +23,15 @@ class Search
       @posts = []
       @categories = []
       @users = []
+      @limit = limit
+    end
+
+    def big_blurb(post)
+      cooked = SearchObserver::HtmlScrubber.scrub(post.cooked).squish
+      terms = @term.split(/\s+/)
+      blurb = TextHelper.excerpt(cooked, terms.first, radius: 200)
+      blurb = TextHelper.truncate(cooked, length: 400) if blurb.blank?
+      Sanitize.clean(blurb)
     end
 
     def blurb(post)
@@ -36,7 +45,7 @@ class Search
     def add(object)
       type = object.class.to_s.downcase.pluralize
 
-      if !@type_filter.present? && send(type).length == Search.per_facet
+      if !@type_filter.present? && send(type).length == @limit
         instance_variable_set("@more_#{type}".to_sym, true)
       else
         (send type) << object

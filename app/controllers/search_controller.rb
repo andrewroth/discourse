@@ -2,12 +2,14 @@ require_dependency 'search'
 
 class SearchController < ApplicationController
   include ActionView::Helpers::UrlHelper
+  skip_before_filter :check_xhr, :only => :query
 
   def self.valid_context_types
     %w{user topic category}
   end
 
   def query
+
     params.require(:term)
 
     search_args = {guardian: guardian}
@@ -36,6 +38,8 @@ class SearchController < ApplicationController
       search_args[:search_context] = context_obj
     end
 
+    search_args[:per_facet] = 10 unless request.xhr?
+
     search = Search.new(params[:term], search_args.symbolize_keys)
     result = search.execute
 
@@ -53,33 +57,35 @@ class SearchController < ApplicationController
 =end
 
       lock_html = %|<img class='locked_topic' src='/assets/discourse_lock.png'></img>|
-      render :text => (posts + topics + users + categories).collect{ |r| 
+      @autocomplete_array = (posts + topics + users + categories).collect{ |r| 
         case r
         when Topic
-          label = "<div style='line-height: normal; color: #828282'><span class='linklike'>#{lock_html if true || r.closed} #{r.title.gsub(/#{params[:term]}/i) { |s| "<b class='darker'>#{s}</b>"}}</span><br/>"
-          label += "#{r.created_at.strftime("%m, %Y")}"
-          label += " - #{result.blurb(r.posts.first).gsub(/#{params[:term]}/i) { |s| "<b class='darker black'>#{s}</b>" }}"
-          label += "</div>"
+          label = render_to_string(partial: "topic", locals: { result: result, t: r })
         when Post
-          label = "<div style='line-height: normal; color: #828282'><span class='linklike'>#{lock_html if true || r.topic.closed} #{r.topic.title.gsub(/#{params[:term]}/i) { |s| "<b class='darker'>#{s}</b>" }}</span><br/>"
-          label += "#{r.topic.created_at.strftime("%m, %Y")}"
-          label += " - #{result.blurb(r).gsub(/#{params[:term]}/i) { |s| "<b class='darker black'>#{s}</b>" }}"
-          label += "</div>"
+          label = render_to_string(partial: "post", locals: { result: result, p: r })
         when User
-          label = "<div><img class='avatar' width='25' height='25' title='#{r.to_s}' src='#{r.avatar_template.sub('{size}', '25')}'></img>#{r.to_s}</div>".html_safe
+          label = render_to_string(partial: "user", locals: { result: result, u: r })
         when Category
-          label = "<div><span style='background-color: ##{r.color}; color: ##{r.text_color}; ' title='#{r.description.present? ? r.description :  r.name}' class='badge-category' data-drop-close='true' href='#{r.relative_url}'>#{r.name}</span></div>"
+          label = render_to_string(partial: "category", locals: { result: result, c: r })
         end
 
         { 
           "class_name" => r.class.name, 
           "id" => r.id, 
-          #"label" => "<div>#{r.class.name}: #{r.id}</div>".html_safe, 
           "label" => label,
           "value" => r.id, 
           "url" => r.relative_url
         }
-      }.to_json
+      }
+
+      respond_to do |format|
+        format.js do
+          render :text => @autocomplete_array.to_json
+        end
+        format.html do
+          render "search/query"
+        end
+      end
     else
       render_serialized(result, GroupedSearchResultSerializer, :result => result)
     end

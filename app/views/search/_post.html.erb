@@ -1,0 +1,7 @@
+<div style='line-height: normal; color: #828282'>
+  <%= link_to p.relative_url, host: forums_host do %>
+    <%= render("lock_html") if p.topic.closed %> <%= bold_match(p.topic.title, params[:term]) %>
+  <% end %>
+  <br/>
+  <%= p.created_at %> - <%= bold_match(result.send(request.xhr? ? :blurb : :big_blurb, p), params[:term], 'black') %>
+</div>

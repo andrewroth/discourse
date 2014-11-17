@@ -105,12 +105,12 @@ class Search
     @guardian = @opts[:guardian] || Guardian.new
     @search_context = @opts[:search_context]
     @include_blurbs = @opts[:include_blurbs] || false
-    @limit = Search.per_facet
+    @limit = @opts[:per_facet] || Search.per_facet
     if @opts[:type_filter].present?
       @limit = Search.per_filter
     end
 
-    @results = GroupedSearchResults.new(@opts[:type_filter], term, @search_context, @include_blurbs)
+    @results = GroupedSearchResults.new(@opts[:type_filter], term, @search_context, @include_blurbs, @limit)
   end
 
   def self.execute(term, opts=nil)
@@ -196,7 +196,7 @@ class Search
         raise Discourse::InvalidAccess.new("invalid type filter") unless Search.facets.include?(@results.type_filter)
         send("#{@results.type_filter}_search")
       else
-        @limit = Search.per_facet + 1
+        @limit ||= Search.per_facet + 1
         unless @search_context
           user_search
           category_search
@@ -215,7 +215,7 @@ class Search
     def add_more_topics_if_expected
       expected_topics = 0
       expected_topics = Search.facets.size unless @results.type_filter.present?
-      expected_topics = Search.per_facet * Search.facets.size if @results.type_filter == 'topic'
+      expected_topics = @limit * Search.facets.size if @results.type_filter == 'topic'
       expected_topics -= @results.posts.length
       if expected_topics > 0
         extra_posts = posts_query(expected_topics * Search.burst_factor)

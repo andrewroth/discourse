@@ -1,0 +1,9 @@
+Render search here
+
+<ul class='html_search_results ui-autocomplete ui-front ui-menu ui-widget ui-widget-content'>
+  <% @autocomplete_array.each do |row| %>
+    <li>
+      <%= row["label"] %>
+    </li>
+  <% end %>
+</ul>

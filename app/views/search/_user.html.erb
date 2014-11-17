@@ -1,0 +1,6 @@
+<div>
+  <%= link_to u.relative_url do %>
+    <img class='avatar' width='25' height='25' title='<%= u.to_s %>' src='<%= u.avatar_template.sub('{size}', '25') %>'></img>
+    <%= bold_match(u.to_s, params[:term]) %>
+  <% end %>
+</div>

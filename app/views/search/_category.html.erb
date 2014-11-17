@@ -1,0 +1,7 @@
+<div>
+  <%= link_to c.url, host: forums_host do %>
+    <span style='background-color: #<%= c.color %>; color: #<%= c.text_color %>;' title='<%= c.description.present? ? c.description : c.name %>' class='badge-category' data-drop-close='true' href='<%= c.relative_url %>'>
+      <%= c.name %>
+    </span>
+  <% end %>
+</div>

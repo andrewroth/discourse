@@ -43,7 +43,7 @@
     <%= yield :head %>
   </head>
 
-  <body class='forums'>
+  <body class='forums' data-controller='<%= params[:controller] %>' data-action='<%= params[:action] %>'>
     <noscript data-path="<%= request.env['PATH_INFO'] %>">
       <header class="d-header">
         <div class="container">
@@ -114,6 +114,7 @@
         </div>
       <% end %>
       <section id='main'>
+        <%= yield %>
       </section>
       <div class="clear"></div>
     </div>
