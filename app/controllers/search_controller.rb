@@ -83,6 +83,7 @@ class SearchController < ApplicationController
           render :text => @autocomplete_array.to_json
         end
         format.html do
+          @no_ember = true
           render "search/query"
         end
       end

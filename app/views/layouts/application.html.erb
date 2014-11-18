@@ -58,7 +58,9 @@
       </header>
       <div id="main-outlet" class="container">
         <!-- preload-content: -->
-        <%= yield %>
+        <% if @no_ember %>
+          <%= yield %>
+        <% end %>
         <!-- :preload-content -->
       </div>
       <footer id='noscript-footer'>
@@ -114,7 +116,9 @@
         </div>
       <% end %>
       <section id='main'>
-        <%= yield %>
+        <% if @no_embed %>
+          <%= yield %>
+        <% end %>
       </section>
       <div class="clear"></div>
     </div>
