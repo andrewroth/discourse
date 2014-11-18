@@ -59,7 +59,8 @@ class CategoryList
                         .secured(@guardian)
 
       if @options[:parent_category_id].present?
-        @categories = @categories.where('categories.parent_category_id = ?', @options[:parent_category_id].to_i)
+        parent_category_id = (@options[:parent_category_id] == :flat ? nil : @options[:parent_category_id].to_i)
+        @categories = @categories.where(parent_category_id: parent_category_id)
       end
 
       if SiteSetting.fixed_category_positions
@@ -76,9 +77,20 @@ class CategoryList
       end
 
       @categories = @categories.to_a
-      if @options[:parent_category_id].blank?
+      if @options[:parent_category_id] == :flat
         subcategories = {}
         to_delete = Set.new
+        @categories.each_with_index do |c, i|
+          if c.subcategories.present?
+            @categories[i] = [ c, c.subcategories ]
+          end
+        end
+
+        @categories.flatten!
+      end
+
+      if @options[:parent_category_id].blank?
+        subcategories = {}
         @categories.each do |c|
           if c.parent_category_id.present?
             subcategories[c.parent_category_id] ||= []
