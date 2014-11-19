@@ -30,7 +30,7 @@ Discourse.Site = Discourse.Model.extend({
 
   // Sort subcategories under parents
   sortedCategories: function() {
-    var cats = this.get('categoriesByCount'),
+    var cats = this.get('categories'),
         result = [],
         remaining = {};
 

@@ -18,10 +18,16 @@
   <section {{bind-attr class="expanded::hidden :category-dropdown-menu"}} class='chooser'>
     <div class='cat'><a {{bind-attr href=allCategoriesUrl}} data-drop-close="true" class='badge-category home'>{{allCategoriesLabel}}</a></div>
     {{#if subCategory}}
-    <div class='cat'><a {{bind-attr href=noCategoriesUrl}} data-drop-close="true" class='badge-category home'>{{i18n categories.no_subcategory}}</a></div>
+    <div class='cat'><a {{bind-attr href=noCategoriesUrl}} data-drop-close="true" class='badge-category home'>SUB1{{i18n categories.no_subcategory}}SUB2</a></div>
     {{/if}}
     {{#if renderCategories}}
-    {{#each categories}}<div class='cat'>{{category-link this allowUncategorized=true}}</div>{{/each}}
+    {{#each categories}}
+      {{#if headerOnly}}
+        <div class='cat header_only'>{{name}}</div>
+      {{else}}
+        <div class='cat forum'>{{category-link this allowUncategorized=true}}</div>
+      {{/if}}
+    {{/each}}
     {{/if}}
   </section>
 {{/if}}
