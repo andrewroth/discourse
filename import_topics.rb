@@ -21,7 +21,7 @@ puts "Done"
 roots.each do |r|
   puts "=== ROOT #{r.title} ==="
 
-  r.children.each do |f|
+  (r.children + r.children.collect(&:children)).flatten.each do |f|
 
     puts "=== #{f.title} ==="
     puts "=== Forum data: #{f.inspect}"
