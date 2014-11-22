@@ -11,77 +11,83 @@
       <tbody>
         {{#each categories}}
         <tr data-category_id='{{unbound id}}' {{bind-attr class="description_excerpt:has-description:no-description logo_url:has-logo:no-logo"}}>
-          {{#if parentCategory}}
-          <td class='category' style="border-color: #{{unbound parent_color}}">
+          {{#if headerOnly}}
+            <td class='category header_only' style="" colspan='3'>
+              <h3>{{name}}</h3>
+            </td>
           {{else}}
-          <td class='category' style="border-color: #{{unbound color}}">
-          {{/if}}
+            {{#if parentCategory}}
+            <td class='category' style="border-color: #{{unbound parent_color}}">
+            {{else}}
+            <td class='category' style="border-color: #{{unbound color}}">
+            {{/if}}
 
-            {{#if parentCategory}}<div style='border-left: 6px solid #{{unbound color}}; padding-left: 10px;'>{{/if}}
-              <div>
-                <div class="pull-left">
-                  {{category-title-link category=this}}
-                  {{#if unreadTopics}}
-                    <a href={{unbound unreadUrl}} class='badge new-posts badge-notification' title='{{i18n topic.unread_topics count="unreadTopics"}}'>{{i18n filters.unread.lower_title_with_count count="unreadTopics"}}</a>
-                  {{/if}}
-                  {{#if newTopics}}
-                    <a href={{unbound newUrl}} class='badge new-posts badge-notification' title='{{i18n topic.new_topics count="newTopics"}}'>{{i18n filters.new.lower_title_with_count count="newTopics"}}</a>
-                  {{/if}}
-                </div>
-                <div class="clearfix"></div>
-              </div>
-              {{#if description_excerpt}}
-                <div class="category-description">
-                  {{{description_excerpt}}}
-                </div>
-              {{/if}}
-              {{#if subcategories}}
-                <div class='subcategories'>
-                  {{#each subcategories}}
-                    {{category-link this showParent=true onlyStripe=true}}
+              {{#if parentCategory}}<div style='border-left: 6px solid #{{unbound color}}; padding-left: 10px;'>{{/if}}
+                <div>
+                  <div class="pull-left">
+                    {{category-title-link category=this}}
                     {{#if unreadTopics}}
-                      <a href={{unbound unreadUrl}} class='badge new-posts badge-notification' title='{{i18n topic.unread_topics count="unreadTopics"}}'>{{unbound unreadTopics}}</a>
+                      <a href={{unbound unreadUrl}} class='badge new-posts badge-notification' title='{{i18n topic.unread_topics count="unreadTopics"}}'>{{i18n filters.unread.lower_title_with_count count="unreadTopics"}}</a>
                     {{/if}}
                     {{#if newTopics}}
-                      <a href={{unbound newUrl}} class='badge new-posts badge-notification' title='{{i18n topic.new_topics count="newTopics"}}'>{{unbound newTopics}}</a>
+                      <a href={{unbound newUrl}} class='badge new-posts badge-notification' title='{{i18n topic.new_topics count="newTopics"}}'>{{i18n filters.new.lower_title_with_count count="newTopics"}}</a>
                     {{/if}}
-                  {{/each}}
-                </div>
-              {{/if}}
-            {{#if parentCategory}}</div>{{/if}}
-          </td>
-          <td {{bind-attr class="archived :latest"}}>
-            {{#each featuredTopics}}
-              <div class="featured-topic">
-                {{topic-status topic=this}}
-                <a class='title' href="{{unbound lastUnreadUrl}}">{{{unbound fancy_title}}}</a>
-                {{topic-post-badges newPosts=totalUnread unseen=unseen url=lastUnreadUrl}}
-
-                {{#if controller.latestTopicOnly}}
-                  <div class='last-user-info'>
-                    {{i18n categories.latest_by}} <a href="{{{unbound lastPosterUrl}}}">{{unbound last_poster.username}}</a>
-                    <a href="{{unbound lastPostUrl}}">{{format-age last_posted_at}}</a>
                   </div>
-                {{else}}
-                  &nbsp;
-                  <a href="{{unbound lastPostUrl}}" class="last-posted-at">{{format-age last_posted_at}}</a>
+                  <div class="clearfix"></div>
+                </div>
+                {{#if description_excerpt}}
+                  <div class="category-description">
+                    {{{description_excerpt}}}
+                  </div>
                 {{/if}}
-              </div>
-            {{/each}}
-          </td>
-          <td class='stats' {{bind-attr title="topicStatsTitle"}}>
-            <table class="categoryStats">
-              <tbody>
-              {{#each topicCountStats}}
-                <tr>
-                  <td class="value">{{value}}</td>
-                  <td class="unit"> / {{unit}}</td>
-                </tr>
+                {{#if subcategories}}
+                  <div class='subcategories'>
+                    {{#each subcategories}}
+                      {{category-link this showParent=true onlyStripe=true}}
+                      {{#if unreadTopics}}
+                        <a href={{unbound unreadUrl}} class='badge new-posts badge-notification' title='{{i18n topic.unread_topics count="unreadTopics"}}'>{{unbound unreadTopics}}</a>
+                      {{/if}}
+                      {{#if newTopics}}
+                        <a href={{unbound newUrl}} class='badge new-posts badge-notification' title='{{i18n topic.new_topics count="newTopics"}}'>{{unbound newTopics}}</a>
+                      {{/if}}
+                    {{/each}}
+                  </div>
+                {{/if}}
+              {{#if parentCategory}}</div>{{/if}}
+            </td>
+            <td {{bind-attr class="archived :latest"}}>
+              {{#each featuredTopics}}
+                <div class="featured-topic">
+                  {{topic-status topic=this}}
+                  <a class='title' href="{{unbound lastUnreadUrl}}">{{{unbound fancy_title}}}</a>
+                  {{topic-post-badges newPosts=totalUnread unseen=unseen url=lastUnreadUrl}}
+
+                  {{#if controller.latestTopicOnly}}
+                    <div class='last-user-info'>
+                      {{i18n categories.latest_by}} <a href="{{{unbound lastPosterUrl}}}">{{unbound last_poster.username}}</a>
+                      <a href="{{unbound lastPostUrl}}">{{format-age last_posted_at}}</a>
+                    </div>
+                  {{else}}
+                    &nbsp;
+                    <a href="{{unbound lastPostUrl}}" class="last-posted-at">{{format-age last_posted_at}}</a>
+                  {{/if}}
+                </div>
               {{/each}}
-              </tbody>
-            </table>
-          </td>
-        </tr>
+            </td>
+            <td class='stats' {{bind-attr title="topicStatsTitle"}}>
+              <table class="categoryStats">
+                <tbody>
+                {{#each topicCountStats}}
+                  <tr>
+                    <td class="value">{{value}}</td>
+                    <td class="unit"> / {{unit}}</td>
+                  </tr>
+                {{/each}}
+                </tbody>
+              </table>
+            </td>
+            {{/if}}
+          </tr>
         {{/each}}
       </tbody>
     </table>
