@@ -9,3 +9,27 @@ DiscoursePluginRegistry.handlebars.each { |hb| require_asset(hb) }
 %>
 
 var discourse = true;
+//var active_array = $("#navigation-bar").find(".active");
+var current_path = ""; // force an initial endPjax by not initializing current_path to window.location.pathname
+
+Ember.View.reopen({
+  didInsertElement : function(){
+    this._super();
+    Ember.run.scheduleOnce('afterRender', this, this.afterRenderEvent);
+  },
+  afterRenderEvent : function(){
+
+    /*
+    new_active_array = $("#navigation-bar").find(".active");
+    if (!($(active_array).not(new_active_array).length == 0 && $(new_active_array).not(active_array).length == 0)) {
+      $.h3d.endPjax();
+    }
+    active_array = new_active_array;
+    */
+    new_path = window.location.pathname;
+    if (new_path != current_path) {
+      $.h3d.endPjax();
+    }
+    current_path = new_path;
+  }
+});

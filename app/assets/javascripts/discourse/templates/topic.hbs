@@ -1,3 +1,21 @@
+{{bread-crumbs categories=categories
+               category=category
+               noSubcategories=noSubcategories
+               hideSubcategories=showingSubcategoryList}}
+
+<div class="tabs">
+  <ul class="nav nav-pills latest-tabs subtle" id='navigation-bar'>
+    {{#each navItem in navItems}}
+      {{navigation-item content=navItem filterMode=filterMode}}
+    {{/each}}
+    {{custom-html "extraNavItem"}}
+  </ul>
+</div>
+
+{{#if canChangeCategoryNotificationLevel}}
+  {{view 'category-notifications-button' category=category}}
+{{/if}}
+
 <div class='container'>
   {{custom-html "top"}}
   {{global-notice}}

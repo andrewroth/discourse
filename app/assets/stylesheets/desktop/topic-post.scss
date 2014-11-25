@@ -757,7 +757,7 @@ blockquote > *:last-child {
 }
 
 // variables are used to calculate the width of .gap
-$topic-body-width: 810px;
+$topic-body-width: 890px;
 $topic-body-width-padding: 11px;
 $topic-avatar-width: 45px;
 .topic-body {
@@ -802,7 +802,7 @@ $topic-avatar-width: 45px;
   width: 0;
   height: 0;
   vertical-align: middle;
-  border-top: 4px solid $primary;
+  border-top: 4px solid white;
   border-right: 4px solid transparent;
   border-left: 4px solid transparent;
   content: "";
