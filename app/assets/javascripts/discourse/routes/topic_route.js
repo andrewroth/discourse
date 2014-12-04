@@ -6,6 +6,21 @@ var isTransitioning = false,
 Discourse.TopicRoute = Discourse.Route.extend({
   redirect: function() { return this.redirectIfLoginRequired(); },
 
+  renderTemplate: function() {
+    this.render();
+
+    // ember causes me pain
+    // or maybe it's discourse
+    // why do they make it so complicated?
+    // why is it so hard to do something so simple?
+    // I just want to put the categories dropdown on the top of each topic, and default the menu text to the current category
+    // but no matter what I do, in jsapp/components/bread-crumbs.js.es6, the category is undefined
+    // for my own sanity, I'm going to give up now and just going to leave the default menu text as 
+    // "All Categories" and print the topic's category to the right
+    this.controllerFor('navigation/categories').set('filterMode', 'categories');
+    this.render('navigation/categories', { into: 'topic', outlet: 'navigation-bar' });
+  },
+
   queryParams: {
     filter: { replace: true },
     username_filters: { replace: true },
@@ -14,6 +29,7 @@ Discourse.TopicRoute = Discourse.Route.extend({
 
   titleToken: function() {
     var model = this.modelFor('topic');
+
     if (model) {
       var result = model.get('title'),
           cat = model.get('category');
@@ -169,6 +185,18 @@ Discourse.TopicRoute = Discourse.Route.extend({
     } else {
       return this.setupParams(Discourse.Topic.create(_.omit(params, 'username_filters', 'filter')), queryParams);
     }
+    
+    // copied from discovery_categories_route
+    PreloadStore.remove("topic_list");
+
+    return Discourse.CategoryList.list('categories').then(function(list) {
+      var tracking = Discourse.TopicTrackingState.current();
+      if (tracking) {
+        tracking.sync(list, 'categories');
+        tracking.trackIncoming('categories');
+      }
+      return list;
+    });
   },
 
   activate: function() {

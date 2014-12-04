@@ -1,6 +1,8 @@
 development:
   adapter: postgresql
   database: discourse_development
+  username: discourse
+  password: discourse
   min_messages: warning
   pool: 5
   timeout: 5000
@@ -31,6 +33,21 @@ profile:
   pool: 5
   timeout: 5000
   host_names:
+    - "localhost"
+
+h3d:
+  adapter: postgresql
+  database: h3d
+  username: h3d
+  password: h3d
+  min_messages: warning
+  pool: 5
+  timeout: 5000
+  host_names:
+    ### Don't include the port number here. Change the "port" site setting instead, at /admin/site_settings.
+    ### If you change this setting you will need to
+    ###   - restart sidekiq if you change this setting
+    ###   - rebake all to posts using: `RAILS_ENV=production bundle exec rake posts:rebake`
     - "localhost"
 
 # You may be surprised production is not here, it is sourced from application.rb using a monkey patch

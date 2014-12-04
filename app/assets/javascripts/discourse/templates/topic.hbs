@@ -1,15 +1,13 @@
-{{bread-crumbs categories=categories
-               category=category
-               noSubcategories=noSubcategories
-               hideSubcategories=showingSubcategoryList}}
-
-<div class="tabs">
-  <ul class="nav nav-pills latest-tabs subtle" id='navigation-bar'>
-    {{#each navItem in navItems}}
-      {{navigation-item content=navItem filterMode=filterMode}}
-    {{/each}}
-    {{custom-html "extraNavItem"}}
-  </ul>
+<div class='list-controls'>
+  <div class="container">
+    {{outlet navigation-bar}}
+    <div class='current_category' style='margin-right: 20px;'>
+      {{#if category.parentCategory}}
+        {{bound-category-link category.parentCategory}}
+      {{/if}}
+      {{bound-category-link category}}
+    </div>
+  </div>
 </div>
 
 {{#if canChangeCategoryNotificationLevel}}
@@ -66,13 +64,6 @@
                 <a href='#' {{action "editTopic"}} class='edit-topic' title='{{i18n edit}}'>{{fa-icon pencil}}</a>
               {{/if}}
             </h1>
-
-            {{#unless isPrivateMessage}}
-              {{#if category.parentCategory}}
-                {{bound-category-link category.parentCategory}}
-              {{/if}}
-              {{bound-category-link category}}
-            {{/unless}}
           {{/if}}
         </div>
         {{plugin-outlet "topic-title"}}

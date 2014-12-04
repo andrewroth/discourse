@@ -1,6 +1,10 @@
 import ObjectController from 'discourse/controllers/object';
 
 export default ObjectController.extend(Discourse.SelectedPostsCount, {
+  subcategoryListSetting: Discourse.computed.setting('show_subcategory_list'),
+  showingParentCategory: Em.computed.none('category.parentCategory'),
+  showingSubcategoryList: Em.computed.and('subcategoryListSetting', 'showingParentCategory'),
+
   multiSelect: false,
   needs: ['header', 'modal', 'composer', 'quote-button', 'search', 'topic-progress'],
   allPostsSelected: false,
@@ -449,6 +453,7 @@ export default ObjectController.extend(Discourse.SelectedPostsCount, {
   }.property('selectedPostsUsername'),
 
   categories: function() {
+    debugger;
     return Discourse.Category.list();
   }.property(),
 
@@ -677,6 +682,12 @@ export default ObjectController.extend(Discourse.SelectedPostsCount, {
     if (lastLoadedPost && lastLoadedPost === post) {
       postStream.appendMore();
     }
-  }
+  },
 
+  navItems: function() {
+    debugger;
+    if (this.get('showingSubcategoryList')) { return []; }
+    //return Discourse.NavItem.buildList(this.get('category'), { noSubcategories: this.get('noSubcategories') });
+    return Discourse.NavItem.buildList(this.get('category'), { noSubcategories: false });
+  }.property('category', 'noSubcategories')
 });
