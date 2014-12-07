@@ -1,12 +1,6 @@
 <div class='list-controls'>
   <div class="container">
     {{outlet navigation-bar}}
-    <div class='current_category' style='margin-right: 20px;'>
-      {{#if category.parentCategory}}
-        {{bound-category-link category.parentCategory}}
-      {{/if}}
-      {{bound-category-link category}}
-    </div>
   </div>
 </div>
 

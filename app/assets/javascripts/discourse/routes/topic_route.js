@@ -19,9 +19,9 @@ Discourse.TopicRoute = Discourse.Route.extend({
   titleToken: function() {
     var model = this.modelFor('topic');
 
-    controller = this.controllerFor('navigation/categories');
+    controller = this.controllerFor('navigation/category');
     controller.set('category', model.get('category'));
-    debugger;
+    controller.set('filterMode', 'c/testing/l/');
     this.render('navigation/topic', { into: 'topic', outlet: 'navigation-bar', controller: controller, model: model, context: controller });
 
     if (model) {

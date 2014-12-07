@@ -24,7 +24,6 @@ export default Ember.Component.extend({
   }),
 
   firstCategory: function() {
-    debugger;
     return this.get('parentCategory') || this.get('category');
   }.property('parentCategory', 'category'),
 

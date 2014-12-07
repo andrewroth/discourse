@@ -6,6 +6,7 @@ export default DiscourseController.extend({
   }.property(),
 
   navItems: function() {
+    debugger;
     return Discourse.NavItem.buildList();
   }.property()
 });
