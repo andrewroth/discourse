@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="<%= SiteSetting.default_locale %>" class="<%= html_classes %>">
+  <head>
+    <meta charset="utf-8">
+    <title><%= content_for?(:title) ? yield(:title) + ' - ' + SiteSetting.title : SiteSetting.title %></title>
+    <meta name="description" content="<%= @description_meta || SiteSetting.site_description %>">
+
+    <%= render partial: "layouts/head" %>
+
+    <%- if shared_session_key %>
+    <meta name="shared_session_key" content="<%= shared_session_key %>">
+    <%- end %>
+
+    <%= raw SiteText.text_for(:head) %>
+
+    <script type="text/javascript" charset="utf-8">
+      $(function() {
+        $.ajax({url: '/h3d/users/dynamic.js?t=' + Date.now(), cache: true, dataType: 'script'});
+      });
+    </script>
+
+    <%= yield :head %>
+  </head>
+  <body>
+    Header-only layout
+  </body>
+</html>

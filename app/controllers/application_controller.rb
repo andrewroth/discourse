@@ -63,7 +63,11 @@ class ApplicationController < ActionController::Base
   end
 
   def set_layout
-    has_escaped_fragment? || CrawlerDetection.crawler?(request.user_agent) ? 'crawler' : 'application'
+    if params[:header_only] || params[:header_only] == 'true'
+      'header_only'
+    else
+      has_escaped_fragment? || CrawlerDetection.crawler?(request.user_agent) ? 'crawler' : 'application'
+    end
   end
 
   rescue_from Exception do |exception|
