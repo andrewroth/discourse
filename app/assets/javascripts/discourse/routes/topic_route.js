@@ -8,17 +8,6 @@ Discourse.TopicRoute = Discourse.Route.extend({
 
   renderTemplate: function() {
     this.render();
-
-    // ember causes me pain
-    // or maybe it's discourse
-    // why do they make it so complicated?
-    // why is it so hard to do something so simple?
-    // I just want to put the categories dropdown on the top of each topic, and default the menu text to the current category
-    // but no matter what I do, in jsapp/components/bread-crumbs.js.es6, the category is undefined
-    // for my own sanity, I'm going to give up now and just going to leave the default menu text as 
-    // "All Categories" and print the topic's category to the right
-    this.controllerFor('navigation/categories').set('filterMode', 'categories');
-    this.render('navigation/categories', { into: 'topic', outlet: 'navigation-bar' });
   },
 
   queryParams: {
@@ -29,6 +18,11 @@ Discourse.TopicRoute = Discourse.Route.extend({
 
   titleToken: function() {
     var model = this.modelFor('topic');
+
+    controller = this.controllerFor('navigation/categories');
+    controller.set('category', model.get('category'));
+    debugger;
+    this.render('navigation/topic', { into: 'topic', outlet: 'navigation-bar', controller: controller, model: model, context: controller });
 
     if (model) {
       var result = model.get('title'),

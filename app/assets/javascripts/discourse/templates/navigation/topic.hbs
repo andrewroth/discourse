@@ -1,0 +1,10 @@
+{{bread-crumbs categories=categories category=category}}
+
+<div class="tabs">
+  <ul class="nav nav-pills latest-tabs subtle" id='navigation-bar'>
+    {{#each navItem in navItems}}
+      {{navigation-item content=navItem filterMode=filterMode}}
+    {{/each}}
+    {{custom-html "extraNavItem"}}
+  </ul>
+</div>
