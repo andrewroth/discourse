@@ -453,7 +453,6 @@ export default ObjectController.extend(Discourse.SelectedPostsCount, {
   }.property('selectedPostsUsername'),
 
   categories: function() {
-    debugger;
     return Discourse.Category.list();
   }.property(),
 
@@ -685,7 +684,6 @@ export default ObjectController.extend(Discourse.SelectedPostsCount, {
   },
 
   navItems: function() {
-    debugger;
     if (this.get('showingSubcategoryList')) { return []; }
     //return Discourse.NavItem.buildList(this.get('category'), { noSubcategories: this.get('noSubcategories') });
     return Discourse.NavItem.buildList(this.get('category'), { noSubcategories: false });

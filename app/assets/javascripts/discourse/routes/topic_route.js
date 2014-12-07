@@ -8,6 +8,7 @@ Discourse.TopicRoute = Discourse.Route.extend({
 
   renderTemplate: function() {
     this.render();
+    this.render('navigation/topic', { into: 'topic', outlet: 'navigation-bar' });
   },
 
   queryParams: {
@@ -18,11 +19,6 @@ Discourse.TopicRoute = Discourse.Route.extend({
 
   titleToken: function() {
     var model = this.modelFor('topic');
-
-    controller = this.controllerFor('navigation/category');
-    controller.set('category', model.get('category'));
-    controller.set('filterMode', 'c/testing/l/');
-    this.render('navigation/topic', { into: 'topic', outlet: 'navigation-bar', controller: controller, model: model, context: controller });
 
     if (model) {
       var result = model.get('title'),
