@@ -19,6 +19,8 @@ Ember.View.reopen({
   },
   afterRenderEvent : function(){
 
+    console.log("afterRenderEvent this: ", this);
+
     /*
     new_active_array = $("#navigation-bar").find(".active");
     if (!($(active_array).not(new_active_array).length == 0 && $(new_active_array).not(active_array).length == 0)) {
@@ -29,6 +31,10 @@ Ember.View.reopen({
     new_path = window.location.pathname;
     if (new_path != current_path) {
       $.h3d.endPjax();
+      // this is a horrible hack, but is necessary because it seems some ember events are happening after the url is updated
+      // and I just can't figure out a reliable way to know when the rendering is done
+      setTimeout($.h3d.endPjax, 100);
+      setTimeout($.h3d.endPjax, 500);
     }
     current_path = new_path;
   }

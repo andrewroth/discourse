@@ -6,11 +6,6 @@ var isTransitioning = false,
 Discourse.TopicRoute = Discourse.Route.extend({
   redirect: function() { return this.redirectIfLoginRequired(); },
 
-  renderTemplate: function() {
-    this.render();
-    this.render('navigation/topic', { into: 'topic', outlet: 'navigation-bar' });
-  },
-
   queryParams: {
     filter: { replace: true },
     username_filters: { replace: true },
@@ -19,6 +14,12 @@ Discourse.TopicRoute = Discourse.Route.extend({
 
   titleToken: function() {
     var model = this.modelFor('topic');
+
+    /* this is probably not the right spot for this render, but when I do it in renderTemplate, the 
+       model.get('category') doesn't return anything */
+    controller = this.controllerFor('navigation/topic');
+    controller.set('category', model.get('category'));
+    this.render('navigation/topic', { into: 'topic', outlet: 'navigation-bar', controller: controller, model: model, context: controller });
 
     if (model) {
       var result = model.get('title'),
