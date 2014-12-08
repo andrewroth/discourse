@@ -110,11 +110,9 @@
     <!-- flash end -->
 
     <div id="change" data-resource="forums">
-      <% if params[:controller] == "topics" %>
-        <div id="right" class="double">
-          Sidebar here
-        </div>
-      <% end %>
+      <div id="right" class="double">
+        Sidebar here
+      </div>
       <section id='main'>
         <% if @no_embed %>
           <%= yield %>

@@ -1,8 +1,13 @@
 div[data-resource="forums"] #right {
   position: absolute;
-  top: 100px;
+  top: 45px;
   right: 0px;
   width: 210px;
   height: 800px;
   border: 1px solid black;
+  z-index: 100;
+}
+
+#main-outlet {
+  margin-right: 220px;
 }

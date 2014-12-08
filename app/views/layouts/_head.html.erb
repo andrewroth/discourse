@@ -18,7 +18,7 @@
   var community_host = "<%= community_host %>";
   var forums_host = "<%= forums_host %>";
   var params = <%= raw params.to_json %>;
-  <% if @category %>
+  <% if @category || (@topic_view && @category = @topic_view.topic.category) %>
     var category_names = <%= raw [ @category.name, @category.try(:parent_category).try(:name) ].compact.to_json %>;
   <% end %>
 </script>

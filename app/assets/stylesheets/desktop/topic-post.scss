@@ -757,7 +757,7 @@ blockquote > *:last-child {
 }
 
 // variables are used to calculate the width of .gap
-$topic-body-width: 890px;
+$topic-body-width: 875px;
 $topic-body-width-padding: 11px;
 $topic-avatar-width: 45px;
 .topic-body {
@@ -996,6 +996,8 @@ a.attachment:before {
 }
 
 .topic-meta-data {
+
+  padding-bottom: 3px;
 
  &:after {
     visibility: hidden;
