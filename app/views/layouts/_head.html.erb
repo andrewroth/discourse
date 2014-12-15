@@ -20,5 +20,16 @@
   var params = <%= raw params.to_json %>;
   <% if @category || (@topic_view && @category = @topic_view.topic.category) %>
     var category_names = <%= raw [ @category.name, @category.try(:parent_category).try(:name) ].compact.to_json %>;
+    var category_slugs = <%= raw [ @category.slug, @category.try(:parent_category).try(:slug) ].compact.to_json %>;
+  <% else %>
+    var category_names = [];
+    var category_slugs = [];
+  <% end %>
+  <% if @topic_view && topic = @topic_view.topic %>
+    var topic_link = '<%= topic.path %>';
+    var topic_title = '<%= topic.title %>';
+  <% else %>
+    var topic_link = null;
+    var topic_title = null;
   <% end %>
 </script>

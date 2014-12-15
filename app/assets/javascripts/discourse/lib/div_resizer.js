@@ -52,6 +52,9 @@ performDrag = function(e, opts) {
   if (size < min) {
     endDrag(e, opts);
   }
+  if (tinymce.editor[0]) {
+    tinymce.editors[0].theme.resizeTo(1130, $("#wmd-preview-scroller").height());
+  }
   return false;
 };
 

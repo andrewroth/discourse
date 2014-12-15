@@ -685,10 +685,18 @@ class Topic < ActiveRecord::Base
     "/t/#{slug}/#{id}/#{posts_count}"
   end
 
+  def self.path(id, slug, post_number=nil)
+    url(id, slug, post_number).gsub(/^#{Discourse.base_url}/, '')
+  end
+
   def self.url(id, slug, post_number=nil)
     url = "#{Discourse.base_url}/t/#{slug}/#{id}"
     url << "/#{post_number}" if post_number.to_i > 1
     url
+  end
+
+  def path(post_number = nil)
+    self.class.path id, slug, post_number
   end
 
   def url(post_number = nil)

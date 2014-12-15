@@ -122,9 +122,9 @@
     </div>
 
     <!-- Footer -->
-    <div id="footer">
-      FOOTER HERE
-    </div>
+    <% cache("footer", expires_in: 24.hours) do %>
+      <%= Net::HTTP.get(community_host, '/footer.html').html_safe %>
+    <% end %>
 
     <% unless current_user %>
       <form id='hidden-login-form' method="post" action="<%=login_path%>" style="display: none;">

@@ -164,6 +164,7 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
   },
 
   initEditor: function() {
+    /*
     // not quite right, need a callback to pass in, meaning this gets called once,
     // but if you start replying to another topic it will get the avatars wrong
     var $wmdInput, editor, self = this;
@@ -235,6 +236,7 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
       saveDraft();
       return true;
     });
+    */
 
     var $replyTitle = $('#reply-title');
 
@@ -256,6 +258,7 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
       }
     });
 
+    /*
     // in case it's still bound somehow
     this._unbindUploadTarget();
 
@@ -412,19 +415,60 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
         // redirect the click on the hidden file input
         $("#mobile-uploader").click();
       });
-    }
+    }*/
 
     // need to wait a bit for the "slide up" transition of the composer
     // we could use .on("transitionend") but it's not firing when the transition isn't completed :(
     Em.run.later(function() {
-      self.resize();
-      self.refreshPreview();
+      //self.resize();
+      //self.refreshPreview();
       if ($replyTitle.length) {
         $replyTitle.putCursorAtEnd();
       } else {
-        $wmdInput.putCursorAtEnd();
+        //$wmdInput.putCursorAtEnd();
       }
-      self.appEvents.trigger("composer:opened");
+      //self.appEvents.trigger("composer:opened");
+
+      // initialize rich text editors
+      var editorOptions = {
+        width : 1130,
+        height: "100%",
+        simplejquerydialog_dialog_selector : '#image_upload_dialog',
+        simplejquerydialog_function : function() { $('#image_upload_dialog').addClass("insert_links"); },
+        simplejquerydialog_button_title : 'Upload/Insert Images',
+        simplejquerydialog_button_img : '/../simpleimagemanager/img/simpleimagemanager.png',
+        simpleinsertimage_dialog_path : '//' + marketplace_host + '/editor_images',
+        simpleembedvideo_dialog_path : '//' + marketplace_host + '/items/embed_video_form',
+        simplereference_dialog_path : '//' + marketplace_host + '/items/insert_reference_form',
+        theme_advanced_buttons2 : $.h3d.tinymce_theme_advanced_buttons2.replace('simpleimagemanager,simpleinsertswapimage,','simpleinsertimage,'),
+
+        setup : function(ed) {
+          ed.onInit.add(function(ed, evt) {
+            ed.onEvent.add(function(ed) {
+              if(ed.isDirty())
+                window.onbeforeunload = beforeUnload;
+            });
+
+            ed.onNodeChange.add(function(ed) {
+              showActiveEditorToolbar();
+              //positionMceHelp();
+            });
+
+            ed.onMouseDown.add(function(ed) {
+              showActiveEditorToolbar();
+              //showMceHelp();
+            });
+
+            // don't hide editor toolbars if clicking on the active editor toolbar
+            $(".mceExternalToolbar").click(function(event){
+              event.stopPropagation();
+            });
+          });
+        }
+      }
+
+      enableRichTextEditor($("#wmd-input"), editorOptions);
+
     }, 400);
   },
 

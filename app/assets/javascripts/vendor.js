@@ -38,6 +38,7 @@
 //= require jquery.ui.effects.js
 //= require jquery.ui.autocomplete.js
 //= require jquery.validate.js
+//= require jquery.tinymce
 //= require jstz.min.js
 //= require lodash.js
 //= require md5.js
