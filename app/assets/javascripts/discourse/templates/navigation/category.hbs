@@ -1,8 +1,3 @@
-{{bread-crumbs categories=categories
-               category=category
-               noSubcategories=noSubcategories
-               hideSubcategories=showingSubcategoryList}}
-
 <div class="tabs">
   <ul class="nav nav-pills latest-tabs subtle" id='navigation-bar'>
     {{#each navItem in navItems}}
@@ -11,6 +6,11 @@
     {{custom-html "extraNavItem"}}
   </ul>
 </div>
+
+{{bread-crumbs categories=categories
+               category=category
+               noSubcategories=noSubcategories
+               hideSubcategories=showingSubcategoryList}}
 
 {{#if canChangeCategoryNotificationLevel}}
   {{view 'category-notifications-button' category=category}}
