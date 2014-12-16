@@ -853,3 +853,19 @@ var dialog = $.widget( "ui.dialog", {
     }
   }
 });
+
+/* fix from http://stackoverflow.com/questions/17367736/jquery-ui-dialog-missing-close-icon */
+$.widget( "ui.dialog", $.ui.dialog, {
+  open: function() {
+    this._super();
+    this.element.closest(".ui-dialog")
+      .find(".ui-dialog-titlebar-close")
+      .addClass("ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close ui-state-focus")
+      .html('<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">Close</span>')
+      .hover(function () {
+        $(this).addClass('ui-state-hover ui-state-active');
+      }, function() {
+        $(this).addClass('ui-state-hover ui-state-active');
+      });
+  }
+});
