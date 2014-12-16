@@ -37,6 +37,7 @@
 //= require jquery.ui.rlightbox.js
 //= require jquery.ui.effects.js
 //= require jquery.ui.autocomplete.js
+//= require jquery.ui.dialog.js
 //= require jquery.validate.js
 //= require jquery.tinymce
 //= require jstz.min.js

@@ -54,6 +54,7 @@ Discourse.DiscoveryCategoriesRoute = Discourse.Route.extend(Discourse.OpenCompos
     },
 
     createTopic: function() {
+      debugger;
       this.openComposer(this.controllerFor('discovery/categories'));
     }
   }

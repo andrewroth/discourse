@@ -49,7 +49,10 @@ Discourse.DiscoveryRoute = Discourse.Route.extend(Discourse.ScrollTop, Discourse
       topic.clearPin();
     },
 
-    createTopic: function() {
+    createTopic: function(el) {
+      if (!el.can_create_topic && requireSignInWithDialog()) {
+        return;
+      }
       this.openComposer(this.controllerFor('discovery/topics'));
     },
 
