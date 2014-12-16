@@ -252,7 +252,7 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
     // when the title field loses the focus...
     $replyTitle.blur(function(){
       // ...and the requirements are not met (ie. the minimum number of characters)
-      if (self.get('model.missingTitleCharacters') > 0) {
+      if (modelRef.get('missingTitleCharacters') > 0) {
         // then, "redify" the background
         $replyTitle.toggleClass("requirements-not-met", true);
       }
