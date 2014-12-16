@@ -82,7 +82,7 @@ basic:
     client: true
     refresh: true
     type: list
-    default: 'latest|new|unread|starred|top|categories'
+    default: 'categories|latest|new|unread|starred|top'
     choices:
      - latest
      - new

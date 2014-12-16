@@ -417,8 +417,11 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
       });
     }*/
 
+    var modelRef = this.get('model');
+
     // need to wait a bit for the "slide up" transition of the composer
     // we could use .on("transitionend") but it's not firing when the transition isn't completed :(
+
     Em.run.later(function() {
       //self.resize();
       //self.refreshPreview();
@@ -431,7 +434,7 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
 
       // initialize rich text editors
       var editorOptions = {
-        width : 1130,
+        width : 900,
         height: "100%",
         simplejquerydialog_dialog_selector : '#image_upload_dialog',
         simplejquerydialog_function : function() { $('#image_upload_dialog').addClass("insert_links"); },
@@ -457,6 +460,11 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
             ed.onMouseDown.add(function(ed) {
               showActiveEditorToolbar();
               //showMceHelp();
+            });
+
+            ed.onChange.add(function(ed, l) {
+              console.debug('Editor contents was modified. Contents: ' + l.content);
+              modelRef.set('reply', l.content);
             });
 
             // don't hide editor toolbars if clicking on the active editor toolbar
@@ -539,7 +547,11 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
   }.property('model.categoryId'),
 
   replyValidation: function() {
-    var replyLength = this.get('model.replyLength'),
+    if (typeof(tinyMCE) == "undefined") {
+      return;
+    }
+
+    var replyLength = tinyMCE.activeEditor.getBody().textContent.length; // this.get('model.replyLength'),
         missingChars = this.get('model.missingReplyCharacters'),
         reason;
     if( replyLength < 1 ){

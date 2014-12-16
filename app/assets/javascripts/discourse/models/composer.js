@@ -234,9 +234,12 @@ Discourse.Composer = Discourse.Model.extend({
     @property replyLength
   **/
   replyLength: function() {
+    /*
     var reply = this.get('reply') || "";
     while (Discourse.Quote.REGEXP.test(reply)) { reply = reply.replace(Discourse.Quote.REGEXP, ""); }
     return reply.replace(/\s+/img, " ").trim().length;
+    */
+    tinyMCE.activeEditor.getBody().textContent.length;
   }.property('reply'),
 
 
