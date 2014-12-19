@@ -71,11 +71,7 @@
             {{popupInputTip validation=view.replyValidation shownAt=view.showReplyTip}}
           </div>
           <!-- keep the classes here in sync with post.hbs -->
-          <div class='preview-wrapper regular'>
-            <div id='wmd-preview' {{bind-attr class="hidePreview:hidden :cooked"}}></div>
-          </div>
           <div class="composer-bottom-right">
-            <a href="#" {{action "togglePreview"}} class='toggle-preview'>{{{model.toggleText}}}</a>
             <div id="file-uploading" {{bind-attr class="view.isUploading::hidden"}}>
               <i class='fa fa-spinner fa-spin'></i> {{i18n upload_selector.uploading}} {{view.uploadProgress}}% <a id="cancel-file-upload">{{i18n cancel}}</a>
             </div>

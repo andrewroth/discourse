@@ -95,7 +95,7 @@ Discourse.Composer = Discourse.Model.extend({
   }.property('action', 'post', 'topic', 'topic.title'),
 
   toggleText: function() {
-    return this.get('showPreview') ? I18n.t('composer.hide_preview') : I18n.t('composer.show_preview');
+    return '';
   }.property('showPreview'),
 
   hidePreview: Em.computed.not('showPreview'),
@@ -313,7 +313,8 @@ Discourse.Composer = Discourse.Model.extend({
   },
 
   togglePreview: function() {
-    this.toggleProperty('showPreview');
+    //this.toggleProperty('showPreview');
+    this.setProperty('showPreview', false);
     Discourse.KeyValueStore.set({ key: 'composer.showPreview', value: this.get('showPreview') });
   },
 
