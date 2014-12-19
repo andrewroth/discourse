@@ -3501,7 +3501,7 @@
 		}
 		
 		event.type = "wheel"; // hijack the event	
-		return $.event.handle.call( this, event, event.delta );
+		return $.event.dispatch.call( this, event, event.delta );
 	}
 	
 })(jQuery); 

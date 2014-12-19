@@ -239,7 +239,11 @@ Discourse.Composer = Discourse.Model.extend({
     while (Discourse.Quote.REGEXP.test(reply)) { reply = reply.replace(Discourse.Quote.REGEXP, ""); }
     return reply.replace(/\s+/img, " ").trim().length;
     */
-    tinyMCE.activeEditor.getBody().textContent.length;
+    if (tinyMCE.activeEditor !== undefined) {
+      return tinyMCE.activeEditor.getBody().textContent.length;
+    } else {
+      return 0;
+    }
   }.property('reply'),
 
 

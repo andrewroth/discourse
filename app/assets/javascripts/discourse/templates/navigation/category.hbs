@@ -16,9 +16,7 @@
   {{view 'category-notifications-button' category=category}}
 {{/if}}
 
-{{#if canCreateTopic}}
-  <button id="create-topic" class='btn btn-default' {{action "createTopic"}}><i class='fa fa-plus'></i>{{i18n topic.create}}</button>
-{{/if}}
+<button id="create-topic" class='btn btn-default' {{action "createTopic" canCreateTopic}}><i class='fa fa-plus'></i>{{i18n topic.create}}</button>
 
 {{#if canEditCategory}}
   <button class='btn btn-default' {{action "editCategory" category}}><i class="fa fa-wrench"></i> {{i18n category.edit_long}}</button>
