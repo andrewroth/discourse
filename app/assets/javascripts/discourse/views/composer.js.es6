@@ -435,7 +435,7 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
       // initialize rich text editors
       var editorOptions = {
         width : 900,
-        height: "100%",
+        height: 177,
         simplejquerydialog_dialog_selector : '#image_upload_dialog',
         simplejquerydialog_function : function() { $('#image_upload_dialog').addClass("insert_links"); },
         simplejquerydialog_button_title : 'Upload/Insert Images',
@@ -551,7 +551,7 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
       return;
     }
 
-    var replyLength = tinyMCE.activeEditor.getBody().textContent.length; // this.get('model.replyLength'),
+    var replyLength = this.get('model.replyLength'),
         missingChars = this.get('model.missingReplyCharacters'),
         reason;
     if( replyLength < 1 ){
