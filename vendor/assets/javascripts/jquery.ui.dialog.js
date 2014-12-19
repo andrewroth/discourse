@@ -863,9 +863,9 @@ $.widget( "ui.dialog", $.ui.dialog, {
       .addClass("ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-dialog-titlebar-close ui-state-focus")
       .html('<span class="ui-button-icon-primary ui-icon ui-icon-closethick"></span><span class="ui-button-text">Close</span>')
       .hover(function () {
-        $(this).addClass('ui-state-hover ui-state-active');
+        $(this).removeClass('ui-state-default').addClass('ui-state-hover ui-state-active');
       }, function() {
-        $(this).addClass('ui-state-hover ui-state-active');
+        $(this).addClass('ui-state-default').removeClass('ui-state-hover ui-state-active');
       });
   }
 });
