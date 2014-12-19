@@ -17,8 +17,8 @@ wrappedEndDrag = void 0;
 wrappedPerformDrag = void 0;
 
 startDrag = function(e, opts) {
-  if (div === null) return;
   div = $(e.data.el);
+  if (div === null) return;
   div.addClass('clear-transitions');
   div.blur();
   lastMousePos = mousePosition(e).y;
