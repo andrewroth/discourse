@@ -123,7 +123,7 @@
 
     <!-- Footer -->
     <% cache("footer", expires_in: 24.hours) do %>
-      <%= Net::HTTP.get(community_host, '/footer.html').html_safe %>
+      <%= pull_footer %>
     <% end %>
 
     <% unless current_user %>
