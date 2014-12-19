@@ -166,7 +166,8 @@ class Search
           @order = :views
           nil
         elsif word =~ /category:(.+)/
-          @category_id = Category.find_by('name ilike ?', $1).try(:id)
+          @category_id = Category.find_by('name ilike ?', $1).try(:id) || 
+            Category.find_by('name ilike ?', $1.gsub('-', ' ')).try(:id)
           nil
         elsif word =~ /user:(.+)/
           @user_id = User.find_by('username_lower = ?', $1.downcase).try(:id)

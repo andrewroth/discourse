@@ -38,6 +38,9 @@
 //= require jquery.ui.effects.js
 //= require jquery.ui.autocomplete.js
 //= require jquery.ui.dialog.js
+//= require jquery.ui.mouse.js
+//= require jquery.ui.draggable.js
+//= require jquery.ui.resizable.js
 //= require jquery.validate.js
 //= require jquery.tinymce
 //= require jstz.min.js

@@ -10,6 +10,7 @@ class SearchController < ApplicationController
 
   def query
 
+    params[:term] = params.delete(:q) if params[:q]
     params.require(:term)
 
     search_args = {guardian: guardian}
@@ -56,7 +57,6 @@ class SearchController < ApplicationController
       }.to_json.encode("ISO-8859-1").html_safe
 =end
 
-      lock_html = %|<img class='locked_topic' src='/assets/discourse_lock.png'></img>|
       @autocomplete_array = (posts + topics + users + categories).collect{ |r| 
         case r
         when Topic
