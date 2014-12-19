@@ -17,6 +17,7 @@ wrappedEndDrag = void 0;
 wrappedPerformDrag = void 0;
 
 startDrag = function(e, opts) {
+  if (div === null) return;
   div = $(e.data.el);
   div.addClass('clear-transitions');
   div.blur();
@@ -48,11 +49,12 @@ performDrag = function(e, opts) {
   if (typeof opts.onDrag === "function") {
     opts.onDrag(sizePx);
   }
+  if (div === null) return;
   div.height(sizePx);
   if (size < min) {
     endDrag(e, opts);
   }
-  if (tinymce.editor[0]) {
+  if (tinymce.editors !== undefined && tinymce.editors[0] !== undefined) {
     tinymce.editors[0].theme.resizeTo(1130, $("#wmd-preview-scroller").height());
   }
   return false;
@@ -60,6 +62,7 @@ performDrag = function(e, opts) {
 
 endDrag = function(e, opts) {
   $(document).unbind("mousemove", wrappedPerformDrag).unbind("mouseup", wrappedEndDrag);
+  if (div === null) return;
   div.removeClass('clear-transitions');
   div.focus();
   if (typeof opts.resize === "function") {

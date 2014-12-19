@@ -7,6 +7,8 @@
   </ul>
 </div>
 
+{{bread-crumbs categories=categories}}
+
 {{#if canCreateCategory}}
   <button class='btn btn-default' {{action "createCategory"}}><i class='fa fa-plus'></i>{{i18n category.create}}</button>
 {{/if}}
