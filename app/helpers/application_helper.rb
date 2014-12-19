@@ -1,3 +1,5 @@
+require "net/https"
+require "uri"
 require 'current_user'
 require 'canonical_url'
 require_dependency 'guardian'
@@ -151,5 +153,20 @@ module ApplicationHelper
     controller.class.name.split("::").first == "Admin" || session[:disable_customization]
   end
 
+  def pull_community_menu
+    if Rails.env.production?
+      uri = URI.parse("https://#{community_host}/community_menu.html")
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+      request = Net::HTTP::Get.new(uri.request_uri)
+
+      response = http.request(request)
+      return response.body.html_safe
+    else
+      Net::HTTP.get(community_host, '/community_menu.html').html_safe
+    end
+  end
 
 end

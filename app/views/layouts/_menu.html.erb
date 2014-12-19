@@ -2,7 +2,7 @@
   <div id="globalnav-nav">
 
     <% cache("community_menu", expires_in: 24.hours) do %>
-      <%= Net::HTTP.get(community_host, '/community_menu.html').html_safe %>
+      <%= pull_community_menu %>
     <% end %>
 
   </div>
