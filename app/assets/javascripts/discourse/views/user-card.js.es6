@@ -70,6 +70,11 @@ export default Discourse.View.extend(CleansUp, {
             position.left += overage;
             position.top += target.height() + 5;
           }
+
+          var outlet_pos = $("#main-outlet").offset();
+          position.left -= outlet_pos.left;
+          position.top -= outlet_pos.top;
+
           self.$().css(position);
         }
       }
