@@ -53,9 +53,11 @@ Discourse.DiscoveryCategoriesRoute = Discourse.Route.extend(Discourse.OpenCompos
       this.controllerFor('editCategory').set('selectedTab', 'general');
     },
 
-    createTopic: function() {
-      debugger;
-      this.openComposer(this.controllerFor('discovery/categories'));
-    }
+    createTopic: function(canCreateTopic) {
+      if (!canCreateTopic && requireSignInWithDialog()) {
+        return;
+      }
+      this.openComposer(this.controllerFor('discovery/topics'));
+    },
   }
 });

@@ -44,13 +44,13 @@ export default DiscourseController.extend({
       return;
     }
 
-    var selectedText = Discourse.Utilities.selectedText();
-    if (this.get('buffer') === selectedText) return;
+    var selectedHtml = Discourse.Utilities.selectedHtml();
+    if (this.get('buffer') === selectedHtml) return;
 
     // we need to retrieve the post data from the posts collection in the topic controller
     var postStream = this.get('controllers.topic.postStream');
     this.set('post', postStream.findLoadedPost(postId));
-    this.set('buffer', selectedText);
+    this.set('buffer', selectedHtml);
 
     // create a marker element
     var markerElement = document.createElement("span");

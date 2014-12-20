@@ -79,8 +79,7 @@ export default DiscourseController.extend({
   },
 
   appendBlockAtCursor: function(text) {
-    var c = this.get('model');
-    if (c) { c.appendText(text, $('#wmd-input').caret(), {block: true}); }
+    tinyMCE.execCommand("mceInsertContent", false, text);
   },
 
   categories: function() {

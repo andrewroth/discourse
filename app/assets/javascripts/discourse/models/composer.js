@@ -619,7 +619,7 @@ Discourse.Composer = Discourse.Model.extend({
   },
 
   getCookedHtml: function() {
-    return $('#wmd-preview').html().replace(/<span class="marker"><\/span>/g, '');
+    return tinyMCE.activeEditor.getContent();
   },
 
   saveDraft: function() {

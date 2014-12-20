@@ -227,11 +227,16 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
     this.editor.run();
     this.set('editor', this.editor);
     this.loadingChanged();
+    */
+
+    var modelRef = this.get('model');
+    var controllerRef = this.get('controller');
 
     var saveDraft = Discourse.debounce((function() {
-      return self.get('controller').saveDraft();
+      return controllerRef.saveDraft();
     }), 2000);
 
+    /*
     $wmdInput.keyup(function() {
       saveDraft();
       return true;
@@ -243,7 +248,7 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
     $replyTitle.keyup(function() {
       saveDraft();
       // removes the red background once the requirements are met
-      if (self.get('model.missingTitleCharacters') <= 0) {
+      if (modelRef.get('missingTitleCharacters') <= 0) {
         $replyTitle.removeClass("requirements-not-met");
       }
       return true;
@@ -416,8 +421,6 @@ var ComposerView = Discourse.View.extend(Ember.Evented, {
         $("#mobile-uploader").click();
       });
     }*/
-
-    var modelRef = this.get('model');
 
     // need to wait a bit for the "slide up" transition of the composer
     // we could use .on("transitionend") but it's not firing when the transition isn't completed :(

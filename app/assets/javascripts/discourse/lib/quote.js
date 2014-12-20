@@ -27,7 +27,8 @@ Discourse.Quote = {
     sansQuotes = sansQuotes.replace(/</g, "&lt;")
                            .replace(/>/g, "&gt;");
 
-    result = "[quote=\"" + post.get('username') + ", post:" + post.get('post_number') + ", topic:" + post.get('topic_id');
+    //result = "[quote=\"" + post.get('username') + ", post:" + post.get('post_number') + ", topic:" + post.get('topic_id');
+    result = "<div><blockquote class='inline_quote'><span class='someonesaid'>" + post.get('username') + "</span><div>" + contents + "</div></blockquote></div><div></div>";
 
     /* Strip the HTML from cooked */
     tmp = document.createElement('div');
@@ -43,8 +44,8 @@ Discourse.Quote = {
     contents_hashed = contents.replace(/[^a-zA-Z0-9]/g, '');
 
     /* If the quote is the full message, attribute it as such */
-    if (stripped_hashed === contents_hashed) result += ", full:true";
-    result += "\"]\n" + sansQuotes + "\n[/quote]\n\n";
+    //if (stripped_hashed === contents_hashed) result += ", full:true";
+    //result += "\"]\n" + sansQuotes + "\n[/quote]\n\n";
 
     return result;
   }
