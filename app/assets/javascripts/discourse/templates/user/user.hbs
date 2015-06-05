@@ -46,14 +46,12 @@
 
             <ul>
 
-              {{#if can_send_private_message_to_user}}
               <li>
                 <a class='btn btn-primary right' {{action "composePrivateMessage"}}>
                   <i class='fa fa-envelope'></i>
                   {{i18n user.private_message}}
                 </a>
               </li>
-              {{/if}}
 
               {{#if viewingSelf}}
               <li>

@@ -29,6 +29,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  skip_before_filter :verify_authenticity_token, only: :create
+
   before_filter :set_current_user_for_logs
   before_filter :set_locale
   before_filter :set_mobile_view

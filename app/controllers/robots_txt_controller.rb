@@ -11,4 +11,7 @@ class RobotsTxtController < ApplicationController
 
     render path, content_type: 'text/plain'
   end
+
+  def colors
+  end
 end
