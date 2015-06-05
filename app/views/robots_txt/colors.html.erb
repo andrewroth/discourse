@@ -1,0 +1,127 @@
+<% categories = Category.where(parent_category_id: nil).order(:position) %>
+
+<HTML>
+  <HEAD>
+    <STYLE>
+      body { margin-left: 100px; }
+      .cat { 
+        margin-top: 6px; margin-bottom: 6px; 
+        font-family: Arial, Helvetica, Verdana; 
+        color: white; 
+        font-weight: bold; 
+        padding: 4px; 
+        font-size: 13px;
+        text-align: center;
+      }
+      .lvl1 { width: 332px; }
+      .lvl2 { width: 300px; margin-left: 16px; }
+      .haschildren2 { width: 268px; margin-left: 32px; }
+    </STYLE>
+  </HEAD>
+  <BODY>
+  <% r = g = b = 0; state = nil %>
+    <% categories.each do |cat| %>
+      <% next if %w(Lounge Staff).include?(cat.name) %>
+      <% case cat.name %>
+      <% when '3D Forums' %>
+        <% state = :threed %>
+        <% r = 128; g = 9; b = 9; %>
+      <% when 'Global 2D/3D Forums' %>
+        <% state = :global %>
+        <% r = 32; g = 82; b = 32; %>
+      <% when '2D and VFX' %>
+        <% state = :vfx %>
+        <% r = 68; g = 9; b = 84; %>
+      <% when 'Audio Forums' %>
+        <% state = :audio %>
+        <% r = 145; g = 124; b = 17; %>
+      <% when 'Galleries and Works' %>
+        <% state = :works %>
+        <% r = 73; g = 29; b = 16; %>
+      <% when 'Jobs and Careers' %>
+        <% state = :jobs %>
+        <% r = 190; g = 130; b = 110; %>
+      <% when 'Site Forums' %>
+        <% state = :forums %>
+        <% #r = 9; g = 55; b = 94; %>
+        <% end %>
+
+      <% if cat.header_only %>
+        <div style='background-color: #3980a3' class='cat lvl1'><%= cat.name %></div>
+      <% else %>
+        <% if false && cat.subcategories.any? %>
+          <% r2 = r; g2 = g; b2 = b %>
+          <%# r2 += (255 - r) / 2 %>
+          <%# g2 += (255 - g) / 2 %>
+          <%# b2 += (255 - b) / 2 %>
+          <% r2 = (r * 0.5).to_i %>
+          <% g2 = (g * 0.1).to_i %>
+          <% b2 = (b * 0.6).to_i %>
+          <% cat.color = "#{r2.to_s(16).rjust(2,'0')}#{g2.to_s(16).rjust(2,'0')}#{b2.to_s(16).rjust(2,'0')}" %>
+        <% elsif cat.name == "2Maya Boards" %>
+          <% cat.color = 'F47800' %>
+        <% elsif cat.name == "2XSI Boards" %>
+          <% cat.color = 'F47800' %>
+        <% else %>
+          <% cat.color = "#{r.to_s(16).rjust(2,'0')}#{g.to_s(16).rjust(2,'0')}#{b.to_s(16).rjust(2,'0')}" %>
+        <% end %>
+        <% cat.update_column(:color, cat.color) %>
+
+        <% case state %>
+        <% when :threed %>
+          <% r += 6; r = r % 255 %>
+          <% g += 8; g = g % 255 %>
+          <% b -= 0; b = b % 255 %>
+        <% when :global %>
+          <% r += 15; r = r % 255 %>
+          <% g += 8; g = g % 255 %>
+          <% b -= 0; b = b % 255 %>
+        <% when :vfx %>
+          <% r += 14; r = r % 255 %>
+          <% g += 7; g = g % 255 %>
+          <% b += 2; b = b % 255 %>
+        <% when :audio %>
+          <% r += 10; r = r % 255 %>
+          <% g += 5; g = g % 255 %>
+          <% b -= 0; b = b % 255 %>
+        <% when :works %>
+          <% r += 33; r = r % 255 %>
+          <% g += 26; g = g % 255 %>
+          <% b += 23; b = b % 255 %>
+        <% when :jobs %>
+          <% r -= 40; r = r % 255 %>
+          <% g -= 20; g = g % 255 %>
+          <% b += 13; b = b % 255 %>
+        <% when :forums %>
+          <% r -= 40; r = r % 255 %>
+          <% g -= 20; g = g % 255 %>
+          <% b += 13; b = b % 255 %>
+        <% end %>
+
+        <div style='background-color: #<%= cat.color %>' class='cat lvl2 <%= 'haschildren' if cat.subcategories.any? %>'><%= cat.name %></div>
+      <% end %>
+    <% end %>
+
+    <div style='margin-top: 300px;'></div>
+    <% r = 223; g = 113; b = 116; %>
+    <% Category.find_by(name: "Maya Boards").subcategories.order(:position).each do |cat| %>
+      <% cat.color = "#{r.to_s(16).rjust(2,'0')}#{g.to_s(16).rjust(2,'0')}#{b.to_s(16).rjust(2,'0')}" %>
+      <% cat.update_column(:color, cat.color) %>
+      <div style='background-color: #<%= cat.color %>' class='cat lvl2'><%= cat.name %></div>
+      <% r += 6; r = [r,255].min %>
+      <% g += 2; g = [g,255].min %>
+      <% b -= 2; b = [b,255].min %>
+     <% end %>
+
+    <div style='margin-top: 300px;'></div>
+    <% r = 84; g = 203; b = 103; %>
+    <% Category.find_by(name: "XSI Boards").subcategories.order(:position).each do |cat| %>
+      <% cat.color = "#{r.to_s(16).rjust(2,'0')}#{g.to_s(16).rjust(2,'0')}#{b.to_s(16).rjust(2,'0')}" %>
+      <% cat.update_column(:color, cat.color) %>
+      <div style='background-color: #<%= cat.color %>' class='cat lvl2'><%= cat.name %></div>
+      <% r -= 5; r = [r,255].min %>
+      <% g -= 10; g = [g,255].min %>
+      <% b += 15; b = [b,255].min %>
+     <% end %>
+  </BODY>
+</HTML>

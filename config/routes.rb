@@ -450,6 +450,7 @@ Discourse::Application.routes.draw do
   get "cdn_asset/:site/*path" => "static#cdn_asset", format: false
 
   get "robots.txt" => "robots_txt#index"
+  get "colors.html" => "robots_txt#colors"
 
   Discourse.filters.each do |filter|
     root to: "list##{filter}", constraints: HomePageConstraint.new("#{filter}"), :as => "list_#{filter}"
