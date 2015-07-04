@@ -112,7 +112,7 @@ GEM
     ember-source (1.6.0.beta.2)
       handlebars-source (~> 1.0)
     erubis (2.7.0)
-    eventmachine (1.0.3)
+    eventmachine (1.0.7)
     excon (0.39.6)
     execjs (2.2.1)
     exifr (1.1.3)
