@@ -12,7 +12,7 @@ module H3d
       return self.discourse_user_ref if self.discourse_user_ref
 
       discourse_user = ::User.new
-      discourse_user.username = self.permalink
+      discourse_user.username = self.permalink || self.id.to_s
       discourse_user.email = self.email
       discourse_user.active = true
       discourse_user.admin = self.admin
