@@ -1,3 +1,11 @@
+# http://samsaffron.com/archive/2013/11/22/demystifying-the-ruby-gc
+# https://tunemygc.com/
+# http://stackoverflow.com/questions/21367038/why-does-iterating-over-data-result-in-massive-memory-usage
+# 
+# h3d@web2:/var/www/h3d_forum/current$ ruby --version
+# ruby 2.1.0p0 (2013-12-25 revision 44422) [x86_64-linux]
+#
+
 require 'htmlentities'
 
 t0 = Time.now
@@ -12,23 +20,87 @@ RateLimiter.disable
 
 # clear out posts from topics that weren't fully processed so that they can be processed again
 puts "Clearing out any posts from failed imports.."
-topics = H3d::Topic.where("discourse_topic_id is not null").select("id, discourse_topic_id").to_a.find_all{ |h3d_t| h3d_t.posts.count != h3d_t.discourse_topic.posts.count }
-topics.each do |h3d_t| h3d_t.discourse_topic.posts.collect(&:destroy); h3d_t.posts.update_all(discourse_post_id: nil); end
+=begin
+topics = H3d::Topic.where("discourse_topic_id is not null").select("id, discourse_topic_id").to_a
+cnt = topics.count
+i = 0
+topics = topics.find_all{ |h3d_t| 
+  i += 1
+  if i % 100 == 0
+    puts "part 1: #{(i.to_f / cnt.to_f * 100.0).to_i}%"
+  end
+  h3d_t.posts.count != h3d_t.discourse_topic.posts.count
+}
+=end
+
+# quicker implementation
+h3d_topics = H3d::Topic.where("discourse_topic_id is not null")
+h3d_topic_cnts = h3d_topics.joins(:posts).group(:topic_id).count
+discourse_topic_cnts = Topic.joins(:posts).group(:topic_id).count
+
+h3d_topics_to_delete_ids = []
+cnt = h3d_topics.count
+h3d_topics.select('id, discourse_topic_id').each_with_index do |h3d_t, i|
+  if i % 1000 == 0
+    puts "part 1: #{(i.to_f / cnt.to_f * 100.0).to_i}%"
+  end
+  if h3d_topic_cnts[h3d_t.id] != discourse_topic_cnts[h3d_t.discourse_topic_id]
+    h3d_topics_to_delete_ids << h3d_t.id
+  end
+end
+
+h3d_topics_to_delete = H3d::Topic.find(h3d_topics_to_delete_ids)
+cnt = h3d_topics_to_delete.count
+puts "#{cnt} h3d topics to delete all discourse posts for, and reimport"
+h3d_topics_to_delete.each_with_index do |h3d_t, i|
+  if i % 10 == 0
+    puts "part 2: #{(i.to_f / cnt.to_f * 100.0).to_i}%"
+  end
+  h3d_t.discourse_topic.posts.collect(&:destroy); h3d_t.posts.update_all(discourse_post_id: nil);
+end
+
+# try setting things nil to let GC get it
+h3d_topics = h3d_topics_cnts = discourse_topic_cnts = h3d_topics_to_delete_ids = nil
+
+# delete orphan topics
+puts "Deleting orphan topics"
+h3d_topic_discourse_topic_ids = H3d::Topic.pluck(:discourse_topic_id);
+topic_ids = Topic.pluck(:id)
+orphan_topics = Topic.where(id: (topic_ids - h3d_topic_discourse_topic_ids))
+orphan_topics.collect{ |t| t.posts.update_all(deleted_at: Time.now) }
+orphan_topics.update_all(deleted_at: Time.now)
+
+puts "Deleting orphan posts"
+h3d_post_discourse_post_ids = H3d::Post.pluck(:discourse_post_id);
+post_ids = Post.pluck(:id)
+orphan_posts = Post.where(id: (post_ids - h3d_post_discourse_post_ids))
+orphan_posts.update_all(deleted_at: Time.now)
+
 puts "Done"
+
+h3d_topic_discourse_topic_ids = topic_ids = orphan_topics = nil # tell GC that it can reclaim topics
+h3d_post_discourse_post_ids = post_ids = orphan_posts = nil # tell GC that it can reclaim posts
+
+GC.start
 
 # go
 
-roots.each do |r|
+roots.each do |r_|
+  r = r_.clone
+
   puts "=== ROOT #{r.title} ==="
 
-  (r.children + r.children.collect(&:children)).flatten.each do |f|
+  (r.children + r.children.collect(&:children)).flatten.each do |f_|
+    f = f_.clone
 
     puts "=== #{f.title} ==="
     puts "=== Forum data: #{f.inspect}"
 
     c = f.discourse_category
 
-    f.topics.each do |h3d_t|
+    f.topics.find_each do |h3d_t_|
+      h3d_t = h3d_t_.clone
+
       puts "=== #{f.title} === Topic: #{h3d_t.title}"
       next unless h3d_t.title.present?
 
@@ -64,7 +136,9 @@ roots.each do |r|
       end
 
       # posts
-      h3d_t.posts.each do |h3d_p|
+      h3d_t.posts.each do |h3d_p_|
+        h3d_p = h3d_p_.clone
+
         unless h3d_p.discourse_post_id || h3d_p.body.blank?
           puts "=== Post h3d id #{h3d_p.id}"
           p = Post.new
@@ -82,6 +156,7 @@ roots.each do |r|
 
           update_post_stats = true
         end
+        h3d_p = nil
       end
 
       t.reload if t
@@ -101,12 +176,21 @@ roots.each do |r|
         Topic.reset_highest(t.id)
       end
 
+      h3d_t = nil
+
       #puts "Press Enter to continue"
       #STDIN.gets
     end
+
+    f = nil
+    GC.start
+
     #puts "Press Enter to continue"
     #STDIN.gets
   end
+
+  r = nil
+  GC.start
 end
 
 RateLimiter.enable
