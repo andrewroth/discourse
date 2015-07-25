@@ -20,7 +20,14 @@ class SearchController < ApplicationController
     end
     search_args[:search_for_id] = true if params[:search_for_id].present?
 
-    search_context = params[:search_context]
+    if params[:user].present?
+      search_context = params[:search_context] = { id: params[:user], type: 'user' }
+    elsif params[:forum].present?
+      search_context = params[:search_context] = { id: params[:forum], type: 'category' }
+    else
+      search_context = params[:search_context]
+    end
+
     if search_context.present?
       raise Discourse::InvalidParameters.new(:search_context) unless SearchController.valid_context_types.include?(search_context[:type])
       raise Discourse::InvalidParameters.new(:search_context) if search_context[:id].blank?
@@ -36,7 +43,7 @@ class SearchController < ApplicationController
       end
 
       guardian.ensure_can_see!(context_obj)
-      search_args[:search_context] = context_obj
+      search_args[:search_context] = context_obj if context_obj
     end
 
     search_args[:per_facet] = 10 unless request.xhr?

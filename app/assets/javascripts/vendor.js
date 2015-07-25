@@ -54,4 +54,5 @@
 //= require ember-cloaking
 //= require break_string
 //= require buffered-proxy
+//= require spin
 //= require_tree ./discourse/ember
