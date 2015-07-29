@@ -414,11 +414,13 @@ export default DiscourseController.extend({
     } else {
       this.close();
     }
+    if (window.location.hash == '#create_topic') { window.location.hash = ''; }
   },
 
   collapse: function() {
     this.saveDraft();
     this.set('model.composeState', Discourse.Composer.DRAFT);
+    if (window.location.hash == '#create_topic') { window.location.hash = ''; }
   },
 
   close: function() {
@@ -428,6 +430,7 @@ export default DiscourseController.extend({
       'view.showCategoryTip': false,
       'view.showReplyTip': false
     });
+    if (window.location.hash == '#create_topic') { window.location.hash = ''; }
   },
 
   closeAutocomplete: function() {

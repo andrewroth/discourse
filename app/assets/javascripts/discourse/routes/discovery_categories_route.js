@@ -55,7 +55,7 @@ Discourse.DiscoveryCategoriesRoute = Discourse.Route.extend(Discourse.OpenCompos
 
     createTopic: function(canCreateTopic) {
       window.location.hash = 'create_topic';
-      if (!canCreateTopic && requireSignInWithDialog()) {
+      if (!canCreateTopic && requireSignInWithDialog(window.location.href.split('#')[0]+'#create_topic')) {
         return;
       }
       this.openComposer(this.controllerFor('discovery/topics'));

@@ -15,7 +15,7 @@ Discourse.OpenComposer = Em.Mixin.create({
       draftKey: controller.get('draft_key'),
       draftSequence: controller.get('draft_sequence')
     });
-    console.log('composer');
+    requireConfirmedAccountWithDialog(window.location.href);
   }
 
 });
