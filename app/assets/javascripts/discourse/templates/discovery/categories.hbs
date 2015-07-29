@@ -17,12 +17,8 @@
             </td>
           {{else}}
             {{#if parentCategory}}
-            <td class='category' style="border-color: #{{unbound parent_color}}">
             {{else}}
-            <td class='category' style="border-color: #{{unbound color}}">
-            {{/if}}
-
-              {{#if parentCategory}}<div style='border-left: 6px solid #{{unbound color}}; padding-left: 10px;'>{{/if}}
+              <td class='category' style="border-color: #{{unbound color}}">
                 <div>
                   <div class="pull-left">
                     {{category-title-link category=this}}
@@ -40,54 +36,41 @@
                     {{{description_excerpt}}}
                   </div>
                 {{/if}}
-                {{#if subcategories}}
-                  <div class='subcategories'>
-                    {{#each subcategories}}
-                      {{category-link this showParent=true onlyStripe=true}}
-                      {{#if unreadTopics}}
-                        <a href={{unbound unreadUrl}} class='badge new-posts badge-notification' title='{{i18n topic.unread_topics count="unreadTopics"}}'>{{unbound unreadTopics}}</a>
-                      {{/if}}
-                      {{#if newTopics}}
-                        <a href={{unbound newUrl}} class='badge new-posts badge-notification' title='{{i18n topic.new_topics count="newTopics"}}'>{{unbound newTopics}}</a>
-                      {{/if}}
-                    {{/each}}
-                  </div>
-                {{/if}}
-              {{#if parentCategory}}</div>{{/if}}
-            </td>
-            <td {{bind-attr class="archived :latest"}}>
-              {{#each featuredTopics}}
-                <div class="featured-topic">
-                  {{topic-status topic=this}}
-                  <a class='title' href="{{unbound lastUnreadUrl}}">{{{unbound fancy_title}}}</a>
-                  {{topic-post-badges newPosts=totalUnread unseen=unseen url=lastUnreadUrl}}
+              </td>
+              <td {{bind-attr class="archived :latest"}}>
+                {{#each featuredTopics}}
+                  <div class="featured-topic">
+                    {{topic-status topic=this}}
+                    <a class='title' href="{{unbound lastUnreadUrl}}">{{{unbound fancy_title}}}</a>
+                    {{topic-post-badges newPosts=totalUnread unseen=unseen url=lastUnreadUrl}}
 
-                  {{#if controller.latestTopicOnly}}
-                    <div class='last-user-info'>
-                      {{i18n categories.latest_by}} <a href="{{{unbound lastPosterUrl}}}">{{unbound last_poster.username}}</a>
-                      <a href="{{unbound lastPostUrl}}">{{format-age last_posted_at}}</a>
-                    </div>
-                  {{else}}
-                    &nbsp;
-                    <a href="{{unbound lastPostUrl}}" class="last-posted-at">{{format-age last_posted_at}}</a>
-                  {{/if}}
-                </div>
-              {{/each}}
-            </td>
-            <td class='stats' {{bind-attr title="topicStatsTitle"}}>
-              <table class="categoryStats">
-                <tbody>
-                {{#each topicCountStats}}
-                  <tr>
-                    <td class="value">{{value}}</td>
-                    <td class="unit"> / {{unit}}</td>
-                  </tr>
+                    {{#if controller.latestTopicOnly}}
+                      <div class='last-user-info'>
+                        {{i18n categories.latest_by}} <a href="{{{unbound lastPosterUrl}}}">{{unbound last_poster.username}}</a>
+                        <a href="{{unbound lastPostUrl}}">{{format-age last_posted_at}}</a>
+                      </div>
+                    {{else}}
+                      &nbsp;
+                      <a href="{{unbound lastPostUrl}}" class="last-posted-at">{{format-age last_posted_at}}</a>
+                    {{/if}}
+                  </div>
                 {{/each}}
-                </tbody>
-              </table>
-            </td>
+              </td>
+              <td class='stats' {{bind-attr title="topicStatsTitle"}}>
+                <table class="categoryStats">
+                  <tbody>
+                  {{#each topicCountStats}}
+                    <tr>
+                      <td class="value">{{value}}</td>
+                      <td class="unit"> / {{unit}}</td>
+                    </tr>
+                  {{/each}}
+                  </tbody>
+                </table>
+              </td>
             {{/if}}
-          </tr>
+          {{/if}}
+        </tr>
         {{/each}}
       </tbody>
     </table>
