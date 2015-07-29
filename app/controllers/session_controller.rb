@@ -147,7 +147,10 @@ class SessionController < ApplicationController
   def destroy
     reset_session
     log_off_user
-    render nothing: true
+    respond_do do |format|
+      format.js { render nothing: true }
+      format.html { redirect_back_or_default }
+    end
   end
 
   private

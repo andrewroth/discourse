@@ -55,4 +55,5 @@
 //= require break_string
 //= require buffered-proxy
 //= require spin
+//= require rails
 //= require_tree ./discourse/ember

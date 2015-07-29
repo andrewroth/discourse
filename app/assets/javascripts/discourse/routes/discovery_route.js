@@ -50,7 +50,8 @@ Discourse.DiscoveryRoute = Discourse.Route.extend(Discourse.ScrollTop, Discourse
     },
 
     createTopic: function(canCreateTopic) {
-      if (!canCreateTopic && requireSignInWithDialog()) {
+      window.location.hash = 'create_topic';
+      if (!canCreateTopic && requireSignInWithDialog(window.location.href)) {
         return;
       }
       this.openComposer(this.controllerFor('discovery/topics'));

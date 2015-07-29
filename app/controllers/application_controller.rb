@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
   helper_method :community_host
 
   def marketplace_host
-    @@marketplace_host ||= ActionMailer::Base.default_url_options[:host].sub('forum.', 'www.')
+    @@marketplace_host ||= ActionMailer::Base.default_url_options[:host].sub('forum.', Rails.env.development? ? '' : 'www.')
   end
   helper_method :marketplace_host
 

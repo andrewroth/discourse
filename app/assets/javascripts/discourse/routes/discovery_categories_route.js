@@ -54,6 +54,7 @@ Discourse.DiscoveryCategoriesRoute = Discourse.Route.extend(Discourse.OpenCompos
     },
 
     createTopic: function(canCreateTopic) {
+      window.location.hash = 'create_topic';
       if (!canCreateTopic && requireSignInWithDialog()) {
         return;
       }
