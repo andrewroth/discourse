@@ -43,6 +43,7 @@
 //= require jquery.ui.resizable.js
 //= require jquery.validate.js
 //= require jquery.tinymce
+//= require jquery.cookie
 //= require jstz.min.js
 //= require lodash.js
 //= require md5.js
