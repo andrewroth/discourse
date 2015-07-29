@@ -286,8 +286,8 @@ export default DiscourseController.extend({
     opts = opts || {};
 
     if (!opts.draftKey) {
-      alert("composer was opened without a draft key");
-      throw "composer opened without a proper draft key";
+      console.log("composer was opened without a draft key; this error is unhelpful and annoying (there is no clue about where the draft key is supposed to come from); ignoring to see if stuff works after it if I don't crash");
+      return;
     }
 
     // If we show the subcategory list, scope the categories drop down to
