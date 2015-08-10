@@ -6,5 +6,5 @@
       <%= c.name %>
     </span>
   <% end %>
-  <%= p.created_at %> - <%= bold_match(result.send(request.xhr? ? :blurb : :big_blurb, p), params[:term], 'black') %>
+  <%= p.created_at %> - <%= bold_match(result.send(request.xhr? && !@h3d_search ? :blurb : :big_blurb, p), params[:term], 'black') %>
 </div>

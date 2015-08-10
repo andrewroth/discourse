@@ -46,12 +46,14 @@ class SearchController < ApplicationController
       search_args[:search_context] = context_obj if context_obj
     end
 
-    search_args[:per_facet] = 10 unless request.xhr?
+    search_args[:per_facet] = 10
 
     search = Search.new(params[:term], search_args.symbolize_keys)
     result = search.execute
 
-    if params[:h3d_autocomplete] == "true" || params[:h3d_autocomplete] == true
+    @h3d_search = params[:h3d_search].to_s == "true"
+
+    if params[:h3d_autocomplete].to_s == "true" || @h3d_search
       posts = result.posts.to_a
       topics = posts.collect(&:topic).uniq
       # remove any topics for which the first post already is included in the results

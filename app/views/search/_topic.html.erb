@@ -7,5 +7,5 @@
     </span>
   <% end %>
   <%= t.created_at.strftime("%m, %Y") %>
-  <%= bold_match(result.send(request.xhr? ? :blurb : :big_blurb, t.posts.first), params[:term], 'black') %>
+  <%= bold_match(result.send(request.xhr? && !@h3d_search ? :blurb : :big_blurb, t.posts.first), params[:term], 'black') %>
 </div>
