@@ -472,7 +472,7 @@ class User < ActiveRecord::Base
 
   # a touch faster than automatic
   def admin?
-    admin
+    admin || h3d_user.admin?
   end
 
   def guardian

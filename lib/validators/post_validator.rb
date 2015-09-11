@@ -12,6 +12,7 @@ class Validators::PostValidator < ActiveModel::Validator
       max_attachments_validator(record)
       max_links_validator(record)
       unique_post_validator(record)
+      not_posting_to_category_with_children(record)
     end
   end
 
@@ -78,6 +79,12 @@ class Validators::PostValidator < ActiveModel::Validator
     end
   end
 
+  # Stop us from posting the same thing too quickly
+  def not_posting_to_category_with_children(post)
+    return if post.acting_user.try(:admin?)
+    post.errors.add(:base, "can't post to a category with children") if post.topic.category.has_children?
+  end
+ 
   private
 
   def acting_user_is_trusted?(post)

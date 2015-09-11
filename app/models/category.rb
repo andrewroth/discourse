@@ -342,6 +342,7 @@ SQL
   def has_children?
     id && Category.where(parent_category_id: id).exists?
   end
+  alias_method :has_children, :has_children?
 
   def uncategorized?
     id == SiteSetting.uncategorized_category_id

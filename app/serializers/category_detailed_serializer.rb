@@ -14,6 +14,7 @@ class CategoryDetailedSerializer < BasicCategorySerializer
              :is_uncategorized,
              :subcategory_ids,
              :header_only,
+             :has_children,
              :parent_color
 
   has_many :featured_users, serializer: BasicUserSerializer

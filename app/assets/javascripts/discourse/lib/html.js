@@ -95,6 +95,10 @@ Discourse.HTML = {
     // Parent stripe implies onlyStripe
     if (opts.onlyStripe) { opts.showParent = true; }
 
+    html += "data-header-only=\"" + category.header_only + "\" ";
+    html += "data-has-children=\"" + category.has_children + "\" ";
+    //console.log('here');
+    //debugger;
     html += "data-drop-close=\"true\" class=\"badge-category" + (restricted ? ' restricted' : '' ) +
             (opts.onlyStripe ? ' clear-badge' : '') +
             extraClasses + "\" ";

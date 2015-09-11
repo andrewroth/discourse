@@ -18,6 +18,10 @@ export default ComboboxView.extend({
     }
 
     return this.get('categories').filter(function(c) {
+      if (!(typeof(is_admin) == "boolean" && is_admin) && (c.header_only || c.has_children || c.get('isUncategorizedCategory'))) {
+        return false;
+      }
+
       if (scopedCategoryId && (c.get('id') !== scopedCategoryId) && (c.get('parent_category_id') !== scopedCategoryId)) {
         return false;
       }
@@ -56,6 +60,7 @@ export default ComboboxView.extend({
     }
 
     if (!category) return item.text;
+
     var result = badgeHtml(category, {showParent: false, link: false, allowUncategorized: true}),
         parentCategoryId = category.get('parent_category_id');
     if (parentCategoryId) {
