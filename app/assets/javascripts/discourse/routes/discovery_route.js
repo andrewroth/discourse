@@ -50,8 +50,10 @@ Discourse.DiscoveryRoute = Discourse.Route.extend(Discourse.ScrollTop, Discourse
     },
 
     createTopic: function(canCreateTopic) {
-      window.location.hash = 'create_topic';
-      if (!canCreateTopic && requireSignInWithDialog(window.location.href.split('#')[0]+'#create_topic')) {
+      // note that setting the hash messes up discourse, there is a redirect in h3d.js setUpDiscourse that
+      // sets a cookie then does a redirect if there is create topic
+      if (!canCreateTopic && requireSignInWithDialog()) {
+        $.cookie('create_topic', true);
         return;
       }
       this.openComposer(this.controllerFor('discovery/topics'));

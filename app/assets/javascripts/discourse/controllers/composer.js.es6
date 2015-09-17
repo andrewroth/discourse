@@ -285,6 +285,8 @@ export default DiscourseController.extend({
   open: function(opts) {
     opts = opts || {};
 
+    $.cookie('create_topic', false);
+
     if (!opts.draftKey) {
       console.log("composer was opened without a draft key; this error is unhelpful and annoying (there is no clue about where the draft key is supposed to come from); ignoring to see if stuff works after it if I don't crash");
       return;
@@ -414,13 +416,13 @@ export default DiscourseController.extend({
     } else {
       this.close();
     }
-    if (window.location.hash == '#create_topic') { window.location.hash = ''; }
+    $.cookie('create_topic', false);
   },
 
   collapse: function() {
     this.saveDraft();
     this.set('model.composeState', Discourse.Composer.DRAFT);
-    if (window.location.hash == '#create_topic') { window.location.hash = ''; }
+    $.cookie('create_topic', false);
   },
 
   close: function() {
@@ -430,7 +432,7 @@ export default DiscourseController.extend({
       'view.showCategoryTip': false,
       'view.showReplyTip': false
     });
-    if (window.location.hash == '#create_topic') { window.location.hash = ''; }
+    $.cookie('create_topic', false);
   },
 
   closeAutocomplete: function() {
