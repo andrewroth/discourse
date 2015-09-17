@@ -158,6 +158,9 @@ basic:
   show_subcategory_list:
     default: false
     client: true
+  show_subcategory_list_compose:
+    default: true
+    client: true
   enable_badges:
     client: true
     default: true
