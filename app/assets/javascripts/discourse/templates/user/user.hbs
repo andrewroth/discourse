@@ -46,18 +46,22 @@
 
             <ul>
 
+              {{#if currentUser.staff}}
               <li>
-                <a class='btn btn-primary right' {{action "composePrivateMessage"}}>
+                <a class='private-message btn btn-primary right' {{action "composePrivateMessage"}}>
                   <i class='fa fa-envelope'></i>
                   {{i18n user.private_message}}
                 </a>
               </li>
+              {{/if}}
 
+<!--
               {{#if viewingSelf}}
               <li>
                 <a {{action "logout"}} class='btn btn-danger right'><i class='fa fa-sign-out'></i>{{i18n user.log_out}}</a>
               </li>
               {{/if}}
+              -->
 
               {{#if currentUser.staff}}
               <li>

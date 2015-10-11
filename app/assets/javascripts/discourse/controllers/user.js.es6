@@ -19,7 +19,7 @@ export default ObjectController.extend(CanCheckEmails, {
 
   canSeePrivateMessages: function() {
     return this.get('viewingSelf') || Discourse.User.currentProp('admin');
-  }.property('viewingSelf'),
+  }.property('canSeePrivateMessages'),
 
   canSeeNotificationHistory: Em.computed.alias('canSeePrivateMessages'),
 
