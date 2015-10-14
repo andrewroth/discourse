@@ -70,7 +70,8 @@ var UserSelector = TextField.extend({
           term: term,
           topicId: userSelectorView.get('topicId'),
           exclude: excludedUsernames(),
-          include_groups: userSelectorView.get('include_groups')
+          include_groups: userSelectorView.get('include_groups'),
+          pm: userSelectorView.get('pm')
         });
       },
 

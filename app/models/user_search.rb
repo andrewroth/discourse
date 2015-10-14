@@ -7,10 +7,17 @@ class UserSearch
     @topic_id = opts[:topic_id]
     @searching_user = opts[:searching_user]
     @limit = opts[:limit] || 20
+    @pm = opts[:pm]
   end
 
   def search
     users = User.order(User.sql_fragment("CASE WHEN username_lower = ? THEN 0 ELSE 1 END ASC", @term.downcase))
+
+    # restrict results to users you're friends with
+    if @pm
+      valid_user_ids = @searching_user.h3d_user.reciprocated_friends.pluck(:discourse_user_id)
+      users = users.where(id: valid_user_ids)
+    end
 
     users = users.where(active: true)
 

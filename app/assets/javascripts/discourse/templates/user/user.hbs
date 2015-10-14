@@ -46,7 +46,7 @@
 
             <ul>
 
-              {{#if currentUser.staff}}
+              {{#if canSeePrivateMessages}}
               <li>
                 <a class='private-message btn btn-primary right' {{action "composePrivateMessage"}}>
                   <i class='fa fa-envelope'></i>
