@@ -699,33 +699,58 @@ class User < ActiveRecord::Base
   end
 
   def import_h3d_avatar!
-    unless self.h3d_user.try(:avatar).try(:photo)
-      puts "No h3d avatar for user #{self.id} h3d_user #{h3d_user.id} avatar #{self.h3d_user.try(:avatar).try(:id).inspect}"
+    avatar = h3d_user.try(:avatar)
+
+    unless avatar.try(:photo)
+      puts "No h3d avatar photo data for user #{id} h3d_user #{h3d_user.id} avatar #{avatar.inspect}"
       return
     end
 
-    url = "https://www.highend3d.com:7443/#{self.h3d_user.avatar.photo.url(:big).sub('user_','')}"
+    binding.pry
+    if uploaded_avatar.try(:origin) == avatar.try(:id).to_s
+      puts "Our avatar origin column matches the h3d avatar id (#{avatar.id}); Skipping"
+      return
+    end
+
+    url = "https://www.highend3d.com:7443/#{avatar.photo.url(:big)}"
     begin
       puts "Grabbing avatar from #{url}"
       service = AvatarUploadService.new(url, :url)
     rescue Discourse::InvalidParameters, OpenURI::HTTPError
       # try using the original path since the "big" size is meant to use jpg
       # but some avatars uploaded before we added that are in the original format
-      url = "#{File.dirname(url)}/#{self.h3d_user.avatar.photo_file_name}"
+      url = "#{File.dirname(url)}/#{avatar.photo_file_name}"
       puts "Failed.  Grabbing avatar from #{url}"
       begin
         service = AvatarUploadService.new(url, :url)
       rescue Discourse::InvalidParameters, OpenURI::HTTPError
-        puts "Can't find avatar, failing..."
-        return
+        # try the original two with the user_ part of the url taken out
+        # again, some avatars uploaded before we added that don't have user_ in the url
+        url = "https://www.highend3d.com:7443/#{avatar.photo.url(:big).sub('user_','')}"
+        puts "Failed.  Grabbing avatar from #{url}"
+        begin
+          service = AvatarUploadService.new(url, :url)
+        rescue Discourse::InvalidParameters, OpenURI::HTTPError
+          # try the original two with the user_ part of the url taken out
+          # again, some avatars uploaded before we added that don't have user_ in the url
+          url = "#{File.dirname(url)}/#{avatar.photo_file_name}"
+          puts "Failed.  Grabbing avatar from #{url}"
+          begin
+            service = AvatarUploadService.new(url, :url)
+          rescue Discourse::InvalidParameters, OpenURI::HTTPError
+            puts "Can't find avatar, failing..."
+            return
+          end
+        end
       end
     end
-    upload = Upload.create_for(self.id, service.file, service.filename, service.filesize)
-    avatar = self.user_avatar
-    avatar.custom_upload_id = upload.id
-    avatar.save!
+    puts "Success!"
+    upload = Upload.create_for(id, service.file, service.filename, service.filesize, origin: avatar.id)
+    user_avatar.custom_upload_id = upload.id
+    user_avatar.save!
     self.uploaded_avatar = upload
-    self.save!
+    uploaded_avatar.update_column(:origin, avatar.id) unless avatar.id.to_s == self.uploaded_avatar.origin
+    save!
   end
 
   protected

@@ -27,6 +27,7 @@ class UsersController < ApplicationController
 
   def show
     @user = fetch_user_from_params
+    @user.import_h3d_avatar!
     user_serializer = UserSerializer.new(@user, scope: guardian, root: 'user')
     respond_to do |format|
       format.html do
