@@ -706,7 +706,6 @@ class User < ActiveRecord::Base
       return
     end
 
-    binding.pry
     if uploaded_avatar.try(:origin) == avatar.try(:id).to_s
       puts "Our avatar origin column matches the h3d avatar id (#{avatar.id}); Skipping"
       return
