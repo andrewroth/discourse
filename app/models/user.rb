@@ -744,11 +744,11 @@ class User < ActiveRecord::Base
       end
     end
     puts "Success!"
-    upload = Upload.create_for(id, service.file, service.filename, service.filesize, origin: avatar.id)
-    user_avatar.custom_upload_id = upload.id
+    upload = Upload.create_for(id, service.file, service.filename, service.filesize, origin: avatar.id.to_s)
+    user_avatar.custom_upload_id = upload.id.to_s
     user_avatar.save!
     self.uploaded_avatar = upload
-    uploaded_avatar.update_column(:origin, avatar.id) unless avatar.id.to_s == self.uploaded_avatar.origin
+    uploaded_avatar.update_column(:origin, avatar.id.to_s) unless avatar.id.to_s == self.uploaded_avatar.origin
     save!
   end
 
