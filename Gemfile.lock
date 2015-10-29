@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/FooBarWidget/gctools.git
+  revision: 15e3372c65513ae31e47ca081a50a06c21cefb6b
+  specs:
+    gctools (0.2.3)
+
 PATH
   remote: vendor/gems/rails_multisite
   specs:
@@ -77,13 +83,6 @@ GEM
     cocaine (0.5.4)
       climate_control (>= 0.0.3, < 1.0)
     coderay (1.1.0)
-    coffee-rails (4.1.0)
-      coffee-script (>= 2.2.0)
-      railties (>= 4.0.0, < 5.0)
-    coffee-script (2.3.0)
-      coffee-script-source
-      execjs
-    coffee-script-source (1.8.0)
     colorize (0.7.3)
     columnize (0.8.9)
     connection_pool (2.0.0)
@@ -157,7 +156,6 @@ GEM
       thor (~> 0.19.1)
     formatador (0.2.5)
     fspath (2.0.6)
-    gctools (0.2.3)
     given_core (3.5.4)
       sorcerer (>= 0.3.7)
     guess_html_encoding (0.0.9)
@@ -452,9 +450,6 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
-    xray-rails (0.1.8)
-      coffee-rails
-      rails (>= 3.1.0)
     yard (0.8.7.6)
 
 PLATFORMS
@@ -486,7 +481,7 @@ DEPENDENCIES
   flamegraph
   fog (= 1.22.1)
   foreman
-  gctools
+  gctools!
   handlebars-source (= 1.3.0)
   highline
   hiredis
@@ -562,4 +557,3 @@ DEPENDENCIES
   uglifier
   unf
   unicorn
-  xray-rails (= 0.1.8)

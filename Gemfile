@@ -207,7 +207,7 @@ group :test, :development do
   gem 'pry-byebug'
 
   gem 'spork-rails'
-  gem 'xray-rails', '0.1.8'
+  #gem 'xray-rails', '0.1.8'
 end
 
 group :development do
@@ -244,7 +244,7 @@ gem 'rbtrace', require: false, platform: :mri
 gem 'ruby-readability', require: false
 
 gem 'simple-rss', require: false
-gem 'gctools', require: false, platform: :mri_21
+gem "gctools", :github => "FooBarWidget/gctools", :require => false
 gem 'stackprof', require: false, platform: :mri_21
 gem 'memory_profiler', require: false, platform: :mri_21
 
