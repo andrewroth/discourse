@@ -3,9 +3,7 @@
     <div style="border: 1px solid #B3B3B3; width: 650px; background-color: white; padding: 10px; margin-top: 20px; text-align: left">
       <div style="background-color: white; width: 650px;">
 
-        <% cache("mailer_header", expires_in: 24.hours, skip_digest: true) do %>
-          <%= pull_mailer_header %>
-        <% end %>
+        <%= Rails.cache.fetch("mailer_header", expires_in: 24.hours) do pull_mailer_header; end %>
 
         <% default_link_options = { style: "color:#3980a3" } %>
 
