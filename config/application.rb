@@ -160,5 +160,8 @@ module Discourse
       require 'rbtrace'
     end
 
+    config.to_prepare do
+      ActionMailer::Base.helper "application"
+    end
   end
 end

@@ -601,9 +601,9 @@ rate_limits:
 developer:
   force_hostname:
     hidden:
-      development: false
+      development: true
       default: true
-    default: ''
+    default: 'forum.highend3d.com:7443'
   port:
     hidden:
       development: false
