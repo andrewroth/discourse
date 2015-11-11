@@ -131,7 +131,8 @@ Discourse.User = Discourse.Model.extend({
   isBasic: Em.computed.equal('trust_level', 0),
   isLeader: Em.computed.equal('trust_level', 3),
   isElder: Em.computed.equal('trust_level', 4),
-  canManageTopic: Em.computed.or('staff', 'isElder'),
+  //canManageTopic: Em.computed.or('staff', 'isElder'),
+  canManageTopic: Em.computed.or('staff'),
 
   isSuspended: Em.computed.equal('suspended', true),
 

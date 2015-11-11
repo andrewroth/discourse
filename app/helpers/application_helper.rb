@@ -1,7 +1,7 @@
 require "net/https"
 require "uri"
 require 'current_user'
-require 'canonical_url'
+require_dependency 'canonical_url'
 require_dependency 'guardian'
 require_dependency 'unread'
 require_dependency 'age_words'
@@ -177,7 +177,16 @@ module ApplicationHelper
       response = http.request(request)
       return response.body.html_safe
     else
-      Net::HTTP.get(community_host, path).html_safe
+      #Net::HTTP.get(community_host, path).html_safe
+      uri = URI.parse("http://#{community_host}#{path}")
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = false
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+      request = Net::HTTP::Get.new(uri.request_uri)
+
+      response = http.request(request)
+      return response.body.html_safe
     end
   end
 

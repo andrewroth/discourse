@@ -76,7 +76,7 @@ module PostGuardian
       return false
     end
 
-    if is_staff? || @user.has_trust_level?(TrustLevel[4])
+    if is_staff? #|| @user.has_trust_level?(TrustLevel[4])
       return true
     end
 
@@ -84,7 +84,8 @@ module PostGuardian
       return false
     end
 
-    if post.wiki && (@user.trust_level >= SiteSetting.min_trust_to_edit_wiki_post.to_i)
+    #if post.wiki && (@user.trust_level >= SiteSetting.min_trust_to_edit_wiki_post.to_i)
+    if post.wiki && is_staff?
       return true
     end
 
@@ -148,7 +149,8 @@ module PostGuardian
     end
 
     authenticated? &&
-    (is_staff? || @user.has_trust_level?(TrustLevel[4]) || @user.id == post.user_id) &&
+    #(is_staff? || @user.has_trust_level?(TrustLevel[4]) || @user.id == post.user_id) &&
+    (is_staff? || @user.id == post.user_id) &&
     can_see_post?(post)
   end
 
@@ -161,7 +163,8 @@ module PostGuardian
   end
 
   def can_wiki?
-    is_staff? || @user.has_trust_level?(TrustLevel[4])
+    #is_staff? || @user.has_trust_level?(TrustLevel[4])
+    is_staff?
   end
 
   def can_change_post_type?

@@ -159,7 +159,7 @@ module Discourse
 
     port = SiteSetting.port.present? && SiteSetting.port.to_i > 0 ? SiteSetting.port.to_i : default_port
 
-    result << ":#{SiteSetting.port}" if port != default_port
+    result << ":#{SiteSetting.port}" if port != default_port && !result[':']
     result
   end
 
