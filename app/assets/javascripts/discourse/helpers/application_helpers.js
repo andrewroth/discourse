@@ -87,3 +87,18 @@ Handlebars.registerHelper('number', function(property, options) {
 
   return new safe(result);
 });
+
+Handlebars.registerHelper("debug", function(optionalValue) {
+  debugger;
+  /*
+  console.log("Current Context");
+  console.log("====================");
+  console.log(this);
+ 
+  if (optionalValue) {
+    console.log("Value");
+    console.log("====================");
+    console.log(optionalValue);
+  }
+  */
+});

@@ -1,0 +1,11 @@
+<div style='line-height: normal; color: #828282'>
+  <%= link_to t.relative_url, host: forums_host do %>
+    <%= render("lock_html") if t.closed %> <%= bold_match(t.title, params[:term]) %>
+    <% c = t.category %>
+    <span style='background-color: #<%= c.color %>; color: #<%= c.text_color %>;' title='<%= c.description.present? ? c.description : c.name %>' class='badge-category' data-drop-close='true' href='<%= c.relative_url %>' data-has-children='<%= c.has_children? %>'>
+      <%= c.name %>
+    </span>
+  <% end %>
+  <%= t.created_at.strftime("%m, %Y") %>
+  <%= bold_match(result.send(request.xhr? && !@h3d_search ? :blurb : :big_blurb, t.posts.first), params[:term], 'black') %>
+</div>

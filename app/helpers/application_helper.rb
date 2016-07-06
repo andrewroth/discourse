@@ -1,5 +1,7 @@
+require "net/https"
+require "uri"
 require 'current_user'
-require 'canonical_url'
+require_dependency 'canonical_url'
 require_dependency 'guardian'
 require_dependency 'unread'
 require_dependency 'age_words'
@@ -151,5 +153,53 @@ module ApplicationHelper
     controller.class.name.split("::").first == "Admin" || session[:disable_customization]
   end
 
+  ### need these *_host methods in the application_helper so that they can be called from mailers
+  def forums_host
+    @@forums_host ||= ActionMailer::Base.default_url_options[:host]
+  end
+  def community_host
+    @@community_host ||= ActionMailer::Base.default_url_options[:host].sub('forum.', 'community.')
+  end
+  def marketplace_host
+    @@marketplace_host ||= ActionMailer::Base.default_url_options[:host].sub('forum.', Rails.env.development? ? '' : 'www.')
+  end
+  ###
+
+  def pull_from_h3d(path)
+    if Rails.env.production?
+      uri = URI.parse("https://#{community_host}#{path}")
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+      request = Net::HTTP::Get.new(uri.request_uri)
+
+      response = http.request(request)
+      return response.body.html_safe
+    else
+      #Net::HTTP.get(community_host, path).html_safe
+      uri = URI.parse("http://#{community_host}#{path}")
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = false
+      http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+
+      request = Net::HTTP::Get.new(uri.request_uri)
+
+      response = http.request(request)
+      return response.body.html_safe
+    end
+  end
+
+  def pull_mailer_header
+    pull_from_h3d('/mailer_header.html')
+  end
+
+  def pull_community_menu
+    pull_from_h3d('/community_menu.html')
+  end
+
+  def pull_footer
+    pull_from_h3d('/footer.html')
+  end
 
 end

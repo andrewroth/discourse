@@ -27,7 +27,14 @@ Discourse.Quote = {
     sansQuotes = sansQuotes.replace(/</g, "&lt;")
                            .replace(/>/g, "&gt;");
 
-    result = "[quote=\"" + post.get('username') + ", post:" + post.get('post_number') + ", topic:" + post.get('topic_id');
+    //result = "[quote=\"" + post.get('username') + ", post:" + post.get('post_number') + ", topic:" + post.get('topic_id');
+    result = "<div><blockquote class='inline_quote'><span class='someonesaid'>" + post.get('username') + "</span><div>" + contents + "</div></blockquote></div><div></div>";
+    /* TODO See if I can make this look prettier at some point... like the <aside> tag below
+
+    [24] pry(main)> PrettyText.markdown(%|[quote="andrewroth, post:1, topic:321, full:true"]\nJust testing some stuff\n[/quote]|)
+        User Load (2.6ms)  SELECT  "users".* FROM "users"  WHERE "users"."username_lower" = 'andrewroth' LIMIT 1
+        => "<aside class=\"quote\" data-post=\"1\" data-topic=\"321\" data-full=\"true\"><div class=\"title\"><div class=\"quote-controls\"></div><img width='20' height='20' src='/user_avatar/localhost/andrewroth/40/383.png' class='avatar'>andrewroth:</div><blockquote><p>Just testing some stuff</p></blockquote></aside>"
+        */
 
     /* Strip the HTML from cooked */
     tmp = document.createElement('div');
@@ -43,8 +50,8 @@ Discourse.Quote = {
     contents_hashed = contents.replace(/[^a-zA-Z0-9]/g, '');
 
     /* If the quote is the full message, attribute it as such */
-    if (stripped_hashed === contents_hashed) result += ", full:true";
-    result += "\"]\n" + sansQuotes + "\n[/quote]\n\n";
+    //if (stripped_hashed === contents_hashed) result += ", full:true";
+    //result += "\"]\n" + sansQuotes + "\n[/quote]\n\n";
 
     return result;
   }

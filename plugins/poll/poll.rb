@@ -6,6 +6,8 @@ module ::PollPlugin
     end
 
     def is_poll?
+      return false if ENV['importing'] == 'true'
+
       if !@post.post_number.nil? and @post.post_number > 1
         # Not a new post, and also not the first post.
         return false

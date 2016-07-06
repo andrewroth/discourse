@@ -168,6 +168,14 @@ Discourse.Category = Discourse.Model.extend({
     return this.countStats('posts');
   }.property('posts_year', 'posts_month', 'posts_week', 'posts_day'),
 
+  headerOnly: function() {
+    return this.get('header_only');
+  }.property('header_only'),
+
+  hasChildren: function() {
+    return this.get('has_children');
+  }.property('has_children'),
+
   countStats: function(prefix) {
     var stats = [], val;
     _.each(['day', 'week', 'month', 'year'], function(unit) {

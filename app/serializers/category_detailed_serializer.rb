@@ -12,7 +12,10 @@ class CategoryDetailedSerializer < BasicCategorySerializer
              :posts_year,
              :description_excerpt,
              :is_uncategorized,
-             :subcategory_ids
+             :subcategory_ids,
+             :header_only,
+             :has_children,
+             :parent_color
 
   has_many :featured_users, serializer: BasicUserSerializer
   has_many :displayable_topics, serializer: ListableTopicSerializer, embed: :objects, key: :topics
@@ -75,4 +78,7 @@ class CategoryDetailedSerializer < BasicCategorySerializer
     object.subcategories.inject(object.send(method) || 0) { |sum,c| sum += (c.send(method) || 0) }
   end
 
+  def parent_color
+    object.parent_category.try(:color)
+  end
 end

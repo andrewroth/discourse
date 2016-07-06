@@ -41,6 +41,7 @@ if Sidekiq.server?
   end
 end
 
+=begin
 Sidekiq.logger.level = Logger::WARN
 
 class SidekiqLogsterReporter < Sidekiq::ExceptionHandler::Logger
@@ -68,4 +69,4 @@ end
 Sidekiq.error_handlers.clear
 Sidekiq.error_handlers << SidekiqLogsterReporter.new
 
-
+=end

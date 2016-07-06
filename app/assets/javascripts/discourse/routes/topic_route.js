@@ -14,6 +14,13 @@ Discourse.TopicRoute = Discourse.Route.extend({
 
   titleToken: function() {
     var model = this.modelFor('topic');
+
+    /* this is probably not the right spot for this render, but when I do it in renderTemplate, the 
+       model.get('category') doesn't return anything */
+    controller = this.controllerFor('navigation/topic');
+    controller.set('category', model.get('category'));
+    this.render('navigation/topic', { into: 'topic', outlet: 'navigation-bar', controller: controller, model: model, context: controller });
+
     if (model) {
       var result = model.get('title'),
           cat = model.get('category');
@@ -169,6 +176,18 @@ Discourse.TopicRoute = Discourse.Route.extend({
     } else {
       return this.setupParams(Discourse.Topic.create(_.omit(params, 'username_filters', 'filter')), queryParams);
     }
+    
+    // copied from discovery_categories_route
+    PreloadStore.remove("topic_list");
+
+    return Discourse.CategoryList.list('categories').then(function(list) {
+      var tracking = Discourse.TopicTrackingState.current();
+      if (tracking) {
+        tracking.sync(list, 'categories');
+        tracking.trackIncoming('categories');
+      }
+      return list;
+    });
   },
 
   activate: function() {

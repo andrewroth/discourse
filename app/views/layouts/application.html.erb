@@ -4,7 +4,12 @@
     <meta charset="utf-8">
     <title><%= content_for?(:title) ? yield(:title) + ' - ' + SiteSetting.title : SiteSetting.title %></title>
     <meta name="description" content="<%= @description_meta || SiteSetting.site_description %>">
+
     <%= render partial: "layouts/head" %>
+
+    <!-- load h3d styles first so that they can be overridden by discourse styles -->
+    <%= stylesheet_link_tag "/h3d/assets/global.css" %> 
+    <%= stylesheet_link_tag "/h3d/assets/global_css_sprite.css" %> 
 
     <%- if SiteSetting.enable_escaped_fragments? %>
     <meta name="fragment" content="!">
@@ -26,10 +31,19 @@
 
     <%= render_google_universal_analytics_code %>
 
+    <%= javascript_include_tag "/h3d/assets/h3d.js" %>
+    <%= javascript_include_tag "/h3d/assets/h3d.ready.js" %>
+
+    <script type="text/javascript" charset="utf-8">
+      $(function() {
+        $.ajax({url: '/h3d/users/dynamic.js?t=' + Date.now(), cache: true, dataType: 'script'});
+      });
+    </script>
+
     <%= yield :head %>
   </head>
 
-  <body>
+  <body class='forums' data-controller='<%= params[:controller] %>' data-action='<%= params[:action] %>'>
     <noscript data-path="<%= request.env['PATH_INFO'] %>">
       <header class="d-header">
         <div class="container">
@@ -44,7 +58,9 @@
       </header>
       <div id="main-outlet" class="container">
         <!-- preload-content: -->
-        <%= yield %>
+        <% if @no_ember %>
+          <%= yield %>
+        <% end %>
         <!-- :preload-content -->
       </div>
       <footer id='noscript-footer'>
@@ -58,8 +74,57 @@
       <%= SiteCustomization.custom_header(session[:preview_style], mobile_view? ? :mobile : :desktop) %>
     <%- end %>
 
-    <section id='main'>
-    </section>
+    <!-- social bar -->
+    <div id="socialbar-wrap">
+      <%#= render 'layouts/menubar' unless @hide_dynamic %>
+    </div>
+
+    <!-- logo bar -->
+    <div id="logobar-wrap">
+      <div id="logobar-inner">
+        <a href="/" id="logo" name="Highend 3D Logo" class="highend3d-logo"></a>
+
+        <div class="horiz-ad-wrapper">
+          <%= link_to(image_tag('/h3d/assets/adverti-horiz-holder.png'), '') %>
+          <%= link_to(image_tag('/h3d/assets/adverti-horiz-upsell.png'), '', :class => 'adverisehere') %>
+        </div>
+        <div id="shopping_cart"></div>
+      </div>
+    </div>
+
+    <div id="globalnav-wrap">
+      <%= render 'layouts/menu' unless @hide_dynamic %>
+    </div>
+
+    <div id="breadcrumb">
+      <%= render "layouts/breadcrumbs" %>
+    </div>
+
+    <div id="search_bar_layout_container">
+      <%= render "layouts/search_bar" %>
+    </div>
+
+    <!-- Flash Errors -->
+    <div id="flashes">
+    </div>
+    <!-- flash end -->
+
+    <div id="change" data-resource="forums">
+      <div id="right" class="double">
+        Sidebar here
+      </div>
+      <section id='main'>
+        <% if @no_embed %>
+          <%= yield %>
+        <% end %>
+      </section>
+      <div class="clear"></div>
+    </div>
+
+    <!-- Footer -->
+    <% cache("footer", expires_in: 24.hours) do %>
+      <%= pull_footer %>
+    <% end %>
 
     <% unless current_user %>
       <form id='hidden-login-form' method="post" action="<%=login_path%>" style="display: none;">

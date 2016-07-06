@@ -1,3 +1,13 @@
+<div class='list-controls'>
+  <div class="container">
+    {{outlet navigation-bar}}
+  </div>
+</div>
+
+{{#if canChangeCategoryNotificationLevel}}
+  {{view 'category-notifications-button' category=category}}
+{{/if}}
+
 <div class='container'>
   {{custom-html "top"}}
   {{global-notice}}
@@ -48,13 +58,6 @@
                 <a href='#' {{action "editTopic"}} class='edit-topic' title='{{i18n edit}}'>{{fa-icon pencil}}</a>
               {{/if}}
             </h1>
-
-            {{#unless isPrivateMessage}}
-              {{#if category.parentCategory}}
-                {{bound-category-link category.parentCategory}}
-              {{/if}}
-              {{bound-category-link category}}
-            {{/unless}}
           {{/if}}
         </div>
         {{plugin-outlet "topic-title"}}

@@ -79,8 +79,7 @@ export default DiscourseController.extend({
   },
 
   appendBlockAtCursor: function(text) {
-    var c = this.get('model');
-    if (c) { c.appendText(text, $('#wmd-input').caret(), {block: true}); }
+    tinyMCE.execCommand("mceInsertContent", false, text);
   },
 
   categories: function() {
@@ -286,14 +285,16 @@ export default DiscourseController.extend({
   open: function(opts) {
     opts = opts || {};
 
+    $.cookie('create_topic', false);
+
     if (!opts.draftKey) {
-      alert("composer was opened without a draft key");
-      throw "composer opened without a proper draft key";
+      console.log("composer was opened without a draft key; this error is unhelpful and annoying (there is no clue about where the draft key is supposed to come from); ignoring to see if stuff works after it if I don't crash");
+      return;
     }
 
     // If we show the subcategory list, scope the categories drop down to
     // the category we opened the composer with.
-    if (Discourse.SiteSettings.show_subcategory_list) {
+    if (Discourse.SiteSettings.show_subcategory_list_compose) {
       this.set('scopedCategoryId', opts.categoryId);
     }
 
@@ -415,11 +416,13 @@ export default DiscourseController.extend({
     } else {
       this.close();
     }
+    $.cookie('create_topic', false);
   },
 
   collapse: function() {
     this.saveDraft();
     this.set('model.composeState', Discourse.Composer.DRAFT);
+    $.cookie('create_topic', false);
   },
 
   close: function() {
@@ -429,6 +432,7 @@ export default DiscourseController.extend({
       'view.showCategoryTip': false,
       'view.showReplyTip': false
     });
+    $.cookie('create_topic', false);
   },
 
   closeAutocomplete: function() {

@@ -47,7 +47,7 @@ export default Ember.Component.extend({
     if (category) {
       return Discourse.HTML.categoryStyle(category);
     } else {
-      return "background-color: #eee; color: #333";
+      return "background-color: #E6E6E6; color: #333";
     }
   }.property('category'),
 

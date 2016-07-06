@@ -51,6 +51,7 @@
 // --------------------------------------------------
 
 .clearfix {
+  display: inherit !important;
   &:before,
   &:after {
     display: table;
@@ -59,6 +60,10 @@
   &:after {
     clear: both;
   }
+}
+
+td.clearfix {
+  display: table-cell !important;
 }
 
 // Overflow

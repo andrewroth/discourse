@@ -49,7 +49,13 @@ Discourse.DiscoveryRoute = Discourse.Route.extend(Discourse.ScrollTop, Discourse
       topic.clearPin();
     },
 
-    createTopic: function() {
+    createTopic: function(canCreateTopic) {
+      // note that setting the hash messes up discourse, there is a redirect in h3d.js setUpDiscourse that
+      // sets a cookie then does a redirect if there is create topic
+      if (!canCreateTopic && requireSignInWithDialog()) {
+        $.cookie('create_topic', true);
+        return;
+      }
       this.openComposer(this.controllerFor('discovery/topics'));
     },
 

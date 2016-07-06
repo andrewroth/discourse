@@ -82,7 +82,7 @@ basic:
     client: true
     refresh: true
     type: list
-    default: 'latest|new|unread|starred|top|categories'
+    default: 'categories|latest|new|unread|starred|top'
     choices:
      - latest
      - new
@@ -150,13 +150,16 @@ basic:
     min: 1
   fixed_category_positions:
     client: true
-    default: false
+    default: true
   topics_per_page:
     default: 30
     min: 1
     client: true
   show_subcategory_list:
     default: false
+    client: true
+  show_subcategory_list_compose:
+    default: true
     client: true
   enable_badges:
     client: true
@@ -230,7 +233,7 @@ login:
     default: false
     client: true
   email_domains_blacklist:
-    default: 'mailinator.com'
+    default: ''
     type: list
   email_domains_whitelist:
     default: ''
@@ -240,11 +243,11 @@ login:
 users:
   min_username_length:
     client: true
-    default: 3
+    default: 1
     min: 1
   max_username_length:
     client: true
-    default: 20
+    default: 60
     min: 8
     max: 60
   min_password_length:
@@ -291,7 +294,7 @@ posting:
     min: 1
     default:
       test: 5
-      default: 20
+      default: 1 #20
   min_private_message_post_length:
     client: true
     min: 1
@@ -304,7 +307,7 @@ posting:
   body_min_entropy: 7
   min_topic_title_length:
     client: true
-    default: 15
+    default: 1
   max_topic_title_length:
     client: true
     default: 255
@@ -315,9 +318,9 @@ posting:
     client: true
     default: 2
   allow_uncategorized_topics:
-    client: true
-    default: true
-    refresh: true
+    client: false
+    default: false
+    refresh: false
   uncategorized_description: "Topics that don't need a category, or don't fit into any other existing category."
   allow_duplicate_topic_titles: false
   min_title_similar_length:
@@ -354,17 +357,17 @@ posting:
     default: false
     client: true
   post_undo_action_window_mins: 10
-  max_mentions_per_post: 10
-  newuser_max_replies_per_topic: 3
-  newuser_max_mentions_per_post: 2
+  max_mentions_per_post: 1000 # 10
+  newuser_max_replies_per_topic: 1000 # 3
+  newuser_max_mentions_per_post: 1000 #2
   max_word_length: 30
-  newuser_max_links: 2
+  newuser_max_links: 1000 #2
   newuser_max_images:
     client: true
-    default: 0
+    default: 1000 # 10
   newuser_max_attachments:
     client: true
-    default: 0
+    default: 1000 # 10
   uncategorized_category_id:
     default: -1
     hidden: true
@@ -471,7 +474,7 @@ files:
   allow_profile_backgrounds:
     client: true
     default: true
-  automatically_download_gravatars: true
+  automatically_download_gravatars: false
   allow_uploaded_avatars:
     client: true
     default: true
@@ -598,9 +601,9 @@ rate_limits:
 developer:
   force_hostname:
     hidden:
-      development: false
+      development: true
       default: true
-    default: ''
+    default: 'forum.highend3d.com:7443'
   port:
     hidden:
       development: false

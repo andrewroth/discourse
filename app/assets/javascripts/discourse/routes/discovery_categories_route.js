@@ -53,8 +53,15 @@ Discourse.DiscoveryCategoriesRoute = Discourse.Route.extend(Discourse.OpenCompos
       this.controllerFor('editCategory').set('selectedTab', 'general');
     },
 
-    createTopic: function() {
-      this.openComposer(this.controllerFor('discovery/categories'));
-    }
+    createTopic: function(canCreateTopic) {
+      // note that setting the hash messes up discourse, there is a redirect in h3d.js setUpDiscourse that
+      // sets a cookie then does a redirect if there is create topic
+      //if (!canCreateTopic && requireSignInWithDialog(window.location.href.split('#')[0]+'#create_topic')) {
+      if (!canCreateTopic && requireSignInWithDialog()) {
+        $.cookie('create_topic', true);
+        return;
+      }
+      this.openComposer(this.controllerFor('discovery/topics'));
+    },
   }
 });

@@ -19,6 +19,7 @@ export default function(filter, extras) {
 
     beforeModel: function() {
       this.controllerFor('navigation/default').set('filterMode', filter);
+      this.controllerFor('navigation/topic').set('filterMode', filter);
     },
 
     model: function(data, transition) {

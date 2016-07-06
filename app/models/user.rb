@@ -10,6 +10,7 @@ require_dependency 'pretty_text'
 require_dependency 'url_helper'
 require_dependency 'letter_avatar'
 require_dependency 'promotion'
+require_dependency 'avatar_upload_service'
 
 class User < ActiveRecord::Base
   include Roleable
@@ -46,6 +47,7 @@ class User < ActiveRecord::Base
   has_one :user_stat, dependent: :destroy
   has_one :user_profile, dependent: :destroy, inverse_of: :user
   has_one :single_sign_on_record, dependent: :destroy
+  has_one :h3d_user, class_name: "H3d::User", foreign_key: "discourse_user_id"
   belongs_to :approved_by, class_name: 'User'
   belongs_to :primary_group, class_name: 'Group'
 
@@ -64,7 +66,6 @@ class User < ActiveRecord::Base
 
   validates_presence_of :username
   validate :username_validator
-  validates :email, presence: true, uniqueness: true
   validates :email, email: true, if: :email_changed?
   validate :password_validator
   validates :ip_address, allowed_ip_address: {on: :create, message: :signup_not_allowed}
@@ -124,6 +125,10 @@ class User < ActiveRecord::Base
 
   def self.username_length
     SiteSetting.min_username_length.to_i..SiteSetting.max_username_length.to_i
+  end
+
+  def to_s
+    h3d_user.to_s
   end
 
   def custom_groups
@@ -374,6 +379,10 @@ class User < ActiveRecord::Base
     schemaless absolute avatar_template
   end
 
+  def relative_url
+    "/users/#{h3d_user.permalink}"
+  end
+
   def self.avatar_template(username,uploaded_avatar_id)
     return letter_avatar_template(username) if !uploaded_avatar_id
     id = uploaded_avatar_id
@@ -463,7 +472,7 @@ class User < ActiveRecord::Base
 
   # a touch faster than automatic
   def admin?
-    admin
+    admin || h3d_user.try(:admin?)
   end
 
   def guardian
@@ -689,6 +698,60 @@ class User < ActiveRecord::Base
     end
   end
 
+  def import_h3d_avatar!
+    avatar = h3d_user.try(:avatar)
+
+    unless avatar.try(:photo)
+      puts "No h3d avatar photo data for user #{id} h3d_user #{h3d_user.id} avatar #{avatar.inspect}"
+      return
+    end
+
+    if uploaded_avatar.try(:origin) == avatar.try(:id).to_s
+      puts "Our avatar origin column matches the h3d avatar id (#{avatar.id}); Skipping"
+      return
+    end
+
+    url = "https://www.highend3d.com:7443/#{avatar.photo.url(:big)}"
+    begin
+      puts "Grabbing avatar from #{url}"
+      service = AvatarUploadService.new(url, :url)
+    rescue Discourse::InvalidParameters, OpenURI::HTTPError
+      # try using the original path since the "big" size is meant to use jpg
+      # but some avatars uploaded before we added that are in the original format
+      url = "#{File.dirname(url)}/#{avatar.photo_file_name}"
+      puts "Failed.  Grabbing avatar from #{url}"
+      begin
+        service = AvatarUploadService.new(url, :url)
+      rescue Discourse::InvalidParameters, OpenURI::HTTPError
+        # try the original two with the user_ part of the url taken out
+        # again, some avatars uploaded before we added that don't have user_ in the url
+        url = "https://www.highend3d.com:7443/#{avatar.photo.url(:big).sub('user_','')}"
+        puts "Failed.  Grabbing avatar from #{url}"
+        begin
+          service = AvatarUploadService.new(url, :url)
+        rescue Discourse::InvalidParameters, OpenURI::HTTPError
+          # try the original two with the user_ part of the url taken out
+          # again, some avatars uploaded before we added that don't have user_ in the url
+          url = "#{File.dirname(url)}/#{avatar.photo_file_name}"
+          puts "Failed.  Grabbing avatar from #{url}"
+          begin
+            service = AvatarUploadService.new(url, :url)
+          rescue Discourse::InvalidParameters, OpenURI::HTTPError
+            puts "Can't find avatar, failing..."
+            return
+          end
+        end
+      end
+    end
+    puts "Success!"
+    upload = Upload.create_for(id, service.file, service.filename, service.filesize, origin: avatar.id.to_s)
+    user_avatar.custom_upload_id = upload.id.to_s
+    user_avatar.save!
+    self.uploaded_avatar = upload
+    uploaded_avatar.update_column(:origin, avatar.id.to_s) unless avatar.id.to_s == self.uploaded_avatar.origin
+    save!
+  end
+
   protected
 
   def badge_grant
@@ -794,6 +857,7 @@ class User < ActiveRecord::Base
   # Delete inactive accounts that are over a week old
   def self.purge_inactive
 
+=begin
     # You might be wondering why this query matches on post_count = 0. The reason
     # is a long time ago we had a bug where users could post before being activated
     # and some sites still have those records which can't be purged.
@@ -812,6 +876,7 @@ class User < ActiveRecord::Base
         # if for some reason the user can't be deleted, continue on to the next one
       end
     end
+=end
   end
 
   private

@@ -757,7 +757,7 @@ blockquote > *:last-child {
 }
 
 // variables are used to calculate the width of .gap
-$topic-body-width: 690px;
+$topic-body-width: 875px;
 $topic-body-width-padding: 11px;
 $topic-avatar-width: 45px;
 .topic-body {
@@ -802,7 +802,7 @@ $topic-avatar-width: 45px;
   width: 0;
   height: 0;
   vertical-align: middle;
-  border-top: 4px solid $primary;
+  border-top: 4px solid white;
   border-right: 4px solid transparent;
   border-left: 4px solid transparent;
   content: "";
@@ -817,6 +817,7 @@ $topic-avatar-width: 45px;
   float: left;
   width: 550px;
   margin: 1px 0 0;
+  padding-left: 0px;
   list-style: none;
   background-color: $secondary;
   border: 1px solid scale-color-diff();
@@ -996,6 +997,8 @@ a.attachment:before {
 }
 
 .topic-meta-data {
+
+  padding-bottom: 3px;
 
  &:after {
     visibility: hidden;

@@ -29,6 +29,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  skip_before_filter :verify_authenticity_token#, only: :create
+
   before_filter :set_current_user_for_logs
   before_filter :set_locale
   before_filter :set_mobile_view
@@ -39,15 +41,35 @@ class ApplicationController < ActionController::Base
   before_filter :preload_json
   before_filter :check_xhr
   before_filter :redirect_to_login_if_required
+  before_filter :http_authenticate
 
   layout :set_layout
+
+  def forums_host
+    @@forums_host ||= ActionMailer::Base.default_url_options[:host]
+  end
+  helper_method :forums_host
+
+  def community_host
+    @@community_host ||= ActionMailer::Base.default_url_options[:host].sub('forum.', 'community.')
+  end
+  helper_method :community_host
+
+  def marketplace_host
+    @@marketplace_host ||= ActionMailer::Base.default_url_options[:host].sub('forum.', Rails.env.development? ? '' : 'www.')
+  end
+  helper_method :marketplace_host
 
   def has_escaped_fragment?
     SiteSetting.enable_escaped_fragments? && params.key?("_escaped_fragment_")
   end
 
   def set_layout
-    has_escaped_fragment? || CrawlerDetection.crawler?(request.user_agent) ? 'crawler' : 'application'
+    if params[:header_only] || params[:header_only] == 'true'
+      'header_only'
+    else
+      has_escaped_fragment? || CrawlerDetection.crawler?(request.user_agent) ? 'crawler' : 'application'
+    end
   end
 
   rescue_from Exception do |exception|
@@ -122,6 +144,12 @@ class ApplicationController < ActionController::Base
   end
 
   def set_current_user_for_logs
+    cookies_hash = {}
+    cookies.each do |c|
+      cookies_hash[c.first] = c.second
+    end
+    logger.info("in set_current_user_for_logs.  session: #{session.keys.inspect} cookies: #{cookies_hash.inspect}")
+
     if current_user
       Logster.add_to_env(request.env,"username",current_user.username)
     end
@@ -349,6 +377,15 @@ class ApplicationController < ActionController::Base
       render_to_string status: status, layout: layout, formats: [:html], template: '/exceptions/not_found'
     end
 
+    def http_authenticate
+      return if request.ip == "108.95.80.11" # no auth for will
+      if need_authentication?
+        authenticate_or_request_with_http_basic do |username, password|
+          username == GlobalSetting.http_auth_username && password == GlobalSetting.http_auth_password
+        end
+      end
+    end
+
   protected
 
     def render_post_json(post, add_raw=true)
@@ -374,4 +411,10 @@ class ApplicationController < ActionController::Base
       end
     end
 
+    def need_authentication?
+      return false if request.url =~ /media.*/
+      return !Rails.env.test? && !Rails.env.development? &&
+        request.host != '127.0.0.1' && request.host != 'localhost' &&
+        request.remote_ip != '69.162.66.162' && request.remote_ip != '24.36.162.205'
+    end
 end

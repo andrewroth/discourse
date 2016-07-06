@@ -16,7 +16,6 @@ public/plugins/*
 public/tombstone/*
 
 # Ignore bundler config
-/bin
 /.bundle
 /.vagrant
 /.vagrantfile
@@ -96,11 +95,8 @@ chef/tmp/*
 # exclude our git version file for now
 config/version.rb
 
-# ignore the Ruby Version manager (rvm)
-.rvmrc
-.ruby-version
-.ruby-gemset
-.rbenv
 bundler_stubs/*
 
 vendor/bundle/*
+
+vendor/ruby

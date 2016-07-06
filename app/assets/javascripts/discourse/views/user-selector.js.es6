@@ -46,6 +46,10 @@ var UserSelector = TextField.extend({
     var userSelectorView = this,
         selected = [];
 
+    if (userSelectorView.usernames == Discourse.User.currentProp('username') && userSelectorView.get('excludeCurrentUser') == 'true') {
+      userSelectorView.usernames = '';
+    }
+
     function excludedUsernames() {
       var exclude = selected;
       if (userSelectorView.get('excludeCurrentUser')) {
@@ -66,7 +70,8 @@ var UserSelector = TextField.extend({
           term: term,
           topicId: userSelectorView.get('topicId'),
           exclude: excludedUsernames(),
-          include_groups: userSelectorView.get('include_groups')
+          include_groups: userSelectorView.get('include_groups'),
+          pm: userSelectorView.get('pm')
         });
       },
 

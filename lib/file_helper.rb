@@ -9,7 +9,7 @@ class FileHelper
   def self.download(url, max_file_size, tmp_file_name, follow_redirect=false)
     raise Discourse::InvalidParameters.new(:url) unless url =~ /^https?:\/\//
 
-    uri = URI.parse(url)
+    uri = URI.parse(Addressable::URI.encode(url))
     extension = File.extname(uri.path)
     tmp = Tempfile.new([tmp_file_name, extension])
 

@@ -27,6 +27,7 @@ class UsersController < ApplicationController
 
   def show
     @user = fetch_user_from_params
+    @user.import_h3d_avatar!
     user_serializer = UserSerializer.new(@user, scope: guardian, root: 'user')
     respond_to do |format|
       format.html do
@@ -414,8 +415,9 @@ class UsersController < ApplicationController
     term = params[:term].to_s.strip
     topic_id = params[:topic_id]
     topic_id = topic_id.to_i if topic_id
+    pm = params[:pm] == 'true'
 
-    results = UserSearch.new(term, topic_id: topic_id, searching_user: current_user).search
+    results = UserSearch.new(term, pm: pm, topic_id: topic_id, searching_user: current_user).search
 
     user_fields = [:username, :upload_avatar_template, :uploaded_avatar_id]
     user_fields << :name if SiteSetting.enable_names?

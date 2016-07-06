@@ -15,7 +15,7 @@ class CategoriesController < ApplicationController
 
     options = {}
     options[:latest_posts] = params[:latest_posts] || SiteSetting.category_featured_topics
-    options[:parent_category_id] = params[:parent_category_id]
+    options[:parent_category_id] = params[:parent_category_id] || :flat
 
     @list = CategoryList.new(guardian, options)
     @list.draft_key = Draft::NEW_TOPIC

@@ -1,22 +1,22 @@
+<div class="tabs">
+  <ul class="nav nav-pills latest-tabs subtle" id='navigation-bar'>
+    {{#each navItem in navItems}}
+      {{navigation-item content=navItem filterMode=filterMode}}
+    {{/each}}
+    {{custom-html "extraNavItem"}}
+  </ul>
+</div>
+
 {{bread-crumbs categories=categories
                category=category
                noSubcategories=noSubcategories
                hideSubcategories=showingSubcategoryList}}
 
-<ul class="nav nav-pills" id='navigation-bar'>
-  {{#each navItem in navItems}}
-    {{navigation-item content=navItem filterMode=filterMode}}
-  {{/each}}
-  {{custom-html "extraNavItem"}}
-</ul>
-
 {{#if canChangeCategoryNotificationLevel}}
   {{view 'category-notifications-button' category=category}}
 {{/if}}
 
-{{#if canCreateTopic}}
-  <button id="create-topic" class='btn btn-default' {{action "createTopic"}}><i class='fa fa-plus'></i>{{i18n topic.create}}</button>
-{{/if}}
+<button id="create-topic" class='btn btn-default' {{action "createTopic" canCreateTopic}}><i class='fa fa-plus'></i>{{i18n topic.create}}</button>
 
 {{#if canEditCategory}}
   <button class='btn btn-default' {{action "editCategory" category}}><i class="fa fa-wrench"></i> {{i18n category.edit_long}}</button>

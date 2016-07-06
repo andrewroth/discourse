@@ -95,7 +95,7 @@ Discourse.Composer = Discourse.Model.extend({
   }.property('action', 'post', 'topic', 'topic.title'),
 
   toggleText: function() {
-    return this.get('showPreview') ? I18n.t('composer.hide_preview') : I18n.t('composer.show_preview');
+    return '';
   }.property('showPreview'),
 
   hidePreview: Em.computed.not('showPreview'),
@@ -234,9 +234,16 @@ Discourse.Composer = Discourse.Model.extend({
     @property replyLength
   **/
   replyLength: function() {
+    /*
     var reply = this.get('reply') || "";
     while (Discourse.Quote.REGEXP.test(reply)) { reply = reply.replace(Discourse.Quote.REGEXP, ""); }
     return reply.replace(/\s+/img, " ").trim().length;
+    */
+    if (tinyMCE.activeEditor !== undefined) {
+      return tinyMCE.activeEditor.getBody().textContent.length;
+    } else {
+      return 0;
+    }
   }.property('reply'),
 
 
@@ -310,7 +317,8 @@ Discourse.Composer = Discourse.Model.extend({
   },
 
   togglePreview: function() {
-    this.toggleProperty('showPreview');
+    //this.toggleProperty('showPreview');
+    this.setProperty('showPreview', false);
     Discourse.KeyValueStore.set({ key: 'composer.showPreview', value: this.get('showPreview') });
   },
 
@@ -611,7 +619,7 @@ Discourse.Composer = Discourse.Model.extend({
   },
 
   getCookedHtml: function() {
-    return $('#wmd-preview').html().replace(/<span class="marker"><\/span>/g, '');
+    return tinyMCE.activeEditor.getContent();
   },
 
   saveDraft: function() {

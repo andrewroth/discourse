@@ -7,3 +7,35 @@ DiscoursePluginRegistry.javascripts.each { |js| require_asset(js) }
 DiscoursePluginRegistry.handlebars.each { |hb| require_asset(hb) }
 
 %>
+
+var discourse = true;
+//var active_array = $("#navigation-bar").find(".active");
+var current_path = ""; // force an initial endPjax by not initializing current_path to window.location.pathname
+
+Ember.View.reopen({
+  didInsertElement : function(){
+    this._super();
+    Ember.run.scheduleOnce('afterRender', this, this.afterRenderEvent);
+  },
+  afterRenderEvent : function(){
+
+    //console.log("afterRenderEvent this: ", this);
+
+    /*
+    new_active_array = $("#navigation-bar").find(".active");
+    if (!($(active_array).not(new_active_array).length == 0 && $(new_active_array).not(active_array).length == 0)) {
+      $.h3d.endPjax();
+    }
+    active_array = new_active_array;
+    */
+    new_path = window.location.pathname;
+    if (new_path != current_path) {
+      $.h3d.endPjax();
+      // this is a horrible hack, but is necessary because it seems some ember events are happening after the url is updated
+      // and I just can't figure out a reliable way to know when the rendering is done
+      setTimeout($.h3d.endPjax, 100);
+      setTimeout($.h3d.endPjax, 500);
+    }
+    current_path = new_path;
+  }
+});

@@ -36,10 +36,13 @@ class UserNotifications < ActionMailer::Base
 
 
   def digest(user, opts={})
+    #binding.pry
+
     @user = user
     @base_url = Discourse.base_url
 
     min_date = opts[:since] || @user.last_emailed_at || @user.last_seen_at || 1.month.ago
+    min_date = 10.month.ago if @user.username == 'tester11'
 
     @site_name = SiteSetting.title
 
@@ -69,11 +72,14 @@ class UserNotifications < ActionMailer::Base
       @featured_topics, @new_topics = @featured_topics[0..4], @featured_topics[5..-1]
       @markdown_linker = MarkdownLinker.new(Discourse.base_url)
 
+      puts "SENDING!"
       build_email user.email,
                   from_alias: I18n.t('user_notifications.digest.from', site_name: SiteSetting.title),
                   subject: I18n.t('user_notifications.digest.subject_template',
                   site_name: @site_name,
                   date: I18n.l(Time.now, format: :short))
+    else
+      puts "NO CONTENT FOR EMAIL, SKIPPING"
     end
   end
 

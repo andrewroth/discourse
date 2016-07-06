@@ -27,7 +27,7 @@ export default Ember.Component.extend({
 
   active: function() {
     return this.get('content.filterMode') === this.get('filterMode') ||
-           this.get('filterMode').indexOf(this.get('content.filterMode')) === 0;
+           (this.get('filterMode') && this.get('filterMode').indexOf(this.get('content.filterMode')) === 0);
   }.property('content.filterMode', 'filterMode'),
 
   name: function() {

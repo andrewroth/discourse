@@ -2,6 +2,9 @@
   color: scale-color($primary, $lightness: 40%);
 }
 .fa.tracking, .fa.watching {
-  color: $tertiary;
+  color: #3980a3;
   font-weight: normal;
+}
+#topic-footer-buttons button > .fa {
+  color: white !important;
 }

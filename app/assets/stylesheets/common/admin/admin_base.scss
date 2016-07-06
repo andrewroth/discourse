@@ -185,6 +185,7 @@ td.flaggers td {
       width: 53%;
       .select2-container {
         width: 100%;
+        min-width: 50px;
       }
       .select2-container-multi .select2-choices {
         border: none;

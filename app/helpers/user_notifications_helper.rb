@@ -36,8 +36,9 @@ module UserNotificationsHelper
     logo_url
   end
 
-  def html_site_link
-    "<a href='#{Discourse.base_url}'>#{@site_name}</a>"
+  def html_site_link(params = {})
+    #"<a href='#{Discourse.base_url}'>#{@site_name}</a>"
+    link_to(@site_name, Discourse.base_url, params)
   end
 
   def first_paragraph_from(html)

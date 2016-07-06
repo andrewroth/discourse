@@ -22,7 +22,7 @@ Discourse::Application.configure do
   # Don't Digest assets, makes debugging uglier
   config.assets.digest = false
 
-  config.assets.debug = true
+  config.assets.debug = false
 
   # Raise an error on page load if there are pending migrations
   config.active_record.migration_error = :page_load
@@ -51,5 +51,7 @@ Discourse::Application.configure do
   if emails = GlobalSetting.developer_emails
     config.developer_emails = emails.split(",").map(&:strip)
   end
+
+  config.action_mailer.default_url_options = { :host => 'forum.highend3d.local' }
 end
 

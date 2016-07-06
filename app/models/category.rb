@@ -342,6 +342,7 @@ SQL
   def has_children?
     id && Category.where(parent_category_id: id).exists?
   end
+  alias_method :has_children, :has_children?
 
   def uncategorized?
     id == SiteSetting.uncategorized_category_id
@@ -351,6 +352,10 @@ SQL
     url = "/category"
     url << "/#{parent_category.slug}" if parent_category_id
     url << "/#{slug}"
+  end
+
+  def relative_url
+    url
   end
 
   # If the name changes, try and update the category definition topic too if it's
@@ -400,6 +405,7 @@ end
 #  background_url           :string(255)
 #  allow_badges             :boolean          default(TRUE), not null
 #  name_lower               :string(50)       not null
+#  header_only              :boolean
 #
 # Indexes
 #

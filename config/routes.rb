@@ -7,7 +7,7 @@ require_dependency "permalink_constraint"
 
 # This used to be User#username_format, but that causes a preload of the User object
 # and makes Guard not work properly.
-USERNAME_ROUTE_FORMAT = /[A-Za-z0-9\_]+/ unless defined? USERNAME_ROUTE_FORMAT
+USERNAME_ROUTE_FORMAT = /[A-Za-z0-9\_ \@\-]+/ unless defined? USERNAME_ROUTE_FORMAT
 BACKUP_ROUTE_FORMAT = /[a-zA-Z0-9\-_]*\d{4}(-\d{2}){2}-\d{6}\.tar\.gz/i unless defined? BACKUP_ROUTE_FORMAT
 
 Discourse::Application.routes.draw do
@@ -255,9 +255,9 @@ Discourse::Application.routes.draw do
   get "users/:username/deleted-posts" => "users#show", constraints: {username: USERNAME_ROUTE_FORMAT}
   get "users/:username/badges_json" => "user_badges#username"
 
-  post "user_avatar/:username/refresh_gravatar" => "user_avatars#refresh_gravatar"
-  get "letter_avatar/:username/:size/:version.png" => "user_avatars#show_letter", format: false, constraints: { hostname: /[\w\.-]+/ }
-  get "user_avatar/:hostname/:username/:size/:version.png" => "user_avatars#show", format: false, constraints: { hostname: /[\w\.-]+/ }
+  post "user_avatar/:username/refresh_gravatar" => "user_avatars#refresh_gravatar", constraints: { username: USERNAME_ROUTE_FORMAT }
+  get "letter_avatar/:username/:size/:version.png" => "user_avatars#show_letter", format: false, constraints: { hostname: /[\w\.-]+/, username: USERNAME_ROUTE_FORMAT }
+  get "user_avatar/:hostname/:username/:size/:version.png" => "user_avatars#show", format: false, constraints: { hostname: /[\w\.-]+/, username: USERNAME_ROUTE_FORMAT }
 
   get "uploads/:site/:id/:sha.:extension" => "uploads#show", constraints: {site: /\w+/, id: /\d+/, sha: /[a-z0-9]{15,16}/i, extension: /\w{2,}/}
   get "uploads/:site/:sha" => "uploads#show", constraints: { site: /\w+/, sha: /[a-z0-9]{40}/}
@@ -450,6 +450,7 @@ Discourse::Application.routes.draw do
   get "cdn_asset/:site/*path" => "static#cdn_asset", format: false
 
   get "robots.txt" => "robots_txt#index"
+  get "colors.html" => "robots_txt#colors"
 
   Discourse.filters.each do |filter|
     root to: "list##{filter}", constraints: HomePageConstraint.new("#{filter}"), :as => "list_#{filter}"
