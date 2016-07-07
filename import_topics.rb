@@ -212,3 +212,5 @@ RateLimiter.enable
 puts "Took #{Time.now - t0} seconds to run"
 
 Category.all.collect(&:update_latest)
+
+Topic.where("bumped_at > ?", Time.now).update_all(pinned_at: Time.now)

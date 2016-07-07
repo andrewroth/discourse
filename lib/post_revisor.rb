@@ -132,7 +132,7 @@ class PostRevisor
   end
 
   def revise
-    update_post
+    update_post if post_changed?
     update_topic if topic_changed?
     create_or_update_revision
   end
