@@ -7,6 +7,8 @@ class H3d::User::Message < ActiveRecord::Base
   belongs_to :recipient, class_name: "User"
 
   def create_discourse
+    return unless subject.present?
+
     unless discourse_topic
       self.discourse_topic = ::Topic.create! title: subject,
         last_posted_at: created_at,
@@ -30,9 +32,27 @@ class H3d::User::Message < ActiveRecord::Base
       update_column :discourse_post_id, discourse_post.id
     end
 
-    discourse_topic.topic_users.where(user_id: sender.discourse_user.id, posted: true).first_or_create
-    discourse_topic.topic_users.where(user_id: recipient.discourse_user.id).first_or_create
-    discourse_topic.topic_allowed_users.where(user_id: sender.discourse_user.id).first_or_create
-    discourse_topic.topic_allowed_users.where(user_id: recipient.discourse_user.id).first_or_create
+    if sender != nil
+      discourse_topic.topic_users.where(user_id: sender.discourse_user.id, posted: true).first_or_create
+      discourse_topic.topic_allowed_users.where(user_id: sender.discourse_user.id).first_or_create
+    end
+    if recipient != nil
+      discourse_topic.topic_users.where(user_id: recipient.discourse_user.id).first_or_create
+      discourse_topic.topic_allowed_users.where(user_id: recipient.discourse_user.id).first_or_create
+    end
+  end
+
+  def self.backport
+    importing_before = ENV['importing']
+    ENV['importing'] = 'true'
+    total = H3d::User::Message.count
+    i = 0
+    base = H3d::User::Message.where(discourse_topic_id: nil, discourse_post_id: nil)
+    base.find_each do |m|
+      i += 1
+      puts("#{name} BACKPORT [#{i}/#{total}] #{(i.to_f / total.to_f * 100.0).round(1)}%") if i % 10 == 0
+      m.create_discourse
+    end
+    ENV['importing'] = importing_before 
   end
 end

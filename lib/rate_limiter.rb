@@ -71,6 +71,6 @@ class RateLimiter
   end
 
   def rate_unlimited?
-    !!(RateLimiter.disabled? || (@user && @user.staff?))
+    !!(RateLimiter.disabled? || (@user && @user.staff?) || ENV['importing'] == 'true')
   end
 end
