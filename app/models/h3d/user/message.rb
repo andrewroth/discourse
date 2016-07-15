@@ -7,7 +7,7 @@ class H3d::User::Message < ActiveRecord::Base
   belongs_to :recipient, class_name: "User"
 
   def create_discourse
-    return unless subject.present?
+    return unless subject.present? && subject.length >= 2
 
     unless discourse_topic
       self.discourse_topic = ::Topic.create! title: subject,
@@ -42,7 +42,7 @@ class H3d::User::Message < ActiveRecord::Base
     end
   end
 
-  def self.backport
+  def self.create_discourse
     importing_before = ENV['importing']
     ENV['importing'] = 'true'
     total = H3d::User::Message.count
@@ -50,7 +50,7 @@ class H3d::User::Message < ActiveRecord::Base
     base = H3d::User::Message.where(discourse_topic_id: nil, discourse_post_id: nil)
     base.find_each do |m|
       i += 1
-      puts("#{name} BACKPORT [#{i}/#{total}] #{(i.to_f / total.to_f * 100.0).round(1)}%") if i % 10 == 0
+      puts("#{name} IMPORT [#{i}/#{total}] #{(i.to_f / total.to_f * 100.0).round(1)}%") if i % 10 == 0
       m.create_discourse
     end
     ENV['importing'] = importing_before 

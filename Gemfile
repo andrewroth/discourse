@@ -197,9 +197,26 @@ group :test, :development do
   gem 'simplecov', require: false
   gem 'timecop'
   gem 'rspec-given'
-  gem 'pry-nav'
+
+  gem 'pry'
+  gem 'pry-doc'#, '0.4.6'
+  #gem 'pry-nav'#, '0.2.3'
+  #gem 'pry-rails'#, '0.3.2'
+  gem 'pry-rescue'#, '1.2.0'
+  gem 'pry-stack_explorer'#, '0.4.9.1'
+  gem 'pry-byebug'
+
   gem 'spork-rails'
+  gem 'xray-rails', '0.1.8'
 end
+
+gem 'pry'
+gem 'pry-doc'#, '0.4.6'
+#gem 'pry-nav'#, '0.2.3'
+#gem 'pry-rails'#, '0.3.2'
+gem 'pry-rescue'#, '1.2.0'
+gem 'pry-stack_explorer'#, '0.4.9.1'
+gem 'pry-byebug'
 
 group :development do
   gem 'better_errors'
@@ -250,3 +267,14 @@ group :profile do
   # if you need to profile, uncomment out this line
   # gem 'rack-perftools_profiler', require: 'rack/perftools_profiler', platform: :mri_19
 end
+
+gem 'capistrano', '~> 3.2.0'
+gem 'capistrano-rvm'
+gem 'capistrano-bundler'
+gem 'capistrano-rails'
+
+gem 'dalli', '2.7.0'
+
+gem 'paperclip', '2.3.16'
+gem "non-stupid-digest-assets"
+

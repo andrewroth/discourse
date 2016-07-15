@@ -72,7 +72,7 @@ orphan_topics.collect{ |t| t.posts.update_all(deleted_at: Time.now) }
 orphan_topics.update_all(deleted_at: Time.now)
 
 puts "Deleting orphan posts"
-h3d_post_discourse_post_ids = H3d::Post.pluck(:discourse_post_id);
+h3d_post_discourse_post_ids = H3d::Post.where(is_spam: [nil, false]).pluck(:discourse_post_id);
 post_ids = Post.pluck(:id)
 orphan_posts = Post.where(id: (post_ids - h3d_post_discourse_post_ids))
 orphan_posts.update_all(deleted_at: Time.now)
