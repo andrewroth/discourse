@@ -252,9 +252,9 @@ gem 'rbtrace', require: false, platform: :mri
 gem 'ruby-readability', require: false
 
 gem 'simple-rss', require: false
-gem 'gctools', require: false, platform: :mri_21
-gem 'stackprof', require: false, platform: :mri_21
-gem 'memory_profiler', require: false, platform: :mri_21
+gem 'gctools', require: false#, platform: :mri_21
+gem 'stackprof', require: false#, platform: :mri_21
+gem 'memory_profiler', require: false#, platform: :mri_21
 
 gem 'rmmseg-cpp', require: false
 
