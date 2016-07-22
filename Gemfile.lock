@@ -188,7 +188,7 @@ GEM
     librarian (0.1.2)
       highline
       thor (~> 0.15)
-    libv8 (3.16.14.7)
+    libv8 (3.16.14.15)
     listen (0.7.3)
     logster (0.1.6)
     lru_redux (0.8.1)
@@ -209,7 +209,7 @@ GEM
       metaclass (~> 0.0.1)
     mock_redis (0.13.2)
     moneta (0.8.0)
-    msgpack (0.5.8)
+    msgpack (1.0.0)
     multi_json (1.10.1)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
@@ -328,7 +328,7 @@ GEM
     rb-fsevent (0.9.4)
     rb-inotify (0.9.5)
       ffi (>= 0.5.0)
-    rbtrace (0.4.5)
+    rbtrace (0.4.8)
       ffi (>= 1.0.6)
       msgpack (>= 0.4.3)
       trollop (>= 1.16.2)
@@ -336,7 +336,7 @@ GEM
     redis (3.1.0)
     redis-namespace (1.5.1)
       redis (~> 3.0, >= 3.0.4)
-    ref (1.0.5)
+    ref (2.0.0)
     rest-client (1.7.2)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
@@ -424,7 +424,7 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     stackprof (0.2.7)
-    therubyracer (0.12.1)
+    therubyracer (0.12.2)
       libv8 (~> 3.16.14.0)
       ref
     thin (1.6.2)
@@ -439,7 +439,7 @@ GEM
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
-    trollop (2.0)
+    trollop (2.1.2)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (2.5.3)
@@ -563,3 +563,6 @@ DEPENDENCIES
   unf
   unicorn
   xray-rails (= 0.1.8)
+
+BUNDLED WITH
+   1.12.5
