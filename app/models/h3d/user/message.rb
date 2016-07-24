@@ -46,8 +46,9 @@ class H3d::User::Message < ActiveRecord::Base
     importing_before = ENV['importing']
     ENV['importing'] = 'true'
     total = H3d::User::Message.count
-    i = 0
-    base = H3d::User::Message.where(discourse_topic_id: nil, discourse_post_id: nil)
+    i = H3d::User::Message.where("discourse_topic_id is not null AND discourse_post_id is not null").count
+    base = H3d::User::Message.where("discourse_topic_id is null OR discourse_post_id is null")
+    puts "[#{i}/#{total}]"
     base.find_each do |m|
       i += 1
       puts("#{name} IMPORT [#{i}/#{total}] #{(i.to_f / total.to_f * 100.0).round(1)}%") if i % 10 == 0
