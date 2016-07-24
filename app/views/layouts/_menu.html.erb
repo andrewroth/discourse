@@ -1,13 +1,3 @@
-<div id="globalnav-inner">
-  <div id="globalnav-nav">
-
-    <% cache("community_menu", expires_in: 24.hours) do %>
-      <%= pull_community_menu %>
-    <% end %>
-
-  </div>
-
-  <div id="globalnav-sell">
-    <a class="sell_assets_off" href="http://<%= marketplace_host %>/marketplace/new" data-ytta-id="-">Sell Your Assets</a>
-  </div>
-</div>
+<% cache("forum_menu", expires_in: 24.hours) do %>
+  <%= pull_forum_menu %>
+<% end %>

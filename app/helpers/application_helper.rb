@@ -167,7 +167,8 @@ module ApplicationHelper
 
   def pull_from_h3d(path)
     if Rails.env.production?
-      uri = URI.parse("https://#{community_host}#{path}")
+      #uri = URI.parse("https://#{community_host}#{path}")
+      uri = URI.parse("http://highend3d.local#{path}")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
       http.verify_mode = OpenSSL::SSL::VERIFY_NONE
@@ -194,8 +195,8 @@ module ApplicationHelper
     pull_from_h3d('/mailer_header.html')
   end
 
-  def pull_community_menu
-    pull_from_h3d('/community_menu.html')
+  def pull_forum_menu
+    pull_from_h3d('/nav.html?resource=forum')
   end
 
   def pull_footer

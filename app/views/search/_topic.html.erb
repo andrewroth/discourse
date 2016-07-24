@@ -3,7 +3,7 @@
     <%= render("lock_html") if t.closed %> <%= bold_match(t.title, params[:term]) %>
     <% c = t.category %>
     <span style='background-color: #<%= c.color %>; color: #<%= c.text_color %>;' title='<%= c.description.present? ? c.description : c.name %>' class='badge-category' data-drop-close='true' href='<%= c.relative_url %>' data-has-children='<%= c.has_children? %>'>
-      <%= c.name %>
+      Here3<%= c.name %>
     </span>
   <% end %>
   <%= t.created_at.strftime("%m, %Y") %>

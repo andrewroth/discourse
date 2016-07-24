@@ -92,9 +92,7 @@
       </div>
     </div>
 
-    <div id="globalnav-wrap">
-      <%= render 'layouts/menu' unless @hide_dynamic %>
-    </div>
+    <%= render 'layouts/menu' unless @hide_dynamic %>
 
     <div id="breadcrumb">
       <%= render "layouts/breadcrumbs" %>
@@ -110,6 +108,7 @@
     <!-- flash end -->
 
     <div id="change" data-resource="forums">
+      <%= image_tag(asset_path('spinner.gif'), style: 'position: absolute; top: 70px; left: 450px;') %>
       <div id="right" class="double">
         Sidebar here
       </div>

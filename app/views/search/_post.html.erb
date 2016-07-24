@@ -3,7 +3,7 @@
     <%= render("lock_html") if p.topic.closed %> <%= bold_match(p.topic.title, params[:term]) %>
     <% c = p.topic.category %>
     <span style='background-color: #<%= c.color %>; color: #<%= c.text_color %>;' title='<%= c.description.present? ? c.description : c.name %>' class='badge-category' data-drop-close='true' href='<%= c.relative_url %>' data-has-children='<%= c.has_children? %>'> 
-      <%= c.name %>
+      Here2<%= c.name %>
     </span>
   <% end %>
   <%= p.created_at %> - <%= bold_match(result.send(request.xhr? && !@h3d_search ? :blurb : :big_blurb, p), params[:term], 'black') %>
