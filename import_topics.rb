@@ -221,11 +221,11 @@ roots.each do |r_|
         @post = t.posts.last
         attrs = {last_posted_at: @post.created_at, last_post_user_id: @post.user_id}
 
-        u = h3d_t.try(:updated_at)
-        if !u || u > 1.day.ago
-          u = h3d_t.try(:children_updated_at)
+        u = h3d_t.try(:children_updated_at)
+        if !u
+          u = h3d_t.try(:updated_at)
         end
-        if !u || u > 1.day.ago
+        if !u || u > 1.day.ago # don't trust newer updated_at.. cc -> h3d migration might have set it
           u = h3d_t.posts.maximum(:created_at)
         end
         if !u || u > 1.day.ago
@@ -233,18 +233,6 @@ roots.each do |r_|
         end
         attrs[:updated_at] = u
         attrs[:bumped_at] = u
-=begin
-  h3d_t = H3d::Topic.where(discourse_topic_id: t.id).last
-  u = h3d_t.try(:children_updated_at)
-  if !u || u > 1.day.ago
-    u = h3d_t.posts.maximum(:created_at)
-  end
-  if !u || u > 1.day.ago
-     u = h3d_t.created_at
-  end
-  t.update_column(:updated_at, u) if u
-  t.update_column(:bumped_at, u) if u
-=end
         attrs[:word_count] = t.posts.inject(0) { |cnt,p| cnt + p.word_count }
         attrs[:excerpt] = t.posts.first.excerpt(220, strip_links: true) unless t.excerpt.present?
         t.update_attributes(attrs)
