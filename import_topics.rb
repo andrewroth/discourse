@@ -29,21 +29,6 @@ deleted_user = User.where(username: "user_deleted", email: "user@deleted").first
 
 RateLimiter.disable
 
-# clear out posts from topics that weren't fully processed so that they can be processed again
-logger.info "Clearing out any posts from failed imports.."
-=begin
-topics = H3d::Topic.where("discourse_topic_id is not null").select("id, discourse_topic_id").to_a
-cnt = topics.count
-i = 0
-topics = topics.find_all{ |h3d_t| 
-  i += 1
-  if i % 100 == 0
-    logger.info "part 1: #{(i.to_f / cnt.to_f * 100.0).to_i}%"
-  end
-  h3d_t.posts.count != h3d_t.discourse_topic.posts.count
-}
-=end
-
 # quicker implementation
 h3d_topics = H3d::Topic.where("discourse_topic_id is not null")
 h3d_topic_cnts = h3d_topics.joins(:posts).group(:topic_id).count
@@ -51,21 +36,26 @@ discourse_topic_cnts = Topic.joins(:posts).group(:topic_id).count
 
 h3d_topics_to_delete_ids = []
 cnt = h3d_topics.count
-h3d_topics.select('id, discourse_topic_id').each_with_index do |h3d_t, i|
+h3d_topics.select('id, discourse_topic_id, title').each_with_index do |h3d_t, i|
   if i % 1000 == 0
-    logger.info "part 1: #{(i.to_f / cnt.to_f * 100.0).to_i}%"
+    Rails.logger.info "part 1: #{(i.to_f / cnt.to_f * 100.0).to_i}%"
   end
   if h3d_topic_cnts[h3d_t.id] != discourse_topic_cnts[h3d_t.discourse_topic_id]
+    puts "h3d_topic #{h3d_t.id} posts count #{h3d_topic_cnts[h3d_t.id]} discourse topic id #{h3d_t.discourse_topic_id} posts count #{discourse_topic_cnts[h3d_t.discourse_topic_id]}"
+    puts "  -> h3d #{h3d_t.title}"
+    puts "  -> discourse #{Topic.where(id: h3d_t.discourse_topic_id).pluck(:title)}"
     h3d_topics_to_delete_ids << h3d_t.id
   end
 end
 
+#throw h3d_topics_to_delete_ids.length
+
 h3d_topics_to_delete = H3d::Topic.find(h3d_topics_to_delete_ids)
 cnt = h3d_topics_to_delete.count
-logger.info "#{cnt} h3d topics to delete all discourse posts for, and reimport"
+Rails.logger.info "#{cnt} h3d topics to delete all discourse posts for, and reimport"
 h3d_topics_to_delete.each_with_index do |h3d_t, i|
   if i % 10 == 0
-    logger.info "part 2: #{(i.to_f / cnt.to_f * 100.0).to_i}%"
+    Rails.logger.info "part 2: #{(i.to_f / cnt.to_f * 100.0).to_i}%"
   end
   h3d_t.discourse_topic.posts.collect(&:destroy) if h3d_t.discourse_topic
   h3d_t.posts.update_all(discourse_post_id: nil)
@@ -75,7 +65,7 @@ end
 h3d_topics = h3d_topics_cnts = discourse_topic_cnts = h3d_topics_to_delete_ids = nil
 
 # delete orphan topics
-logger.info "Deleting orphan topics"
+Rails.logger.info "Deleting orphan topics"
 #h3d_topic_discourse_topic_ids = H3d::Topic.pluck(:discourse_topic_id); # wtf pluck uses discourse db
 h3d_topic_discourse_topic_ids = H3d::Topic.select(:discourse_topic_id).collect(&:discourse_topic_id)
 topic_ids = Topic.pluck(:id)
@@ -83,13 +73,13 @@ orphan_topics = Topic.where(id: (topic_ids - h3d_topic_discourse_topic_ids))
 orphan_topics.collect{ |t| t.posts.update_all(deleted_at: Time.now) }
 orphan_topics.update_all(deleted_at: Time.now)
 
-logger.info "Deleting orphan posts"
+Rails.logger.info "Deleting orphan posts"
 h3d_post_discourse_post_ids = H3d::Post.where(is_spam: [nil, false]).select(:discourse_post_id).collect(&:discourse_post_id);
 post_ids = Post.pluck(:id)
 orphan_posts = Post.where(id: (post_ids - h3d_post_discourse_post_ids))
 orphan_posts.update_all(deleted_at: Time.now)
 
-logger.info "Done"
+Rails.logger.info "Done"
 
 h3d_topic_discourse_topic_ids = topic_ids = orphan_topics = nil # tell GC that it can reclaim topics
 h3d_post_discourse_post_ids = post_ids = orphan_posts = nil # tell GC that it can reclaim posts
@@ -115,7 +105,7 @@ k = 0
 RateLimiter.disable
 class Validators::PostValidator < ActiveModel::Validator
   def validate(record)
-    logger.info "OUR VALIDATE HERE"
+    Rails.logger.info "OUR VALIDATE HERE"
     presence(record)
   end
 end
@@ -123,7 +113,7 @@ end
 roots.each do |r_|
   r = r_.clone
 
-  logger.info "=== ROOT #{r.title} ==="
+  Rails.logger.info "=== ROOT #{r.title} ==="
 
   (r.children + r.children.collect(&:children)).flatten.each do |f_|
     f = f_.clone
@@ -131,8 +121,8 @@ roots.each do |r_|
     # TODO: Remove this later!!  We're just using MEL as a test
     #next unless f.title == "MEL"
 
-    logger.info "=== #{f.title} ==="
-    logger.info "=== Forum data: #{f.inspect}"
+    Rails.logger.info "=== #{f.title} ==="
+    Rails.logger.info "=== Forum data: #{f.inspect}"
 
     c = f.discourse_category
     if f.discourse_keep && c.nil?
@@ -153,7 +143,7 @@ roots.each do |r_|
       #exit(0) if k > 50 
 
       cnt += 1
-      logger.info "=== [ABORT INDEX #{k}/10] #{f.title} (#{(cnt / total * 100).round(1)}%) === Topic: #{h3d_t.title}"
+      Rails.logger.info "=== [ABORT INDEX #{k}/10] #{f.title} (#{(cnt / total * 100).round(1)}%) === Topic: #{h3d_t.title}"
       next unless h3d_t.title.present?
 
       update_post_stats = false
@@ -179,8 +169,8 @@ roots.each do |r_|
           t.title = HTMLEntities.new.decode(h3d_t.title) + " (#{i})"
         end
 
-        logger.info "=== Creating topic: #{t.inspect}"
-        logger.info "     -> h3d #{h3d_t.user.inspect}"
+        Rails.logger.info "=== Creating topic: #{t.inspect}"
+        Rails.logger.info "     -> h3d #{h3d_t.user.inspect}"
 
         t.save!(validate: false)
 
@@ -200,7 +190,7 @@ roots.each do |r_|
         h3d_p = h3d_p_.clone
 
         unless h3d_p.discourse_post_id || h3d_p.body.blank?
-          logger.info "=== Post h3d id #{h3d_p.id}"
+          Rails.logger.info "=== Post h3d id #{h3d_p.id}"
           p = Post.new
           p.user = h3d_p.user.try(:discourse_user) || deleted_user 
           p.topic_id = t.id
@@ -222,7 +212,7 @@ roots.each do |r_|
 
       t.reload if t
       if h3d_t.posts.empty? || (t && t.posts.empty?)
-        logger.info "NO POSTS ON h3d TOPIC #{h3d_t.id}, DESTROYING"
+        Rails.logger.info "NO POSTS ON h3d TOPIC #{h3d_t.id}, DESTROYING"
         h3d_t.discourse_topic_id = nil
         h3d_t.save!
         t.destroy if t
@@ -239,14 +229,14 @@ roots.each do |r_|
 
       h3d_t = nil
 
-      #logger.info "Press Enter to continue"
+      #Rails.logger.info "Press Enter to continue"
       #STDIN.gets
     end
 
     f = nil
     GC.start
 
-    #logger.info "Press Enter to continue"
+    #Rails.logger.info "Press Enter to continue"
     #STDIN.gets
   end
 
@@ -256,15 +246,68 @@ end
 
 RateLimiter.enable
 
-logger.info "Took #{Time.now - t0} seconds to run"
+Rails.logger.info "Took #{Time.now - t0} seconds to run"
 
 Category.all.collect(&:update_latest)
 
-Topic.where("bumped_at is null OR bumped_at <= ?", Time.now).each do |t|
-  u = H3d::Topic.where(discourse_topic_id: t.id).last.try(:children_updated_at)
-  t.update_column(:updated_at, u) if u
-  t.update_column(:bumped_at, u) if u
+Post.where("created_at > ?", Time.now).each do |p|
+  u = p.topic.posts.where("created_at < ?", Time.now).maximum(:created_at)
+  if u.nil? || u > Time.now
+    u = p.topic.posts.where("updated_at < ?", Time.now).maximum(:updated_at)
+  end
+  if u.nil? || u > Time.now
+    u = p.topic.created_at
+  end
+  p.update_column(:created_at, u)
+  p.update_column(:updated_at, u)
 end
 
 Topic.where("bumped_at > ?", Time.now).update_all(pinned_at: Time.now)
 
+puts "Fixing bumped_at/updated_at:"
+total = Topic.where("bumped_at > ? OR updated_at > ?", 1.month.ago, 1.month.ago).count
+puts total
+Rails.logger.info total
+
+j = 0
+Topic.where("bumped_at > ? OR updated_at > ?", 1.month.ago, 1.month.ago).find_each do |t|
+  j += 1
+  if j % 100 == 0
+    s = "[#{j}/#{total} (#{(j / total.to_f * 100.0).round(1)}%)"
+    puts s
+    Rails.logger.info s
+  end
+  h3d_t = H3d::Topic.where(discourse_topic_id: t.id).last
+  u = h3d_t.try(:children_updated_at)
+  if !u || u > 1.day.ago
+    u = h3d_t.posts.maximum(:created_at)
+  end
+  if !u || u > 1.day.ago
+     u = h3d_t.created_at
+  end
+  t.update_column(:updated_at, u) if u
+  t.update_column(:bumped_at, u) if u
+end
+
+# mark all topics in Archive category as archived
+puts "Marking all archived posts as archived"
+c = Category.find_by(name: 'Archived')
+c.topics.update_all(archived: true)
+
+puts "Go through post processing again to get the topic images"
+j = 0
+Topic.where("created_at > ?", 2.months.ago).where(image_url: nil).find_each do |t|
+#Topic.where(image_url: nil).find_each do |t|
+  j += 1
+  #if j >= 10550
+    Rails.logger.info("=== abc123 #{j} ===")
+    p = t.posts.last
+    if p
+      begin
+        Jobs::ProcessPost.new.execute(post_id: p.id)
+      rescue Exception => e
+        puts "ERROR ON Topic #{t.id}"
+      end
+    end
+  #end
+end
