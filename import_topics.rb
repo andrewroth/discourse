@@ -29,6 +29,8 @@ deleted_user = User.where(username: "user_deleted", email: "user@deleted").first
 
 RateLimiter.disable
 
+keep_topics = []
+
 # quicker implementation
 h3d_topics = H3d::Topic.where("discourse_topic_id is not null")
 h3d_topic_cnts = h3d_topics.joins(:posts).group(:topic_id).count
@@ -122,11 +124,14 @@ roots.each do |r_|
     #next unless f.title == "MEL"
 
     Rails.logger.info "=== #{f.title} ==="
-    Rails.logger.info "=== Forum data: #{f.inspect}"
+    #Rails.logger.info "=== Forum data: #{f.inspect}"
 
     c = f.discourse_category
     if f.discourse_keep && c.nil?
       raise("Need to create discourse category #{f.discourse_category_name}")
+    elsif !f.discourse_keep
+      Rails.logger.info "=== SKIP DISCOURSE IMPORT ==="
+      next
     end
 
     if f.discourse_tag.present?
@@ -137,6 +142,7 @@ roots.each do |r_|
 
     f.topics.order(updated_at: :desc).each do |h3d_t_|
       h3d_t = h3d_t_.clone
+      keep_topics << h3d_t.id
 
       # TODO remove this before doing the real import -- just want to test first 10
       #k += 1
@@ -185,6 +191,15 @@ roots.each do |r_|
         t = h3d_t.discourse_topic
       end
 
+      # no need to process posts if nothing's changed
+      if h3d_t.children_updated_at.present? && 
+        t.updated_at.present? && 
+        h3d_t.children_updated_at == t.updated_at
+        #puts "SKIPPING BECAUSE NOTHING HAS CHANGED (#{h3d_t.children_updated_at})"
+        Rails.logger.info " === SKIPPING #{h3d_t.title} BECAUSE NOTHING HAS CHANGED (#{h3d_t.children_updated_at})"
+        next
+      end
+
       # posts
       h3d_t.posts.each do |h3d_p_|
         h3d_p = h3d_p_.clone
@@ -221,11 +236,11 @@ roots.each do |r_|
         @post = t.posts.last
         attrs = {last_posted_at: @post.created_at, last_post_user_id: @post.user_id}
 
-        u = h3d_t.try(:updated_at)
-        if !u || u > 1.day.ago
-          u = h3d_t.try(:children_updated_at)
+        u = h3d_t.try(:children_updated_at) # always trust children_updated_at
+        if !u
+          u = h3d_t.try(:updated_at)
         end
-        if !u || u > 1.day.ago
+        if !u || u > 1.day.ago # don't trust updated_at new, could be from the h3d import
           u = h3d_t.posts.maximum(:created_at)
         end
         if !u || u > 1.day.ago
@@ -335,3 +350,8 @@ Topic.where("created_at > ?", 2.months.ago).where(image_url: nil).find_each do |
     end
   #end
 end
+
+ids = H3d::Topic.where(forum_id: forum_ids).collect(&:id) - keep_topics
+puts "DELETE #{ids.length}"
+File.write("ids.rb", "@ids = #{ids.join(',')}")
+puts "Done"
