@@ -32,7 +32,7 @@ RateLimiter.disable
 keep_topics = []
 
 # quicker implementation
-h3d_topics = H3d::Topic.where("discourse_topic_id is not null")
+h3d_topics = H3d::Topic.where.not(discourse_topic_id: nil)
 h3d_topic_cnts = h3d_topics.joins(:posts).group(:topic_id).count
 discourse_topic_cnts = Topic.joins(:posts).group(:topic_id).count
 
@@ -43,6 +43,9 @@ h3d_topics.select('id, discourse_topic_id, title').each_with_index do |h3d_t, i|
     Rails.logger.info "part 1: #{(i.to_f / cnt.to_f * 100.0).to_i}%"
   end
   if h3d_topic_cnts[h3d_t.id] != discourse_topic_cnts[h3d_t.discourse_topic_id]
+    h3d_topic_cnt = h3d_t.posts.reject { |p| !p.body.strip.present? }.count
+    next if h3d_topic_cnt == discourse_topic_cnts[h3d_t.discourse_topic_id]
+    binding.pry # TODO comment out here
     puts "h3d_topic #{h3d_t.id} posts count #{h3d_topic_cnts[h3d_t.id]} discourse topic id #{h3d_t.discourse_topic_id} posts count #{discourse_topic_cnts[h3d_t.discourse_topic_id]}"
     puts "  -> h3d #{h3d_t.title}"
     puts "  -> discourse #{Topic.where(id: h3d_t.discourse_topic_id).pluck(:title)}"
@@ -59,12 +62,15 @@ h3d_topics_to_delete.each_with_index do |h3d_t, i|
   if i % 10 == 0
     Rails.logger.info "part 2: #{(i.to_f / cnt.to_f * 100.0).to_i}%"
   end
-  h3d_t.discourse_topic.posts.collect(&:destroy) if h3d_t.discourse_topic
+  if h3d_t.discourse_topic
+    h3d_t.discourse_topic.posts.collect(&:destroy)
+    h3d_t.discourse_topic.update_column(:updated_at, Time.now) # dont let updated_at matching to h3d topic children_updated_at skip processing this topic
+  end
   h3d_t.posts.update_all(discourse_post_id: nil)
 end
 
 # try setting things nil to let GC get it
-h3d_topics = h3d_topics_cnts = discourse_topic_cnts = h3d_topics_to_delete_ids = nil
+#h3d_topics = h3d_topics_cnts = discourse_topic_cnts = h3d_topics_to_delete_ids = nil
 
 # delete orphan topics
 Rails.logger.info "Deleting orphan topics"
@@ -140,8 +146,7 @@ roots.each do |r_|
       discourse_tag = nil
     end
 
-    f.topics.order(updated_at: :desc).each do |h3d_t_|
-      h3d_t = h3d_t_.clone
+    f.topics.order(updated_at: :desc).each do |h3d_t|
       keep_topics << h3d_t.id
 
       # TODO remove this before doing the real import -- just want to test first 10
@@ -153,6 +158,8 @@ roots.each do |r_|
       next unless h3d_t.title.present?
 
       update_post_stats = false
+
+      binding.pry if h3d_topics_to_delete_ids.include?(h3d_t.id)
 
       unless h3d_t.discourse_topic
         t = Topic.new
@@ -195,7 +202,7 @@ roots.each do |r_|
       if h3d_t.children_updated_at.present? && 
         t.updated_at.present? && 
         h3d_t.children_updated_at == t.updated_at
-        #puts "SKIPPING BECAUSE NOTHING HAS CHANGED (#{h3d_t.children_updated_at})"
+        puts "SKIPPING BECAUSE NOTHING HAS CHANGED (#{h3d_t.children_updated_at})"
         Rails.logger.info " === SKIPPING #{h3d_t.title} BECAUSE NOTHING HAS CHANGED (#{h3d_t.children_updated_at})"
         next
       end
@@ -237,10 +244,7 @@ roots.each do |r_|
         attrs = {last_posted_at: @post.created_at, last_post_user_id: @post.user_id}
 
         u = h3d_t.try(:children_updated_at) # always trust children_updated_at
-        if !u
-          u = h3d_t.try(:updated_at)
-        end
-        if !u || u > 1.day.ago # don't trust updated_at new, could be from the h3d import
+        if !u || u > 1.day.ago # don't trust new values, could be from the h3d import
           u = h3d_t.posts.maximum(:created_at)
         end
         if !u || u > 1.day.ago
@@ -299,33 +303,6 @@ Post.where("created_at > ?", Time.now).each do |p|
   end
   p.update_column(:created_at, u)
   p.update_column(:updated_at, u)
-end
-
-Topic.where("bumped_at > ?", Time.now).update_all(pinned_at: Time.now)
-
-puts "Fixing bumped_at/updated_at:"
-total = Topic.where("bumped_at > ? OR updated_at > ?", 1.month.ago, 1.month.ago).count
-puts total
-Rails.logger.info total
-
-j = 0
-Topic.where("bumped_at > ? OR updated_at > ?", 1.month.ago, 1.month.ago).find_each do |t|
-  j += 1
-  if j % 100 == 0
-    s = "[#{j}/#{total} (#{(j / total.to_f * 100.0).round(1)}%)"
-    puts s
-    Rails.logger.info s
-  end
-  h3d_t = H3d::Topic.where(discourse_topic_id: t.id).last
-  u = h3d_t.try(:children_updated_at)
-  if !u || u > 1.day.ago
-    u = h3d_t.posts.maximum(:created_at)
-  end
-  if !u || u > 1.day.ago
-     u = h3d_t.created_at
-  end
-  t.update_column(:updated_at, u) if u
-  t.update_column(:bumped_at, u) if u
 end
 
 # mark all topics in Archive category as archived
