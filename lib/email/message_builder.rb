@@ -101,9 +101,17 @@ module Email
         styled.send("format_#{style}")
       end
 
+      to = @to
+      template_args = @template_args
+
       Mail::Part.new do
         content_type 'text/html; charset=UTF-8'
-        body styled.to_html
+        h3d_layout = H3dPull.pull_mailer_layout
+        h3d_layout.gsub!("{{body}}", styled.to_html)
+        h3d_layout.gsub!("{{address.email}}", to.to_s)
+        h3d_layout.gsub!("{{unsubscribe_url}}", template_args[:unsubscribe_url].to_s)
+        body h3d_layout
+        #body styled.to_html
       end
     end
 
@@ -111,10 +119,12 @@ module Email
       body = @opts[:body]
       body = I18n.t("#{@opts[:template]}.text_body_template", template_args).dup if @opts[:template]
 
+=begin
       if @template_args[:unsubscribe_instructions].present?
         body << "\n"
         body << @template_args[:unsubscribe_instructions]
       end
+=end
 
       body
     end

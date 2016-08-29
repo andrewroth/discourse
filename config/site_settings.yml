@@ -428,8 +428,8 @@ posting:
   title_fancy_entities: true
   min_private_message_title_length:
     client: true
-    default: 2
-    min: 1
+    default: 0
+    min: 0
   allow_uncategorized_topics:
     client: true
     default: true
