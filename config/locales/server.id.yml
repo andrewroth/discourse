@@ -280,10 +280,6 @@ id:
       blocked: "Registrasi baru dari alamat IP Anda tidak diijinkan."
       max_new_accounts_per_registration_ip: "Registrasi baru dari alamat IP Anda tidak diijinkan (telah mencapai batas maksimum). Silahkan hubungi staff."
   system_messages:
-    too_many_spam_flags:
-      subject_template: "Akun baru disuspensi atas alasan laporan dari komunitas"
-    user_automatically_blocked:
-      subject_template: "Pengguna baru %{username} disuspensi atas laporan komunitas"
     spam_post_blocked:
       subject_template: "Pengguna baru %{username} disuspensi atas penulisan tautan yang berulang-ulang kali"
     pending_users_reminder:

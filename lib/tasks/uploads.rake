@@ -71,8 +71,8 @@ task "uploads:backfill_shas" => :environment do
         u.sha1 = Digest::SHA1.file(path).hexdigest
         u.save!
         putc "."
-      rescue Errno::ENOENT
-        putc "X"
+      rescue => e
+        puts "Skipping #{u.original_filename} (#{u.url}) #{e.message}"
       end
     end
   end
@@ -370,10 +370,10 @@ end
 
 # regenerate missing optimized images
 task "uploads:regenerate_missing_optimized" => :environment do
-  ENV["RAILS_DB"] ? regenerate_missing_optimized : regenerate_missing_optimized_all_sites
+  regenerate_missing_optimized
 end
 
-def regenerate_missing_optimized_all_sites
+task "uploads:regenerate_missing_optimized_all_sites" => :environment do
   RailsMultisite::ConnectionManagement.each_connection { regenerate_missing_optimized }
 end
 
@@ -390,44 +390,54 @@ def regenerate_missing_optimized
   public_directory = "#{Rails.root}/public"
   missing_uploads = Set.new
 
-  OptimizedImage.includes(:upload)
-                .where("LENGTH(COALESCE(url, '')) > 0")
-                .where("width > 0 AND height > 0")
-                .find_each do |optimized_image|
+  avatar_upload_ids = UserAvatar.all.pluck(:custom_upload_id, :gravatar_upload_id).flatten.compact
 
-    upload = optimized_image.upload
+  default_scope = OptimizedImage.includes(:upload)
 
-    next unless optimized_image.url =~ /^\/[^\/]/
-    next unless upload.url =~ /^\/[^\/]/
+  [
+    default_scope
+      .where("optimized_images.upload_id IN (?)", avatar_upload_ids),
 
-    thumbnail = "#{public_directory}#{optimized_image.url}"
-    original = "#{public_directory}#{upload.url}"
+    default_scope
+      .where("optimized_images.upload_id NOT IN (?)", avatar_upload_ids)
+      .where("LENGTH(COALESCE(url, '')) > 0")
+      .where("width > 0 AND height > 0")
+  ].each do |scope|
+    scope.find_each do |optimized_image|
+      upload = optimized_image.upload
 
-    if !File.exists?(thumbnail) || File.size(thumbnail) <= 0
-      # make sure the original image exists locally
-      if (!File.exists?(original) || File.size(original) <= 0) && upload.origin.present?
-        # try to fix it by redownloading it
-        begin
-          downloaded = FileHelper.download(upload.origin, SiteSetting.max_image_size_kb.kilobytes, "discourse-missing", true) rescue nil
-          if downloaded && downloaded.size > 0
-            FileUtils.mkdir_p(File.dirname(original))
-            File.open(original, "wb") { |f| f.write(downloaded.read) }
+      next unless optimized_image.url =~ /^\/[^\/]/
+      next unless upload.url =~ /^\/[^\/]/
+
+      thumbnail = "#{public_directory}#{optimized_image.url}"
+      original = "#{public_directory}#{upload.url}"
+
+      if !File.exists?(thumbnail) || File.size(thumbnail) <= 0
+        # make sure the original image exists locally
+        if (!File.exists?(original) || File.size(original) <= 0) && upload.origin.present?
+          # try to fix it by redownloading it
+          begin
+            downloaded = FileHelper.download(upload.origin, SiteSetting.max_image_size_kb.kilobytes, "discourse-missing", true) rescue nil
+            if downloaded && downloaded.size > 0
+              FileUtils.mkdir_p(File.dirname(original))
+              File.open(original, "wb") { |f| f.write(downloaded.read) }
+            end
+          ensure
+            downloaded.try(:close!) if downloaded.respond_to?(:close!)
           end
-        ensure
-          downloaded.try(:close!) if downloaded.respond_to?(:close!)
         end
-      end
 
-      if File.exists?(original) && File.size(original) > 0
-        FileUtils.mkdir_p(File.dirname(thumbnail))
-        OptimizedImage.resize(original, thumbnail, optimized_image.width, optimized_image.height)
-        putc "#"
+        if File.exists?(original) && File.size(original) > 0
+          FileUtils.mkdir_p(File.dirname(thumbnail))
+          OptimizedImage.resize(original, thumbnail, optimized_image.width, optimized_image.height)
+          putc "#"
+        else
+          missing_uploads << original
+          putc "X"
+        end
       else
-        missing_uploads << original
-        putc "X"
+        putc "."
       end
-    else
-      putc "."
     end
   end
 
