@@ -275,6 +275,8 @@ class Guardian
       @user == Discourse.system_user) &&
     # Can't send PMs to suspended users
     (is_staff? || target.is_a?(Group) || !target.suspended?) &&
+    # Staff or friends
+    (is_staff? || user.h3d_user.reciprocated_friends.include?(target.try(:h3d_user))) &&
     # Blocked users can only send PM to staff
     (!is_blocked? || target.staff?)
   end

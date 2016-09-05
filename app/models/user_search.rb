@@ -8,6 +8,7 @@ class UserSearch
     @topic_allowed_users = opts[:topic_allowed_users]
     @searching_user = opts[:searching_user]
     @limit = opts[:limit] || 20
+    @pm = opts[:pm]
   end
 
   def scoped_users
@@ -81,6 +82,12 @@ class UserSearch
                             .limit(@limit - users.length)
                             .pluck(:id)
                             .each { |id| users << id }
+
+    # restrict results to users you're friends with
+    if @pm && !@searching_user.staff?
+      valid_user_ids = @searching_user.h3d_user.reciprocated_friends.pluck(:discourse_user_id)
+      users = users.where(id: valid_user_ids)
+    end
 
     users.to_a
   end

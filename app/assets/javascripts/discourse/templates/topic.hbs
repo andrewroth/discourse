@@ -34,6 +34,10 @@
             {{d-button action="cancelEditingTopic" class="btn-small cancel-edit" icon="times"}}
           {{else}}
             <h1>
+              {{#unless model.isPrivateMessage}}
+                {{topic-category topic=model}}
+              {{/unless}}
+
               {{#unless model.is_warning}}
                 <a href={{pmPath}}>
                   <span class="private-message-glyph">{{fa-icon "envelope"}}</span>
@@ -52,9 +56,6 @@
               {{/if}}
             </h1>
 
-            {{#unless model.isPrivateMessage}}
-              {{topic-category topic=model}}
-            {{/unless}}
           {{/if}}
         </div>
         {{plugin-outlet "topic-title"}}
